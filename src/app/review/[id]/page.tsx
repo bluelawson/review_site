@@ -1,9 +1,13 @@
 import ReviewDetail from '@/components/ReviewDetail';
 
-export default function ReviewDetailPage({
+type Params = Promise<{ id: string }>;
+
+export default async function ReviewDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Params;
 }) {
-  return <ReviewDetail id={params.id} />;
+  const { id } = await params;
+
+  return <ReviewDetail id={id} />;
 }

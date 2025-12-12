@@ -24,6 +24,7 @@ export default function ReviewForm() {
     estimatedAge: "",
     bodyType: bodyOptions[0],
     bustSize: "",
+    heightCm: "",
     personality: personalityOptions[0],
     headline: "",
     detail: "",
@@ -48,7 +49,7 @@ export default function ReviewForm() {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!user) {
       setStatus("error");
@@ -57,10 +58,11 @@ export default function ReviewForm() {
     }
     setLoading(true);
     try {
-      addReview({
+      await addReview({
         ...form,
         serviceHighlights: highlightList.length ? highlightList : ["丁寧"],
-        createdBy: user.email,
+        heightCm: form.heightCm ? Number(form.heightCm) : undefined,
+        authorEmail: user.email,
       });
       registerSubmission();
       setStatus("success");
@@ -71,6 +73,7 @@ export default function ReviewForm() {
         estimatedAge: "",
         bodyType: bodyOptions[0],
         bustSize: "",
+        heightCm: "",
         personality: personalityOptions[0],
         headline: "",
         detail: "",
@@ -135,6 +138,15 @@ export default function ReviewForm() {
             placeholder="例) E"
             value={form.bustSize}
             onChange={(e) => handleChange("bustSize", e.target.value)}
+          />
+        </FieldWrapper>
+        <FieldWrapper label="身長 (cm)">
+          <TextField
+            type="number"
+            min={130}
+            max={200}
+            value={form.heightCm}
+            onChange={(e) => handleChange("heightCm", e.target.value)}
           />
         </FieldWrapper>
         <FieldWrapper label="体型">

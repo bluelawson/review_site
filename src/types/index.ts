@@ -12,17 +12,35 @@ export type Review = {
   id: string;
   shopName: string;
   workerName: string;
-  estimatedAge: string;
-  bodyType: BodyType;
-  bustSize: string;
-  personality: PersonalityTone;
+  estimatedAge?: string | null;
+  bodyType?: BodyType | string | null;
+  bustSize?: string | null;
+  heightCm?: number | null;
+  personality?: PersonalityTone | string | null;
   headline: string;
   detail: string;
   serviceHighlights: string[];
   rating: number;
-  damage: string;
+  damage?: string | null;
   createdAt: string;
-  createdBy: string;
+  updatedAt: string;
+  author: {
+    id: string;
+    name: string;
+    email: string;
+  };
+};
+
+export type ReviewFilter = {
+  search?: string;
+  shop?: string;
+  workerName?: string;
+  bodyType?: string;
+  personality?: string;
+  bustSize?: string;
+  heightMin?: number;
+  heightMax?: number;
+  minRating?: number;
 };
 
 export type UserProfile = {

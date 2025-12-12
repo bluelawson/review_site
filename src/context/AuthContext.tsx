@@ -1,6 +1,7 @@
 'use client';
 import {
   createContext,
+  startTransition,
   useCallback,
   useContext,
   useEffect,
@@ -48,23 +49,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<UserProfile | null>(null);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+
     const storedUsers = window.localStorage.getItem(STORAGE_KEY);
     if (storedUsers) {
-      setUsers(JSON.parse(storedUsers));
+      startTransition(() => {
+        setUsers(JSON.parse(storedUsers));
+      });
     } else {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultUsers));
     }
+
     const storedUser = window.localStorage.getItem(CURRENT_USER_KEY);
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      startTransition(() => {
+        setUser(JSON.parse(storedUser));
+      });
     }
   }, []);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
   }, [users]);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     if (user) {
       window.localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
     } else {

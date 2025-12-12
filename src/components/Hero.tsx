@@ -1,5 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
 
 import Button from "@/components/ui/Button";
 import { useAuth } from "@/context/AuthContext";
@@ -9,11 +10,20 @@ export default function Hero() {
   const router = useRouter();
   const { user } = useAuth();
   const { reviews } = useReviews();
+  const [now] = useState(() => Date.now());
 
-  const recentCount = reviews.filter((review) => {
-    const created = new Date(review.createdAt).getTime();
-    return Date.now() - created <= 1000 * 60 * 60 * 24 * 7;
-  }).length;
+  const recentCount = useMemo(() => {
+    return reviews.filter((review) => {
+      const created = new Date(review.createdAt).getTime();
+      return now - created <= 1000 * 60 * 60 * 24 * 7;
+    }).length;
+  }, [reviews, now]);
+
+  const averageRating = useMemo(() => {
+    if (reviews.length === 0) return "0.0";
+    const sum = reviews.reduce((acc, r) => acc + r.rating, 0);
+    return (sum / reviews.length).toFixed(1);
+  }, [reviews]);
 
   return (
     <section className="grid gap-6 lg:grid-cols-[3fr_2fr]">
@@ -38,10 +48,7 @@ export default function Hero() {
             { label: "直近7日に追加", value: recentCount },
             {
               label: "平均評価",
-              value:
-                reviews.length > 0
-                  ? (reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(1)
-                  : "0.0",
+              value: averageRating,
             },
           ].map((stat) => (
             <div

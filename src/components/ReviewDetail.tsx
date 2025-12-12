@@ -12,11 +12,19 @@ type Props = {
 
 export default function ReviewDetail({ id }: Props) {
   const router = useRouter();
-  const { getReviewById } = useReviews();
+  const { getReviewById, loading } = useReviews();
   const { user } = useAuth();
   const review = getReviewById(id);
 
-  if (!review) {
+  if (!review && loading) {
+    return (
+      <div className="glass-panel rounded-3xl border border-white/10 px-6 py-10 text-center text-sm text-slate-400">
+        読み込み中...
+      </div>
+    );
+  }
+
+  if (!review && !loading) {
     return (
       <div className="glass-panel rounded-3xl border border-white/10 px-6 py-10 text-center text-sm text-slate-400">
         該当するレビューが見つかりませんでした。
@@ -33,7 +41,11 @@ export default function ReviewDetail({ id }: Props) {
       </div>
       <h1 className="mt-4 text-4xl font-semibold text-white">{review.headline}</h1>
       <p className="mt-2 text-sm text-slate-400">
-        {review.workerName} / 推定 {review.estimatedAge} / {review.bodyType} / {review.bustSize} cup
+        {review.workerName}
+        {review.estimatedAge ? ` / 推定 ${review.estimatedAge}` : ""}
+        {review.bodyType ? ` / ${review.bodyType}` : ""}
+        {review.bustSize ? ` / ${review.bustSize} cup` : ""}
+        {review.heightCm ? ` / ${review.heightCm}cm` : ""}
       </p>
       <div className="divider my-6"></div>
       <div className="space-y-4 text-sm leading-relaxed text-slate-300">
@@ -57,6 +69,9 @@ export default function ReviewDetail({ id }: Props) {
           <p>料金: {review.damage}</p>
           <p>サービス: {review.serviceHighlights.join(" / ")}</p>
           <p>評価: {review.rating.toFixed(1)}</p>
+          <p className="text-[10px] uppercase tracking-[0.3em] text-slate-500">
+            Posted by {review.author.name} ({review.author.email})
+          </p>
         </div>
       </div>
       <div className="mt-8 flex justify-between text-xs uppercase tracking-[0.4em] text-slate-500">

@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String   @id @default(cuid())
+  name             String
+  email            String   @unique
+  password         String
+  plan             String   @default("guest")
+  reviewsSubmitted Int      @default(0)
+  reviews          Review[]
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Review {
+  id                String   @id @default(cuid())
+  shopName          String
+  workerName        String
+  estimatedAge      String?
+  bodyType          String?
+  bustSize          String?
+  heightCm          Int?
+  personality       String?
+  headline          String
+  detail            String
+  serviceHighlights Json?
+  rating            Float
+  damage            String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  author   User   @relation(fields: [authorId], references: [id])
+  authorId String
+}

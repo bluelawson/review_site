@@ -13,12 +13,13 @@ type Props = {
 export default function ReviewCard({ review }: Props) {
   const { user } = useAuth();
   const { deleteReview } = useReviews();
-  const isOwner = user?.email === review.createdBy;
+  const isOwner = user?.email === review.author.email;
   const unlocked = !!user && (user.reviewsSubmitted > 0 || user.plan === "premium");
+  const highlights = review.serviceHighlights ?? [];
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (confirm("このレビューを削除しますか？")) {
-      deleteReview(review.id);
+      await deleteReview(review.id);
     }
   };
 
@@ -30,10 +31,13 @@ export default function ReviewCard({ review }: Props) {
       </div>
       <h3 className="mt-3 text-xl font-semibold text-white">{review.headline}</h3>
       <p className="text-sm text-slate-400">
-        {review.workerName} / {review.estimatedAge}歳推定 / {review.bodyType}
+        {review.workerName}
+        {review.estimatedAge ? ` / ${review.estimatedAge}歳推定` : ""}
+        {review.bodyType ? ` / ${review.bodyType}` : ""}
+        {review.heightCm ? ` / ${review.heightCm}cm` : ""}
       </p>
       <div className="mt-3 flex flex-wrap gap-2 text-[10px] uppercase tracking-[0.3em] text-slate-400">
-        {review.serviceHighlights.map((tag) => (
+        {highlights.map((tag) => (
           <span
             key={tag}
             className="rounded-full border border-white/10 px-3 py-1 text-white/80"
@@ -50,15 +54,15 @@ export default function ReviewCard({ review }: Props) {
         {review.detail}
       </p>
       <div className="mt-4 flex flex-col gap-2 text-xs text-slate-400">
-        <span>Damage: {review.damage}</span>
+        <span>Damage: {review.damage ?? "非公開"}</span>
         <span>Rating: {review.rating.toFixed(1)}</span>
       </div>
       <div className="mt-6 flex items-center justify-between">
         <Link
-          href={unlocked ? `/review/${review.id}` : "/#access"}
+          href={`/review/${review.id}`}
           className="text-xs uppercase tracking-[0.4em] text-white underline"
         >
-          {unlocked ? "全文を読む" : "アンロック方法"}
+          {unlocked ? "全文を読む" : "詳細を見る"}
         </Link>
         {isOwner && (
           <Button variant="ghost" type="button" onClick={handleDelete}>
