@@ -1,31 +1,16 @@
-import React from "react";
+import ReviewForm from "@/components/forms/ReviewForm";
 
-const ReviewRegister = () => {
-  const shopOptions = ["水色りぼん", "fantasy", "女帝"];
+export default function ReviewRegisterPage() {
   return (
-    <div className="mx-24 my-12 px-6 py-6 h-[800px] border-t-2">
-      <div className="flex flex-col space-y-2">
-        <label className="font-sans">店名</label>
-        <select className="px-2 py-1 border w-36 rounded">
-          {shopOptions.map((shopOption) => {
-            return <option key={shopOption}>{shopOption}</option>;
-          })}
-        </select>
-      </div>
-      <div className="p-4 space-y-2">
-        <p className="font-sample text-xl">font-sample テスト</p>
-        <p className="font-sans text-xl">font-sans テスト</p>
-        <p className="text-red-500">text-red-500 テスト</p>
-      </div>
-      <div className="h-[100px]"></div>
-      <div>嬢の名前</div>
-      <div>推定年齢</div>
-      <div>体型</div>
-      <div>カップ数</div>
-      <div>性格タイプ　明るい～おとなしい</div>
-      <div>性格詳細</div>
+    <div className="mx-auto max-w-5xl space-y-6">
+      <header>
+        <p className="text-xs uppercase tracking-[0.4em] text-slate-400">Create Review</p>
+        <h1 className="text-3xl font-semibold text-white">口コミ投稿フォーム</h1>
+        <p className="mt-2 text-sm text-slate-400">
+          サービス内容・料金・印象など詳細に記述するほど審査が早く完了します。
+        </p>
+      </header>
+      <ReviewForm />
     </div>
   );
-};
-
-export default ReviewRegister;
+}
