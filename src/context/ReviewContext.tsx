@@ -7,7 +7,9 @@ import {
   useMemo,
   useState,
 } from 'react';
+import { print, type DocumentNode } from 'graphql';
 
+import ReviewsDocument from '@/graphql/reviews.graphql';
 import type { Review } from '@/types';
 
 const GRAPHQL_ENDPOINT = '/api/graphql';
@@ -46,15 +48,20 @@ type GraphQLResponse<T> = {
 const ReviewContext = createContext<ReviewContextState | undefined>(undefined);
 
 async function requestGraphQL<T>(
-  query: string,
+  document: DocumentNode,
   variables?: Record<string, unknown>,
+  operationName?: string,
 ): Promise<T> {
   const response = await fetch(GRAPHQL_ENDPOINT, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ query, variables }),
+    body: JSON.stringify({
+      query: print(document),
+      variables,
+      operationName,
+    }),
   });
 
   const body = (await response.json()) as GraphQLResponse<T>;
@@ -67,66 +74,6 @@ async function requestGraphQL<T>(
   return body.data;
 }
 
-const REVIEWS_QUERY = `
-  query Reviews($filter: ReviewFilterInput) {
-    reviews(filter: $filter) {
-      id
-      shopName
-      workerName
-      estimatedAge
-      bodyType
-      bustSize
-      heightCm
-      personality
-      headline
-      detail
-      serviceHighlights
-      rating
-      damage
-      createdAt
-      updatedAt
-      author {
-        id
-        name
-        email
-      }
-    }
-  }
-`;
-
-const CREATE_REVIEW_MUTATION = `
-  mutation CreateReview($input: ReviewInput!) {
-    createReview(input: $input) {
-      id
-      shopName
-      workerName
-      estimatedAge
-      bodyType
-      bustSize
-      heightCm
-      personality
-      headline
-      detail
-      serviceHighlights
-      rating
-      damage
-      createdAt
-      updatedAt
-      author {
-        id
-        name
-        email
-      }
-    }
-  }
-`;
-
-const DELETE_REVIEW_MUTATION = `
-  mutation DeleteReview($id: ID!) {
-    deleteReview(id: $id)
-  }
-`;
-
 export function ReviewProvider({ children }: { children: React.ReactNode }) {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -136,7 +83,11 @@ export function ReviewProvider({ children }: { children: React.ReactNode }) {
     setLoading(true);
     setError(null);
     try {
-      const data = await requestGraphQL<{ reviews: Review[] }>(REVIEWS_QUERY);
+      const data = await requestGraphQL<{ reviews: Review[] }>(
+        ReviewsDocument,
+        undefined,
+        'Reviews',
+      );
       setReviews(data.reviews);
     } catch (err) {
       console.error(err);
@@ -154,17 +105,20 @@ export function ReviewProvider({ children }: { children: React.ReactNode }) {
 
   const addReview = useCallback(async (input: CreateReviewInput) => {
     const data = await requestGraphQL<{ createReview: Review }>(
-      CREATE_REVIEW_MUTATION,
+      ReviewsDocument,
       { input },
+      'CreateReview',
     );
     setReviews((prev) => [data.createReview, ...prev]);
     return data.createReview;
   }, []);
 
   const deleteReview = useCallback(async (id: string) => {
-    await requestGraphQL<{ deleteReview: boolean }>(DELETE_REVIEW_MUTATION, {
-      id,
-    });
+    await requestGraphQL<{ deleteReview: boolean }>(
+      ReviewsDocument,
+      { id },
+      'DeleteReview',
+    );
     setReviews((prev) => prev.filter((review) => review.id !== id));
   }, []);
 

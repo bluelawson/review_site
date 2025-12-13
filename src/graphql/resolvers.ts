@@ -1,4 +1,4 @@
-import type { Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 
 import prisma from '@/lib/prisma';
 
@@ -80,13 +80,12 @@ const resolvers = {
   },
   Mutation: {
     createReview: async (_parent: unknown, args: { input: ReviewInput }) => {
-      const {
-        authorEmail,
-        serviceHighlights = [],
-        rating,
-        heightCm,
-        ...rest
-      } = args.input;
+      const { authorEmail, serviceHighlights, rating, heightCm, ...rest } = args.input;
+
+      const serviceHighlightsValue: Prisma.NullableJsonNullValueInput | Prisma.InputJsonValue =
+        serviceHighlights == null
+          ? Prisma.JsonNull
+          : (serviceHighlights as Prisma.InputJsonValue);
 
       const user = await prisma.user.upsert({
         where: { email: authorEmail },
@@ -103,7 +102,7 @@ const resolvers = {
           ...rest,
           rating,
           heightCm: heightCm ?? null,
-          serviceHighlights,
+          serviceHighlights: serviceHighlightsValue,
           author: {
             connect: { id: user.id },
           },

@@ -1,0 +1,53 @@
+query Reviews($filter: ReviewFilterInput) {
+  reviews(filter: $filter) {
+    id
+    shopName
+    workerName
+    estimatedAge
+    bodyType
+    bustSize
+    heightCm
+    personality
+    headline
+    detail
+    serviceHighlights
+    rating
+    damage
+    createdAt
+    updatedAt
+    author {
+      id
+      name
+      email
+    }
+  }
+}
+
+mutation CreateReview($input: ReviewInput!) {
+  createReview(input: $input) {
+    id
+    shopName
+    workerName
+    estimatedAge
+    bodyType
+    bustSize
+    heightCm
+    personality
+    headline
+    detail
+    serviceHighlights
+    rating
+    damage
+    createdAt
+    updatedAt
+    author {
+      id
+      name
+      email
+    }
+  }
+}
+
+mutation DeleteReview($id: ID!) {
+  deleteReview(id: $id)
+}
