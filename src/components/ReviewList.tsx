@@ -1,19 +1,19 @@
-"use client";
-import Link from "next/link";
-import { useMemo, useState } from "react";
+'use client';
+import Link from 'next/link';
+import { useMemo, useState } from 'react';
 
-import ReviewCard from "@/components/ReviewCard";
-import ReviewFilters from "@/components/ReviewFilters";
-import { useReviews } from "@/context/ReviewContext";
-import type { ReviewFilter } from "@/types";
+import ReviewCard from '@/components/ReviewCard';
+import ReviewFilters from '@/components/ReviewFilters';
+import { useReviews } from '@/context/ReviewContext';
+import type { ReviewFilter } from '@/types';
 
 const defaultFilter: ReviewFilter = {
-  search: "",
-  shop: "",
-  workerName: "",
-  bustSize: "",
-  bodyType: "",
-  personality: "",
+  search: '',
+  shop: '',
+  workerName: '',
+  bustSize: '',
+  bodyType: '',
+  personality: '',
   heightMin: undefined,
   heightMax: undefined,
   minRating: 0,
@@ -28,21 +28,31 @@ export default function ReviewList() {
       const keyword = filter.search?.trim().toLowerCase();
       const matchesKeyword =
         !keyword ||
-        [review.workerName, review.shopName, review.detail, review.headline, review.bustSize, review.personality]
+        [
+          review.workerName,
+          review.shopName,
+          review.detail,
+          review.headline,
+          review.bustSize,
+          review.personality,
+        ]
           .filter(Boolean)
-          .map((field) => (field ?? "").toString().toLowerCase())
+          .map((field) => (field ?? '').toString().toLowerCase())
           .some((field) => field.includes(keyword));
 
       const matchesShop = !filter.shop || review.shopName === filter.shop;
       const matchesWorker =
         !filter.workerName ||
-        review.workerName.toLowerCase().includes(filter.workerName.toLowerCase());
-      const matchesBody = !filter.bodyType || review.bodyType === filter.bodyType;
+        review.workerName
+          .toLowerCase()
+          .includes(filter.workerName.toLowerCase());
+      const matchesBody =
+        !filter.bodyType || review.bodyType === filter.bodyType;
       const matchesPersonality =
         !filter.personality || review.personality === filter.personality;
       const matchesBust =
         !filter.bustSize ||
-        (review.bustSize ?? "").toLowerCase() === filter.bustSize.toLowerCase();
+        (review.bustSize ?? '').toLowerCase() === filter.bustSize.toLowerCase();
       const height = review.heightCm ?? 0;
       const matchesHeightMin =
         !filter.heightMin || height >= Number(filter.heightMin);
@@ -78,7 +88,7 @@ export default function ReviewList() {
         </div>
       ) : filtered.length === 0 ? (
         <div className="glass-panel rounded-3xl border border-white/10 px-6 py-10 text-center text-sm text-slate-400">
-          条件に一致する口コミがありません。キーワードを変えるか、新しい体験談を{" "}
+          条件に一致する口コミがありません。キーワードを変えるか、新しい体験談を{' '}
           <Link href="/review/register" className="text-white underline">
             投稿
           </Link>

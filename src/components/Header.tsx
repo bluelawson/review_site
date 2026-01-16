@@ -28,7 +28,8 @@ export default function Header() {
       .toUpperCase();
   }, [user]);
 
-  const isUnlocked = !!user && (user.plan === 'premium' || user.reviewsSubmitted > 0);
+  const isUnlocked =
+    !!user && (user.plan === 'premium' || user.reviewsSubmitted > 0);
 
   const handleLogout = () => {
     logout();
@@ -76,10 +77,15 @@ export default function Header() {
             </>
           ) : (
             <>
-              <Button variant="ghost" onClick={() => router.push('/auth/login')}>
+              <Button
+                variant="ghost"
+                onClick={() => router.push('/auth/login')}
+              >
                 LOGIN
               </Button>
-              <Button onClick={() => router.push('/auth/register')}>JOIN</Button>
+              <Button onClick={() => router.push('/auth/register')}>
+                JOIN
+              </Button>
             </>
           )}
         </div>

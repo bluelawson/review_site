@@ -1,9 +1,9 @@
-"use client";
+'use client';
 import type {
   InputHTMLAttributes,
   PropsWithChildren,
   TextareaHTMLAttributes,
-} from "react";
+} from 'react';
 
 type FieldProps = {
   label: string;
@@ -60,7 +60,11 @@ export function SelectField({
       {...props}
     >
       {options.map((option) => (
-        <option key={option.value} value={option.value} className="bg-slate-900">
+        <option
+          key={option.value}
+          value={option.value}
+          className="bg-slate-900"
+        >
           {option.label}
         </option>
       ))}

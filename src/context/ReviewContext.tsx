@@ -137,7 +137,15 @@ export function ReviewProvider({ children }: { children: React.ReactNode }) {
       deleteReview,
       getReviewById,
     }),
-    [reviews, loading, error, fetchReviews, addReview, deleteReview, getReviewById],
+    [
+      reviews,
+      loading,
+      error,
+      fetchReviews,
+      addReview,
+      deleteReview,
+      getReviewById,
+    ],
   );
 
   return (

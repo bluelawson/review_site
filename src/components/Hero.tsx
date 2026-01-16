@@ -1,10 +1,10 @@
-"use client";
-import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+'use client';
+import { useRouter } from 'next/navigation';
+import { useMemo, useState } from 'react';
 
-import Button from "@/components/ui/Button";
-import { useAuth } from "@/context/AuthContext";
-import { useReviews } from "@/context/ReviewContext";
+import Button from '@/components/ui/Button';
+import { useAuth } from '@/context/AuthContext';
+import { useReviews } from '@/context/ReviewContext';
 
 export default function Hero() {
   const router = useRouter();
@@ -20,7 +20,7 @@ export default function Hero() {
   }, [reviews, now]);
 
   const averageRating = useMemo(() => {
-    if (reviews.length === 0) return "0.0";
+    if (reviews.length === 0) return '0.0';
     const sum = reviews.reduce((acc, r) => acc + r.rating, 0);
     return (sum / reviews.length).toFixed(1);
   }, [reviews]);
@@ -28,26 +28,32 @@ export default function Hero() {
   return (
     <section className="grid gap-6 lg:grid-cols-[3fr_2fr]">
       <div className="glass-panel rounded-3xl border border-white/10 px-8 py-12 shadow-2xl">
-        <p className="text-xs uppercase tracking-[0.5em] text-slate-500">体験者限定コミュニティ</p>
+        <p className="text-xs uppercase tracking-[0.5em] text-slate-500">
+          体験者限定コミュニティ
+        </p>
         <h1 className="mt-4 text-4xl font-black leading-tight text-white md:text-5xl">
           ソープランドのリアルを
-          <span className="block text-slate-300">投稿と課金でシェアする時代</span>
+          <span className="block text-slate-300">
+            投稿と課金でシェアする時代
+          </span>
         </h1>
         <p className="mt-6 text-base leading-relaxed text-slate-300">
           SERENは体験者本人のみが参加できるクローズドなレビューネットワーク。料金を払うか、あなた自身の体験談を投稿すると、他の全レビューが解錠されます。
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
-          <Button onClick={() => router.push("/review/register")}>投稿して解錠</Button>
-          <Button variant="ghost" onClick={() => router.push("/#access")}>
+          <Button onClick={() => router.push('/review/register')}>
+            投稿して解錠
+          </Button>
+          <Button variant="ghost" onClick={() => router.push('/#access')}>
             ルールを見る
           </Button>
         </div>
         <div className="mt-10 grid gap-4 md:grid-cols-3">
           {[
-            { label: "登録レビュー", value: reviews.length },
-            { label: "直近7日に追加", value: recentCount },
+            { label: '登録レビュー', value: reviews.length },
+            { label: '直近7日に追加', value: recentCount },
             {
-              label: "平均評価",
+              label: '平均評価',
               value: averageRating,
             },
           ].map((stat) => (
@@ -58,22 +64,26 @@ export default function Hero() {
               <p className="text-[11px] uppercase tracking-[0.4em] text-slate-400">
                 {stat.label}
               </p>
-              <p className="mt-2 text-2xl font-semibold text-white">{stat.value}</p>
+              <p className="mt-2 text-2xl font-semibold text-white">
+                {stat.value}
+              </p>
             </div>
           ))}
         </div>
       </div>
       <div className="glass-panel rounded-3xl border border-white/10 px-6 py-8">
-        <p className="text-xs uppercase tracking-[0.4em] text-slate-400">CURRENT STATUS</p>
+        <p className="text-xs uppercase tracking-[0.4em] text-slate-400">
+          CURRENT STATUS
+        </p>
         <h2 className="mt-2 text-2xl font-semibold text-white">
-          {user ? `${user.name} さんの状態` : "ゲストモード"}
+          {user ? `${user.name} さんの状態` : 'ゲストモード'}
         </h2>
         <p className="mt-3 text-sm text-slate-400">
           {user
             ? user.reviewsSubmitted > 0
-              ? "すでに投稿済みのため、全てのレビューがアンロックされています。"
-              : "まだレビュー未投稿。自分の体験談を1本書くと即時で解錠されます。"
-            : "ログインまたは新規登録で閲覧履歴を保存し、レビューを書き込めるようになります。"}
+              ? 'すでに投稿済みのため、全てのレビューがアンロックされています。'
+              : 'まだレビュー未投稿。自分の体験談を1本書くと即時で解錠されます。'
+            : 'ログインまたは新規登録で閲覧履歴を保存し、レビューを書き込めるようになります。'}
         </p>
         <div className="divider my-6"></div>
         <ul className="space-y-3 text-sm text-slate-300">

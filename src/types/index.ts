@@ -1,12 +1,12 @@
-export type PersonalityTone = "明るい" | "おとなしい" | "積極的" | "癒やし系";
+export type PersonalityTone = '明るい' | 'おとなしい' | '積極的' | '癒やし系';
 
 export type BodyType =
-  | "スレンダー"
-  | "標準"
-  | "グラマラス"
-  | "メリハリ"
-  | "小柄"
-  | "長身";
+  | 'スレンダー'
+  | '標準'
+  | 'グラマラス'
+  | 'メリハリ'
+  | '小柄'
+  | '長身';
 
 export type Review = {
   id: string;
@@ -48,6 +48,6 @@ export type UserProfile = {
   name: string;
   email: string;
   password: string;
-  plan: "guest" | "premium";
+  plan: 'guest' | 'premium';
   reviewsSubmitted: number;
 };

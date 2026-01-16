@@ -1,10 +1,10 @@
-"use client";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+'use client';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
-import Button from "@/components/ui/Button";
-import { useAuth } from "@/context/AuthContext";
-import { useReviews } from "@/context/ReviewContext";
+import Button from '@/components/ui/Button';
+import { useAuth } from '@/context/AuthContext';
+import { useReviews } from '@/context/ReviewContext';
 
 type Props = {
   id: string;
@@ -32,20 +32,23 @@ export default function ReviewDetail({ id }: Props) {
     );
   }
 
-  const unlocked = !!user && (user.reviewsSubmitted > 0 || user.plan === "premium");
+  const unlocked =
+    !!user && (user.reviewsSubmitted > 0 || user.plan === 'premium');
 
   return (
     <article className="glass-panel mx-auto max-w-4xl rounded-3xl border border-white/10 px-8 py-10">
       <div className="text-xs uppercase tracking-[0.4em] text-slate-400">
-        {review.shopName} / {new Date(review.createdAt).toLocaleString("ja-JP")}
+        {review.shopName} / {new Date(review.createdAt).toLocaleString('ja-JP')}
       </div>
-      <h1 className="mt-4 text-4xl font-semibold text-white">{review.headline}</h1>
+      <h1 className="mt-4 text-4xl font-semibold text-white">
+        {review.headline}
+      </h1>
       <p className="mt-2 text-sm text-slate-400">
         {review.workerName}
-        {review.estimatedAge ? ` / 推定 ${review.estimatedAge}` : ""}
-        {review.bodyType ? ` / ${review.bodyType}` : ""}
-        {review.bustSize ? ` / ${review.bustSize} cup` : ""}
-        {review.heightCm ? ` / ${review.heightCm}cm` : ""}
+        {review.estimatedAge ? ` / 推定 ${review.estimatedAge}` : ''}
+        {review.bodyType ? ` / ${review.bodyType}` : ''}
+        {review.bustSize ? ` / ${review.bustSize} cup` : ''}
+        {review.heightCm ? ` / ${review.heightCm}cm` : ''}
       </p>
       <div className="divider my-6"></div>
       <div className="space-y-4 text-sm leading-relaxed text-slate-300">
@@ -58,16 +61,21 @@ export default function ReviewDetail({ id }: Props) {
               自分のレビューを投稿するか、プレミアムパスで解錠してください。
             </p>
             <div className="mt-4 flex flex-wrap justify-center gap-3">
-              <Button variant="ghost" onClick={() => router.push("/review/register")}>
+              <Button
+                variant="ghost"
+                onClick={() => router.push('/review/register')}
+              >
                 投稿する
               </Button>
-              <Button onClick={() => router.push("/auth/login")}>ログイン</Button>
+              <Button onClick={() => router.push('/auth/login')}>
+                ログイン
+              </Button>
             </div>
           </div>
         )}
         <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-xs text-slate-400">
           <p>料金: {review.damage}</p>
-          <p>サービス: {review.serviceHighlights.join(" / ")}</p>
+          <p>サービス: {review.serviceHighlights.join(' / ')}</p>
           <p>評価: {review.rating.toFixed(1)}</p>
           <p className="text-[10px] uppercase tracking-[0.3em] text-slate-500">
             Posted by {review.author.name} ({review.author.email})

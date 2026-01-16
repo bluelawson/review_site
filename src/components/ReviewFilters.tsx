@@ -1,11 +1,18 @@
-"use client";
-import { useMemo } from "react";
+'use client';
+import { useMemo } from 'react';
 
-import { useReviews } from "@/context/ReviewContext";
-import type { ReviewFilter } from "@/types";
+import { useReviews } from '@/context/ReviewContext';
+import type { ReviewFilter } from '@/types';
 
-const bodyTypes = ["スレンダー", "標準", "グラマラス", "メリハリ", "小柄", "長身"];
-const personalities = ["明るい", "おとなしい", "積極的", "癒やし系"];
+const bodyTypes = [
+  'スレンダー',
+  '標準',
+  'グラマラス',
+  'メリハリ',
+  '小柄',
+  '長身',
+];
+const personalities = ['明るい', 'おとなしい', '積極的', '癒やし系'];
 
 type Props = {
   value: ReviewFilter;
@@ -23,15 +30,23 @@ export default function ReviewFilters({ value, onChange }: Props) {
     [reviews],
   );
 
-  const handleChange = (key: keyof ReviewFilter, val: string | number | undefined) => {
+  const handleChange = (
+    key: keyof ReviewFilter,
+    val: string | number | undefined,
+  ) => {
     onChange({ ...value, [key]: val });
   };
 
   return (
-    <section className="glass-panel rounded-3xl border border-white/10 px-6 py-6" id="reviews">
+    <section
+      className="glass-panel rounded-3xl border border-white/10 px-6 py-6"
+      id="reviews"
+    >
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="text-xs uppercase tracking-[0.5em] text-slate-400">検索</p>
+          <p className="text-xs uppercase tracking-[0.5em] text-slate-400">
+            検索
+          </p>
           <h2 className="text-2xl font-semibold text-white">口コミを探す</h2>
           <p className="text-sm text-slate-400">
             キーワードや属性でフィルタリングできます。
@@ -42,8 +57,8 @@ export default function ReviewFilters({ value, onChange }: Props) {
             キーワード
             <input
               type="search"
-              value={value.search ?? ""}
-              onChange={(e) => handleChange("search", e.target.value)}
+              value={value.search ?? ''}
+              onChange={(e) => handleChange('search', e.target.value)}
               className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:border-white focus:outline-none"
               placeholder="嬢名／店名／感想"
             />
@@ -54,8 +69,8 @@ export default function ReviewFilters({ value, onChange }: Props) {
         <label className="text-xs uppercase tracking-[0.3em] text-slate-400">
           店舗
           <select
-            value={value.shop ?? ""}
-            onChange={(e) => handleChange("shop", e.target.value || undefined)}
+            value={value.shop ?? ''}
+            onChange={(e) => handleChange('shop', e.target.value || undefined)}
             className="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-white focus:outline-none"
           >
             <option value="">すべて</option>
@@ -70,8 +85,8 @@ export default function ReviewFilters({ value, onChange }: Props) {
           嬢の名前
           <input
             type="text"
-            value={value.workerName ?? ""}
-            onChange={(e) => handleChange("workerName", e.target.value)}
+            value={value.workerName ?? ''}
+            onChange={(e) => handleChange('workerName', e.target.value)}
             className="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:border-white focus:outline-none"
             placeholder="例) らら"
             list="worker-list"
@@ -85,8 +100,8 @@ export default function ReviewFilters({ value, onChange }: Props) {
         <label className="text-xs uppercase tracking-[0.3em] text-slate-400">
           バスト
           <input
-            value={value.bustSize ?? ""}
-            onChange={(e) => handleChange("bustSize", e.target.value)}
+            value={value.bustSize ?? ''}
+            onChange={(e) => handleChange('bustSize', e.target.value)}
             className="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:border-white focus:outline-none"
             placeholder="例) E"
           />
@@ -94,8 +109,10 @@ export default function ReviewFilters({ value, onChange }: Props) {
         <label className="text-xs uppercase tracking-[0.3em] text-slate-400">
           体型
           <select
-            value={value.bodyType ?? ""}
-            onChange={(e) => handleChange("bodyType", e.target.value || undefined)}
+            value={value.bodyType ?? ''}
+            onChange={(e) =>
+              handleChange('bodyType', e.target.value || undefined)
+            }
             className="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-white focus:outline-none"
           >
             <option value="">すべて</option>
@@ -109,8 +126,10 @@ export default function ReviewFilters({ value, onChange }: Props) {
         <label className="text-xs uppercase tracking-[0.3em] text-slate-400">
           性格
           <select
-            value={value.personality ?? ""}
-            onChange={(e) => handleChange("personality", e.target.value || undefined)}
+            value={value.personality ?? ''}
+            onChange={(e) =>
+              handleChange('personality', e.target.value || undefined)
+            }
             className="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-white focus:outline-none"
           >
             <option value="">すべて</option>
@@ -128,9 +147,12 @@ export default function ReviewFilters({ value, onChange }: Props) {
               type="number"
               min={130}
               max={200}
-              value={value.heightMin ?? ""}
+              value={value.heightMin ?? ''}
               onChange={(e) =>
-                handleChange("heightMin", e.target.value ? Number(e.target.value) : undefined)
+                handleChange(
+                  'heightMin',
+                  e.target.value ? Number(e.target.value) : undefined,
+                )
               }
               placeholder="Min"
               className="w-full rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-white focus:outline-none"
@@ -140,9 +162,12 @@ export default function ReviewFilters({ value, onChange }: Props) {
               type="number"
               min={130}
               max={200}
-              value={value.heightMax ?? ""}
+              value={value.heightMax ?? ''}
               onChange={(e) =>
-                handleChange("heightMax", e.target.value ? Number(e.target.value) : undefined)
+                handleChange(
+                  'heightMax',
+                  e.target.value ? Number(e.target.value) : undefined,
+                )
               }
               placeholder="Max"
               className="w-full rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-white focus:outline-none"
@@ -155,15 +180,15 @@ export default function ReviewFilters({ value, onChange }: Props) {
             {[0, 3, 4, 4.5].map((threshold) => (
               <button
                 key={threshold}
-                onClick={() => handleChange("minRating", threshold)}
+                onClick={() => handleChange('minRating', threshold)}
                 className={`rounded-full border px-4 py-2 text-xs ${
                   (value.minRating ?? 0) === threshold
-                    ? "border-white/60 bg-white/10 text-white"
-                    : "border-white/10 text-slate-400 hover:border-white/30 hover:text-white"
+                    ? 'border-white/60 bg-white/10 text-white'
+                    : 'border-white/10 text-slate-400 hover:border-white/30 hover:text-white'
                 }`}
                 type="button"
               >
-                {threshold === 0 ? "ALL" : `${threshold}+`}
+                {threshold === 0 ? 'ALL' : `${threshold}+`}
               </button>
             ))}
           </div>

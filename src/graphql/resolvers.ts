@@ -30,7 +30,9 @@ type ReviewInput = {
   authorEmail: string;
 };
 
-const buildWhere = (filter?: ReviewFilterInput | null): Prisma.ReviewWhereInput => {
+const buildWhere = (
+  filter?: ReviewFilterInput | null,
+): Prisma.ReviewWhereInput => {
   if (!filter) return {};
   const where: Prisma.ReviewWhereInput = {};
 
@@ -64,7 +66,10 @@ const buildWhere = (filter?: ReviewFilterInput | null): Prisma.ReviewWhereInput 
 
 const resolvers = {
   Query: {
-    reviews: async (_parent: unknown, args: { filter?: ReviewFilterInput | null }) => {
+    reviews: async (
+      _parent: unknown,
+      args: { filter?: ReviewFilterInput | null },
+    ) => {
       return prisma.review.findMany({
         where: buildWhere(args.filter),
         orderBy: { createdAt: 'desc' },
@@ -80,9 +85,12 @@ const resolvers = {
   },
   Mutation: {
     createReview: async (_parent: unknown, args: { input: ReviewInput }) => {
-      const { authorEmail, serviceHighlights, rating, heightCm, ...rest } = args.input;
+      const { authorEmail, serviceHighlights, rating, heightCm, ...rest } =
+        args.input;
 
-      const serviceHighlightsValue: Prisma.NullableJsonNullValueInput | Prisma.InputJsonValue =
+      const serviceHighlightsValue:
+        | Prisma.NullableJsonNullValueInput
+        | Prisma.InputJsonValue =
         serviceHighlights == null
           ? Prisma.JsonNull
           : (serviceHighlights as Prisma.InputJsonValue);
@@ -129,7 +137,9 @@ const resolvers = {
     },
   },
   Review: {
-    serviceHighlights: (parent: { serviceHighlights: Prisma.JsonValue | null }) => {
+    serviceHighlights: (parent: {
+      serviceHighlights: Prisma.JsonValue | null;
+    }) => {
       if (!parent.serviceHighlights) {
         return [];
       }

@@ -55,7 +55,9 @@ export default function AuthForm({ mode }: Props) {
           <TextField
             required
             value={form.name}
-            onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
+            onChange={(e) =>
+              setForm((prev) => ({ ...prev, name: e.target.value }))
+            }
           />
         </FieldWrapper>
       )}
@@ -64,7 +66,9 @@ export default function AuthForm({ mode }: Props) {
           type="email"
           required
           value={form.email}
-          onChange={(e) => setForm((prev) => ({ ...prev, email: e.target.value }))}
+          onChange={(e) =>
+            setForm((prev) => ({ ...prev, email: e.target.value }))
+          }
         />
       </FieldWrapper>
       <FieldWrapper label="パスワード">
@@ -73,7 +77,9 @@ export default function AuthForm({ mode }: Props) {
           minLength={6}
           required
           value={form.password}
-          onChange={(e) => setForm((prev) => ({ ...prev, password: e.target.value }))}
+          onChange={(e) =>
+            setForm((prev) => ({ ...prev, password: e.target.value }))
+          }
         />
       </FieldWrapper>
       {message && <p className="text-sm text-slate-300">{message}</p>}
