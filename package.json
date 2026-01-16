@@ -7,7 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
+    "lint": "eslint . && echo \"All files satisfy ESLint rules!\"",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prisma": "prisma"
@@ -26,6 +26,7 @@
     "react-dom": "19.2.0"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.1.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
