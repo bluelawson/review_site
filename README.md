@@ -21,3 +21,28 @@ Docker Compose を使って Next.js の開発サーバーと MySQL を同時に�
    ```
 
 4. `docker compose down` で Next.js と MySQL を停止します。
+
+## バックエンド構成
+
+GraphQL のバックエンドは以下の責務分離で構成します。
+
+```
+src/backend/
+  review/
+    resolver/        # GraphQL の入出力・認可・例外整形
+    application/     # ユースケース（Service）と DTO
+    domain/          # ドメインモデル・ドメインロジック
+    repository/      # Prisma などデータアクセスの具体実装
+  user/
+    domain/
+    repository/
+  shared/            # 共通インフラ（Prisma client など）
+```
+
+### ルール
+
+- Resolver は Application を経由して呼び出す（Domain を直接呼ばない）
+- Application は DTO を受け取り、Domain モデルに変換して処理する
+- Domain 配下にドメイン知識を集中させ、それ以外には書かない
+- Repository にデータアクセスの実装を置く
+- 共通インフラは `shared` に置く
