@@ -1,8 +1,8 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+これは [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app) で作成した [Next.js](https://nextjs.org) プロジェクトです。
 
-## Getting Started
+## はじめに
 
-First, run the development server:
+まずは開発サーバーを起動します。
 
 ```bash
 npm run dev
@@ -14,23 +14,45 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+ブラウザで [http://localhost:3000](http://localhost:3000) を開くと結果を確認できます。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+`app/page.tsx` を編集するとページの変更を始められます。ファイルを保存すると自動で更新されます。
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+このプロジェクトは [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) を利用して、Vercel の新しいフォントファミリーである [Geist](https://vercel.com/font) を自動的に最適化・読み込みします。
 
-## Learn More
+## さらに詳しく
 
-To learn more about Next.js, take a look at the following resources:
+Next.js について詳しく知りたい場合は、以下のリソースをご覧ください。
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- [Next.js Documentation](https://nextjs.org/docs) - Next.js の機能や API を解説しています。
+- [Learn Next.js](https://nextjs.org/learn) - インタラクティブな Next.js チュートリアルです。
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+[Next.js の GitHub リポジトリ](https://github.com/vercel/next.js) も確認できます。フィードバックやコントリビューションも歓迎です。
 
-## Deploy on Vercel
+## Vercel へのデプロイ
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Next.js アプリをデプロイする最も簡単な方法は、Next.js の開発元が提供する [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) を使うことです。
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+詳細は [Next.js のデプロイメントドキュメント](https://nextjs.org/docs/app/building-your-application/deploying) を参照してください。
+
+## Docker での実行
+
+Docker Compose を使って Next.js の開発サーバーと MySQL を同時に起動し、ライフサイクルを同期できます。
+
+1. Docker Desktop（または任意の Docker Engine）がローカルで動作していることを確認します。
+2. プロジェクトのルートから次を実行します。
+
+   ```bash
+   docker compose up --build
+   ```
+
+   - アプリは `http://localhost:3000` で配信されます。
+   - MySQL は `localhost:3306` で `review_user` / `review_pass` により待ち受け、Prisma は `mysql://review_user:review_pass@db:3306/review_site` で接続できます。
+
+3. 必要に応じて Prisma のマイグレーションを実行します。
+
+   ```bash
+   docker compose exec app npx prisma migrate dev
+   ```
+
+4. `docker compose down` で Next.js と MySQL を停止します。

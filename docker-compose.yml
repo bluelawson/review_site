@@ -1,0 +1,37 @@
+version: '3.9'
+
+services:
+  app:
+    build: .
+    command: npm run dev
+    ports:
+      - '3000:3000'
+    environment:
+      DATABASE_URL: mysql://review_user:review_pass@db:3306/review_site
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: review_site
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_USER: review_user
+      MYSQL_PASSWORD: review_pass
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  mysql-data:
