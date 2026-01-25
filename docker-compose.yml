@@ -7,7 +7,7 @@ services:
     ports:
       - '3000:3000'
     environment:
-      DATABASE_URL: mysql://review_user:review_pass@db:3306/review_site
+      DATABASE_URL: ${DATABASE_URL}
     volumes:
       - .:/app
       - /app/node_modules
