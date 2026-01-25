@@ -64,6 +64,7 @@ src/backend/
 - Prisma Studio 起動: `docker compose exec app npx prisma studio`
 - DBを初期化して再作成: `docker compose exec app npx prisma migrate reset`
 - マイグレーションを作らず反映（試作向け）: `docker compose exec app npx prisma db push`
+- 初期データ投入: `docker compose exec app npx prisma db seed`
 
 ### 品質チェック
 
@@ -81,7 +82,6 @@ src/backend/
 
 3. 生成された SQL を確認します。`prisma/migrations/*/migration.sql`
 4. Prisma Client が自動生成されていることを確認します。
-
    - `npm run dev` は `predev` で `prisma generate` が走るため、通常は追加操作不要です。
    - 明示的に生成したい場合は `docker compose exec app npx prisma generate`
 

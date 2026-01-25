@@ -1,7 +1,13 @@
+#!/usr/bin/env node
 /* eslint-disable @typescript-eslint/no-require-imports */
 const { PrismaClient } = require('@prisma/client');
+const { PrismaMariaDb } = require('@prisma/adapter-mariadb');
 
-const prisma = new PrismaClient();
+const adapter = new PrismaMariaDb(process.env.DATABASE_URL);
+const prisma = new PrismaClient({
+  adapter,
+  log: ['error', 'warn'],
+});
 
 const sampleUsers = [
   {

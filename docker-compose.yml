@@ -8,6 +8,7 @@ services:
       - '3000:3000'
     environment:
       DATABASE_URL: ${DATABASE_URL}
+      MYSQL_DATABASE_URL: ${MYSQL_DATABASE_URL}
     volumes:
       - .:/app
       - /app/node_modules
