@@ -21,7 +21,10 @@ const resolvers = {
     },
   },
   Mutation: {
-    createReview: async (_parent: unknown, args: { input: CreateReviewDto }) => {
+    createReview: async (
+      _parent: unknown,
+      args: { input: CreateReviewDto },
+    ) => {
       return reviewService.createReview(args.input);
     },
     deleteReview: async (_parent: unknown, args: { id: string }) => {

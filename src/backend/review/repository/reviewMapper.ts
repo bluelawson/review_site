@@ -1,4 +1,7 @@
-import type { Review as PrismaReview, User as PrismaUser } from '@prisma/client';
+import type {
+  Review as PrismaReview,
+  User as PrismaUser,
+} from '@prisma/client';
 
 import type { Review } from '../domain/model/review';
 import { normalizeServiceHighlights } from '../domain/service/reviewDomainService';
