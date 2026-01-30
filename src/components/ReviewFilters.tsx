@@ -1,6 +1,7 @@
 'use client';
 import { useMemo } from 'react';
 
+import { FieldWrapper, SelectField, TextField } from '@/components/ui/Input';
 import { bodyTypes, personalityTones } from '@/types';
 import type { Review, ReviewFilter } from '@/types';
 
@@ -51,84 +52,63 @@ export default function ReviewFilters({ reviews, value, onChange }: Props) {
         </div>
       </div>
       <div className="mt-6 grid gap-4 md:grid-cols-3">
-        <label className="text-xs uppercase tracking-[0.3em] text-slate-400">
-          店舗
-          <select
+        <FieldWrapper label="店舗">
+          <SelectField
             value={value.shop ?? ''}
             onChange={(e) => handleChange('shop', e.target.value || undefined)}
-            className="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-white focus:outline-none"
-          >
-            <option value="" className="bg-slate-900">
-              すべて
-            </option>
-            {shops.map((shop) => (
-              <option key={shop} value={shop} className="bg-slate-900">
-                {shop}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="text-xs uppercase tracking-[0.3em] text-slate-400">
-          嬢の名前
-          <input
+            className="text-sm"
+            options={[
+              { label: 'すべて', value: '' },
+              ...shops.map((shop) => ({ label: shop, value: shop })),
+            ]}
+          />
+        </FieldWrapper>
+        <FieldWrapper label="嬢の名前">
+          <TextField
             type="text"
             value={value.workerName ?? ''}
             onChange={(e) => handleChange('workerName', e.target.value)}
-            className="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:border-white focus:outline-none"
             placeholder="例) らら"
+            className="text-sm"
           />
-        </label>
-        <label className="text-xs uppercase tracking-[0.3em] text-slate-400">
-          バスト
-          <input
+        </FieldWrapper>
+        <FieldWrapper label="バスト">
+          <TextField
             value={value.bustSize ?? ''}
             onChange={(e) => handleChange('bustSize', e.target.value)}
-            className="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:border-white focus:outline-none"
             placeholder="例) E"
+            className="text-sm"
           />
-        </label>
-        <label className="text-xs uppercase tracking-[0.3em] text-slate-400">
-          体型
-          <select
+        </FieldWrapper>
+        <FieldWrapper label="体型">
+          <SelectField
             value={value.bodyType ?? ''}
             onChange={(e) =>
               handleChange('bodyType', e.target.value || undefined)
             }
-            className="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-white focus:outline-none"
-          >
-            <option value="" className="bg-slate-900">
-              すべて
-            </option>
-            {bodyTypes.map((body) => (
-              <option key={body} value={body} className="bg-slate-900">
-                {body}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="text-xs uppercase tracking-[0.3em] text-slate-400">
-          性格
-          <select
+            className="text-sm"
+            options={[
+              { label: 'すべて', value: '' },
+              ...bodyTypes.map((body) => ({ label: body, value: body })),
+            ]}
+          />
+        </FieldWrapper>
+        <FieldWrapper label="性格">
+          <SelectField
             value={value.personality ?? ''}
             onChange={(e) =>
               handleChange('personality', e.target.value || undefined)
             }
-            className="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-white focus:outline-none"
-          >
-            <option value="" className="bg-slate-900">
-              すべて
-            </option>
-            {personalityTones.map((item) => (
-              <option key={item} value={item} className="bg-slate-900">
-                {item}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="text-xs uppercase tracking-[0.3em] text-slate-400">
-          身長
+            className="text-sm"
+            options={[
+              { label: 'すべて', value: '' },
+              ...personalityTones.map((item) => ({ label: item, value: item })),
+            ]}
+          />
+        </FieldWrapper>
+        <FieldWrapper label="身長">
           <div className="mt-2 flex items-center gap-2">
-            <input
+            <TextField
               type="number"
               min={130}
               max={200}
@@ -140,10 +120,10 @@ export default function ReviewFilters({ reviews, value, onChange }: Props) {
                 )
               }
               placeholder="Min"
-              className="w-full rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-white focus:outline-none"
+              className="px-3 py-2 text-sm"
             />
             <span className="text-slate-500">-</span>
-            <input
+            <TextField
               type="number"
               min={130}
               max={200}
@@ -155,12 +135,11 @@ export default function ReviewFilters({ reviews, value, onChange }: Props) {
                 )
               }
               placeholder="Max"
-              className="w-full rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-white focus:outline-none"
+              className="px-3 py-2 text-sm"
             />
           </div>
-        </label>
-        <label className="text-xs uppercase tracking-[0.3em] text-slate-400 md:col-span-3">
-          最低評価
+        </FieldWrapper>
+        <FieldWrapper label="最低評価">
           <div className="mt-2 flex flex-wrap gap-3">
             {[0, 3, 4, 4.5].map((threshold) => (
               <button
@@ -177,7 +156,7 @@ export default function ReviewFilters({ reviews, value, onChange }: Props) {
               </button>
             ))}
           </div>
-        </label>
+        </FieldWrapper>
       </div>
     </section>
   );

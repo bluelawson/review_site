@@ -28,21 +28,24 @@ export function FieldWrapper({
   );
 }
 
-export function TextField(props: InputHTMLAttributes<HTMLInputElement>) {
+export function TextField({
+  className,
+  ...props
+}: InputHTMLAttributes<HTMLInputElement>) {
   return (
     <input
-      className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-white placeholder:text-slate-500 focus:border-white focus:outline-none focus:ring-1 focus:ring-white/60"
+      className={`w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-white placeholder:text-slate-500 focus:border-white focus:outline-none focus:ring-1 focus:ring-white/60 ${className ?? ''}`}
       {...props}
     />
   );
 }
 
 export function TextAreaField(
-  props: TextareaHTMLAttributes<HTMLTextAreaElement>,
+  { className, ...props }: TextareaHTMLAttributes<HTMLTextAreaElement>,
 ) {
   return (
     <textarea
-      className="min-h-40 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-white placeholder:text-slate-500 focus:border-white focus:outline-none focus:ring-1 focus:ring-white/60"
+      className={`min-h-40 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-white placeholder:text-slate-500 focus:border-white focus:outline-none focus:ring-1 focus:ring-white/60 ${className ?? ''}`}
       {...props}
     />
   );
@@ -50,13 +53,14 @@ export function TextAreaField(
 
 export function SelectField({
   options,
+  className,
   ...props
 }: InputHTMLAttributes<HTMLSelectElement> & {
   options: { label: string; value: string }[];
 }) {
   return (
     <select
-      className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-white focus:border-white focus:outline-none"
+      className={`w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-white focus:border-white focus:outline-none ${className ?? ''}`}
       {...props}
     >
       {options.map((option) => (
