@@ -27,25 +27,26 @@ export default function ReviewList() {
 
   useEffect(() => {
     let active = true;
-    setLoading(true);
-    setError(null);
-    fetchReviews()
-      .then((data) => {
+    const load = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await fetchReviews();
         if (!active) return;
         setReviews(data);
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error(err);
         if (!active) return;
         setError(
           err instanceof Error ? err.message : 'レビューの取得に失敗しました。',
         );
-      })
-      .finally(() => {
+      } finally {
         if (!active) return;
         setLoading(false);
-      });
+      }
+    };
 
+    load();
     return () => {
       active = false;
     };
@@ -54,12 +55,17 @@ export default function ReviewList() {
   const handleDelete = async (id: string) => {
     try {
       await removeReview(id);
-      setReviews((prev) => prev.filter((review) => review.id !== id));
+      setLoading(true);
+      setError(null);
+      const data = await fetchReviews();
+      setReviews(data);
     } catch (err) {
       console.error(err);
       setError(
         err instanceof Error ? err.message : 'レビューの削除に失敗しました。',
       );
+    } finally {
+      setLoading(false);
     }
   };
 
