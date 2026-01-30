@@ -1,12 +1,15 @@
-export type PersonalityTone = '明るい' | 'おとなしい' | '積極的' | '癒やし系';
+export const personalityTones = ['明るい', 'おとなしい', '積極的', '癒やし系'] as const;
+export type PersonalityTone = (typeof personalityTones)[number];
 
-export type BodyType =
-  | 'スレンダー'
-  | '標準'
-  | 'グラマラス'
-  | 'メリハリ'
-  | '小柄'
-  | '長身';
+export const bodyTypes = [
+  'スレンダー',
+  '標準',
+  'グラマラス',
+  'メリハリ',
+  '小柄',
+  '長身',
+] as const;
+export type BodyType = (typeof bodyTypes)[number];
 
 export type Review = {
   id: string;

@@ -1,17 +1,8 @@
 'use client';
 import { useMemo } from 'react';
 
+import { bodyTypes, personalityTones } from '@/types';
 import type { Review, ReviewFilter } from '@/types';
-
-const bodyTypes = [
-  'スレンダー',
-  '標準',
-  'グラマラス',
-  'メリハリ',
-  '小柄',
-  '長身',
-];
-const personalities = ['明るい', 'おとなしい', '積極的', '癒やし系'];
 
 type Props = {
   reviews: Review[];
@@ -121,7 +112,7 @@ export default function ReviewFilters({ reviews, value, onChange }: Props) {
             className="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-white focus:outline-none"
           >
             <option value="">すべて</option>
-            {personalities.map((item) => (
+          {personalityTones.map((item) => (
               <option key={item} value={item} className="bg-slate-900">
                 {item}
               </option>

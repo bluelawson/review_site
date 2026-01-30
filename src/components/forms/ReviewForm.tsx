@@ -11,7 +11,7 @@ import {
 import PanelMessage from '@/components/ui/PanelMessage';
 import { useAuthState } from '@/hooks/useAuthState';
 import { createReview } from '@/lib/reviewApi';
-import type { BodyType, PersonalityTone } from '@/types';
+import { bodyTypes, personalityTones } from '@/types';
 
 const shopOptions = [
   '水色りぼん',
@@ -20,21 +20,6 @@ const shopOptions = [
   'Velvet Garden',
   'Secret Lagoon',
 ];
-const bodyOptions: BodyType[] = [
-  'スレンダー',
-  '標準',
-  'グラマラス',
-  'メリハリ',
-  '小柄',
-  '長身',
-];
-const personalityOptions: PersonalityTone[] = [
-  '明るい',
-  'おとなしい',
-  '積極的',
-  '癒やし系',
-];
-
 export default function ReviewForm() {
   const { user, registerSubmission } = useAuthState();
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -45,10 +30,10 @@ export default function ReviewForm() {
     shopName: shopOptions[0],
     workerName: '',
     estimatedAge: '',
-    bodyType: bodyOptions[0],
+    bodyType: bodyTypes[0],
     bustSize: '',
     heightCm: '',
-    personality: personalityOptions[0],
+    personality: personalityTones[0],
     headline: '',
     detail: '',
     serviceHighlights: '',
@@ -91,10 +76,10 @@ export default function ReviewForm() {
         shopName: shopOptions[0],
         workerName: '',
         estimatedAge: '',
-        bodyType: bodyOptions[0],
+        bodyType: bodyTypes[0],
         bustSize: '',
         heightCm: '',
-        personality: personalityOptions[0],
+        personality: personalityTones[0],
         headline: '',
         detail: '',
         serviceHighlights: '',
@@ -173,14 +158,14 @@ export default function ReviewForm() {
           <SelectField
             value={form.bodyType}
             onChange={(e) => handleChange('bodyType', e.target.value)}
-            options={bodyOptions.map((body) => ({ value: body, label: body }))}
+            options={bodyTypes.map((body) => ({ value: body, label: body }))}
           />
         </FieldWrapper>
         <FieldWrapper label="性格">
           <SelectField
             value={form.personality}
             onChange={(e) => handleChange('personality', e.target.value)}
-            options={personalityOptions.map((personality) => ({
+            options={personalityTones.map((personality) => ({
               value: personality,
               label: personality,
             }))}
