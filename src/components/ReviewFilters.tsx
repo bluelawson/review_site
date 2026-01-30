@@ -58,7 +58,9 @@ export default function ReviewFilters({ reviews, value, onChange }: Props) {
             onChange={(e) => handleChange('shop', e.target.value || undefined)}
             className="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-white focus:outline-none"
           >
-            <option value="">すべて</option>
+            <option value="" className="bg-slate-900">
+              すべて
+            </option>
             {shops.map((shop) => (
               <option key={shop} value={shop} className="bg-slate-900">
                 {shop}
@@ -94,7 +96,9 @@ export default function ReviewFilters({ reviews, value, onChange }: Props) {
             }
             className="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-white focus:outline-none"
           >
-            <option value="">すべて</option>
+            <option value="" className="bg-slate-900">
+              すべて
+            </option>
             {bodyTypes.map((body) => (
               <option key={body} value={body} className="bg-slate-900">
                 {body}
@@ -111,8 +115,10 @@ export default function ReviewFilters({ reviews, value, onChange }: Props) {
             }
             className="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-white focus:outline-none"
           >
-            <option value="">すべて</option>
-          {personalityTones.map((item) => (
+            <option value="" className="bg-slate-900">
+              すべて
+            </option>
+            {personalityTones.map((item) => (
               <option key={item} value={item} className="bg-slate-900">
                 {item}
               </option>
