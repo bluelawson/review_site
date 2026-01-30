@@ -1,16 +1,33 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import Button from '@/components/ui/Button';
 import { useAuth } from '@/context/AuthContext';
-import { useReviews } from '@/context/ReviewContext';
+import { fetchReviews } from '@/lib/reviewApi';
+import type { Review } from '@/types';
 
 export default function Hero() {
   const router = useRouter();
   const { user } = useAuth();
-  const { reviews } = useReviews();
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [now] = useState(() => Date.now());
+
+  useEffect(() => {
+    let active = true;
+    fetchReviews()
+      .then((data) => {
+        if (!active) return;
+        setReviews(data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const recentCount = useMemo(() => {
     return reviews.filter((review) => {

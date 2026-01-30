@@ -3,25 +3,24 @@ import Link from 'next/link';
 
 import Button from '@/components/ui/Button';
 import { useAuth } from '@/context/AuthContext';
-import { useReviews } from '@/context/ReviewContext';
 import type { Review } from '@/types';
 
 type Props = {
   review: Review;
+  onDelete?: (id: string) => Promise<void> | void;
 };
 
-export default function ReviewCard({ review }: Props) {
+export default function ReviewCard({ review, onDelete }: Props) {
   const { user } = useAuth();
-  const { deleteReview } = useReviews();
   const isOwner = user?.email === review.author.email;
   const unlocked =
     !!user && (user.reviewsSubmitted > 0 || user.plan === 'premium');
   const highlights = review.serviceHighlights ?? [];
 
   const handleDelete = async () => {
-    if (confirm('このレビューを削除しますか？')) {
-      await deleteReview(review.id);
-    }
+    if (!onDelete) return;
+    if (!confirm('このレビューを削除しますか？')) return;
+    await onDelete(review.id);
   };
 
   return (
@@ -67,7 +66,7 @@ export default function ReviewCard({ review }: Props) {
         >
           {unlocked ? '全文を読む' : '詳細を見る'}
         </Link>
-        {isOwner && (
+        {isOwner && onDelete && (
           <Button variant="ghost" type="button" onClick={handleDelete}>
             Delete
           </Button>

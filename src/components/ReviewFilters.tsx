@@ -1,8 +1,7 @@
 'use client';
 import { useMemo } from 'react';
 
-import { useReviews } from '@/context/ReviewContext';
-import type { ReviewFilter } from '@/types';
+import type { Review, ReviewFilter } from '@/types';
 
 const bodyTypes = [
   'スレンダー',
@@ -15,12 +14,12 @@ const bodyTypes = [
 const personalities = ['明るい', 'おとなしい', '積極的', '癒やし系'];
 
 type Props = {
+  reviews: Review[];
   value: ReviewFilter;
   onChange: (value: ReviewFilter) => void;
 };
 
-export default function ReviewFilters({ value, onChange }: Props) {
-  const { reviews } = useReviews();
+export default function ReviewFilters({ reviews, value, onChange }: Props) {
   const shops = useMemo(
     () => Array.from(new Set(reviews.map((review) => review.shopName))),
     [reviews],

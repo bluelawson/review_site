@@ -9,7 +9,7 @@ import {
   TextField,
 } from '@/components/ui/Input';
 import { useAuth } from '@/context/AuthContext';
-import { useReviews } from '@/context/ReviewContext';
+import { createReview } from '@/lib/reviewApi';
 import type { BodyType, PersonalityTone } from '@/types';
 
 const shopOptions = [
@@ -36,7 +36,6 @@ const personalityOptions: PersonalityTone[] = [
 
 export default function ReviewForm() {
   const { user, registerSubmission } = useAuth();
-  const { addReview } = useReviews();
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -78,7 +77,7 @@ export default function ReviewForm() {
     }
     setLoading(true);
     try {
-      await addReview({
+      await createReview({
         ...form,
         serviceHighlights: highlightList.length ? highlightList : ['丁寧'],
         heightCm: form.heightCm ? Number(form.heightCm) : undefined,

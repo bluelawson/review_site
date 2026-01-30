@@ -1,10 +1,12 @@
 'use client';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 import Button from '@/components/ui/Button';
 import { useAuth } from '@/context/AuthContext';
-import { useReviews } from '@/context/ReviewContext';
+import { fetchReviewById } from '@/lib/reviewApi';
+import type { Review } from '@/types';
 
 type Props = {
   id: string;
@@ -12,14 +14,49 @@ type Props = {
 
 export default function ReviewDetail({ id }: Props) {
   const router = useRouter();
-  const { getReviewById, loading } = useReviews();
   const { user } = useAuth();
-  const review = getReviewById(id);
+  const [review, setReview] = useState<Review | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    setLoading(true);
+    setError(null);
+    fetchReviewById(id)
+      .then((data) => {
+        if (!active) return;
+        setReview(data);
+      })
+      .catch((err) => {
+        console.error(err);
+        if (!active) return;
+        setError(
+          err instanceof Error ? err.message : 'レビューの取得に失敗しました。',
+        );
+      })
+      .finally(() => {
+        if (!active) return;
+        setLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [id]);
 
   if (!review && loading) {
     return (
       <div className="glass-panel rounded-3xl border border-white/10 px-6 py-10 text-center text-sm text-slate-400">
         読み込み中...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="glass-panel rounded-3xl border border-white/10 px-6 py-10 text-center text-sm text-amber-200">
+        {error}
       </div>
     );
   }

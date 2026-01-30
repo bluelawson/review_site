@@ -1,11 +1,11 @@
 'use client';
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import ReviewCard from '@/components/ReviewCard';
 import ReviewFilters from '@/components/ReviewFilters';
-import { useReviews } from '@/context/ReviewContext';
-import type { ReviewFilter } from '@/types';
+import { fetchReviews, removeReview } from '@/lib/reviewApi';
+import type { Review, ReviewFilter } from '@/types';
 
 const defaultFilter: ReviewFilter = {
   search: '',
@@ -20,8 +20,48 @@ const defaultFilter: ReviewFilter = {
 };
 
 export default function ReviewList() {
-  const { reviews, loading, error } = useReviews();
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<ReviewFilter>(defaultFilter);
+
+  useEffect(() => {
+    let active = true;
+    setLoading(true);
+    setError(null);
+    fetchReviews()
+      .then((data) => {
+        if (!active) return;
+        setReviews(data);
+      })
+      .catch((err) => {
+        console.error(err);
+        if (!active) return;
+        setError(
+          err instanceof Error ? err.message : 'レビューの取得に失敗しました。',
+        );
+      })
+      .finally(() => {
+        if (!active) return;
+        setLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const handleDelete = async (id: string) => {
+    try {
+      await removeReview(id);
+      setReviews((prev) => prev.filter((review) => review.id !== id));
+    } catch (err) {
+      console.error(err);
+      setError(
+        err instanceof Error ? err.message : 'レビューの削除に失敗しました。',
+      );
+    }
+  };
 
   const filtered = useMemo(() => {
     return reviews.filter((review) => {
@@ -77,7 +117,7 @@ export default function ReviewList() {
 
   return (
     <section className="space-y-8">
-      <ReviewFilters value={filter} onChange={setFilter} />
+      <ReviewFilters reviews={reviews} value={filter} onChange={setFilter} />
       {error ? (
         <div className="glass-panel rounded-3xl border border-white/10 px-6 py-10 text-center text-sm text-amber-200">
           {error}
@@ -97,7 +137,11 @@ export default function ReviewList() {
       ) : (
         <div className="grid gap-6 md:grid-cols-2" id="review-grid">
           {filtered.map((review) => (
-            <ReviewCard review={review} key={review.id} />
+            <ReviewCard
+              review={review}
+              key={review.id}
+              onDelete={handleDelete}
+            />
           ))}
         </div>
       )}
