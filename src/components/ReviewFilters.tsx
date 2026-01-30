@@ -24,11 +24,6 @@ export default function ReviewFilters({ reviews, value, onChange }: Props) {
     () => Array.from(new Set(reviews.map((review) => review.shopName))),
     [reviews],
   );
-  const workerNames = useMemo(
-    () => Array.from(new Set(reviews.map((review) => review.workerName))),
-    [reviews],
-  );
-
   const handleChange = (
     key: keyof ReviewFilter,
     val: string | number | undefined,
@@ -88,13 +83,7 @@ export default function ReviewFilters({ reviews, value, onChange }: Props) {
             onChange={(e) => handleChange('workerName', e.target.value)}
             className="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:border-white focus:outline-none"
             placeholder="例) らら"
-            list="worker-list"
           />
-          <datalist id="worker-list">
-            {workerNames.map((worker) => (
-              <option key={worker} value={worker} />
-            ))}
-          </datalist>
         </label>
         <label className="text-xs uppercase tracking-[0.3em] text-slate-400">
           バスト
