@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import Button from '@/components/ui/Button';
-import { useAuth } from '@/context/AuthContext';
+import { useAuthState } from '@/hooks/useAuthState';
 import { fetchReviewById } from '@/lib/reviewApi';
 import type { Review } from '@/types';
 
@@ -14,7 +14,7 @@ type Props = {
 
 export default function ReviewDetail({ id }: Props) {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user } = useAuthState();
   const [review, setReview] = useState<Review | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

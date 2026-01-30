@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 import Button from '@/components/ui/Button';
 import { FieldWrapper, TextField } from '@/components/ui/Input';
-import { useAuth } from '@/context/AuthContext';
+import { useAuthState } from '@/hooks/useAuthState';
 
 type Props = {
   mode: 'login' | 'register';
@@ -12,7 +12,7 @@ type Props = {
 
 export default function AuthForm({ mode }: Props) {
   const router = useRouter();
-  const { login, register } = useAuth();
+  const { login, register } = useAuthState();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [form, setForm] = useState({

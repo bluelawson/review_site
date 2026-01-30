@@ -3,13 +3,13 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 
 import Button from '@/components/ui/Button';
-import { useAuth } from '@/context/AuthContext';
+import { useAuthState } from '@/hooks/useAuthState';
 import { fetchReviews } from '@/lib/reviewApi';
 import type { Review } from '@/types';
 
 export default function Hero() {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user } = useAuthState();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [now] = useState(() => Date.now());
 

@@ -8,7 +8,7 @@ import {
   TextAreaField,
   TextField,
 } from '@/components/ui/Input';
-import { useAuth } from '@/context/AuthContext';
+import { useAuthState } from '@/hooks/useAuthState';
 import { createReview } from '@/lib/reviewApi';
 import type { BodyType, PersonalityTone } from '@/types';
 
@@ -35,7 +35,7 @@ const personalityOptions: PersonalityTone[] = [
 ];
 
 export default function ReviewForm() {
-  const { user, registerSubmission } = useAuth();
+  const { user, registerSubmission } = useAuthState();
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);

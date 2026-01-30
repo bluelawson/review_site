@@ -2,7 +2,7 @@
 import Link from 'next/link';
 
 import Button from '@/components/ui/Button';
-import { useAuth } from '@/context/AuthContext';
+import { useAuthState } from '@/hooks/useAuthState';
 import type { Review } from '@/types';
 
 type Props = {
@@ -11,7 +11,7 @@ type Props = {
 };
 
 export default function ReviewCard({ review, onDelete }: Props) {
-  const { user } = useAuth();
+  const { user } = useAuthState();
   const isOwner = user?.email === review.author.email;
   const unlocked =
     !!user && (user.reviewsSubmitted > 0 || user.plan === 'premium');

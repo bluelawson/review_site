@@ -4,7 +4,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 
 import Button from '@/components/ui/Button';
-import { useAuth } from '@/context/AuthContext';
+import { useAuthState } from '@/hooks/useAuthState';
 
 const navLinks = [
   { href: '/', label: 'トップ' },
@@ -16,7 +16,7 @@ const navLinks = [
 export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, logout } = useAuth();
+  const { user, logout } = useAuthState();
 
   const initials = useMemo(() => {
     if (!user) return '';
