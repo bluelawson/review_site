@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import Button from '@/components/ui/Button';
+import PanelMessage from '@/components/ui/PanelMessage';
 import { useAuthState } from '@/hooks/useAuthState';
 import { fetchReviewById } from '@/lib/reviewApi';
 import type { Review } from '@/types';
@@ -47,25 +48,19 @@ export default function ReviewDetail({ id }: Props) {
 
   if (!review && loading) {
     return (
-      <div className="glass-panel rounded-3xl border border-white/10 px-6 py-10 text-center text-sm text-slate-400">
-        読み込み中...
-      </div>
+      <PanelMessage>読み込み中...</PanelMessage>
     );
   }
 
   if (error) {
     return (
-      <div className="glass-panel rounded-3xl border border-white/10 px-6 py-10 text-center text-sm text-amber-200">
-        {error}
-      </div>
+      <PanelMessage tone="error">{error}</PanelMessage>
     );
   }
 
   if (!review && !loading) {
     return (
-      <div className="glass-panel rounded-3xl border border-white/10 px-6 py-10 text-center text-sm text-slate-400">
-        該当するレビューが見つかりませんでした。
-      </div>
+      <PanelMessage>該当するレビューが見つかりませんでした。</PanelMessage>
     );
   }
 

@@ -8,6 +8,7 @@ import {
   TextAreaField,
   TextField,
 } from '@/components/ui/Input';
+import PanelMessage from '@/components/ui/PanelMessage';
 import { useAuthState } from '@/hooks/useAuthState';
 import { createReview } from '@/lib/reviewApi';
 import type { BodyType, PersonalityTone } from '@/types';
@@ -111,7 +112,7 @@ export default function ReviewForm() {
 
   if (!user) {
     return (
-      <div className="glass-panel rounded-3xl border border-white/10 px-6 py-10 text-center text-sm text-slate-300">
+      <PanelMessage>
         投稿にはログインが必要です。{' '}
         <a href="/auth/login" className="text-white underline">
           ログイン
@@ -121,7 +122,7 @@ export default function ReviewForm() {
           新規登録
         </a>
         をしてください。
-      </div>
+      </PanelMessage>
     );
   }
 

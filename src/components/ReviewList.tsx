@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import ReviewCard from '@/components/ReviewCard';
 import ReviewFilters from '@/components/ReviewFilters';
+import PanelMessage from '@/components/ui/PanelMessage';
 import { fetchReviews, removeReview } from '@/lib/reviewApi';
 import type { Review, ReviewFilter } from '@/types';
 
@@ -127,21 +128,17 @@ export default function ReviewList() {
     <section className="space-y-8">
       <ReviewFilters reviews={reviews} value={filter} onChange={setFilter} />
       {error ? (
-        <div className="glass-panel rounded-3xl border border-white/10 px-6 py-10 text-center text-sm text-amber-200">
-          {error}
-        </div>
+        <PanelMessage tone="error">{error}</PanelMessage>
       ) : loading ? (
-        <div className="glass-panel rounded-3xl border border-white/10 px-6 py-10 text-center text-sm text-slate-400">
-          レビューを読み込んでいます...
-        </div>
+        <PanelMessage>レビューを読み込んでいます...</PanelMessage>
       ) : filteredReviews.length === 0 ? (
-        <div className="glass-panel rounded-3xl border border-white/10 px-6 py-10 text-center text-sm text-slate-400">
+        <PanelMessage>
           条件に一致する口コミがありません。キーワードを変えるか、新しい体験談を{' '}
           <Link href="/review/register" className="text-white underline">
             投稿
           </Link>
           してください。
-        </div>
+        </PanelMessage>
       ) : (
         <div className="grid gap-6 md:grid-cols-2" id="review-grid">
           {filteredReviews.map((review) => (
