@@ -164,6 +164,7 @@ export default function ReviewDetail({ id }: Props) {
           <p>料金: {review.damage}</p>
           <p>サービス: {review.serviceHighlights.join(' / ')}</p>
           <p>評価: {review.rating.toFixed(1)}</p>
+          <p>レビュー評価: {review.reviewRating.toFixed(1)}</p>
           <p className="text-[10px] uppercase tracking-[0.3em] text-slate-500">
             Posted by {review.author.name} ({review.author.email})
           </p>

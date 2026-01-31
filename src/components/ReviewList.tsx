@@ -80,6 +80,9 @@ export default function ReviewList() {
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<ReviewFilter>(defaultFilter);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [sortKey, setSortKey] = useState<'reviewRating' | 'createdAt'>(
+    'reviewRating',
+  );
   const [page, setPage] = useState(1);
   const pageSize = 8;
   const canViewAll =
@@ -157,12 +160,14 @@ export default function ReviewList() {
       ? result
       : result.filter((review) => review.isPublished);
     return [...visible].sort((a, b) => {
-      const ratingDiff =
-        (b.reviewRating ?? b.rating) - (a.reviewRating ?? a.rating);
-      if (ratingDiff !== 0) return ratingDiff;
+      if (sortKey === 'reviewRating') {
+        const ratingDiff =
+          (b.reviewRating ?? b.rating) - (a.reviewRating ?? a.rating);
+        if (ratingDiff !== 0) return ratingDiff;
+      }
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
-  }, [reviews, filter, canViewAll]);
+  }, [reviews, filter, canViewAll, sortKey]);
   const totalPages = Math.max(1, Math.ceil(filteredReviews.length / pageSize));
   const pagedReviews = useMemo(() => {
     const start = (page - 1) * pageSize;
@@ -186,7 +191,17 @@ export default function ReviewList() {
         <div className="text-xs uppercase tracking-[0.3em] text-slate-500">
           {filteredReviews.length} 件の口コミ
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <select
+            value={sortKey}
+            onChange={(e) =>
+              setSortKey(e.target.value as 'reviewRating' | 'createdAt')
+            }
+            className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-white hover:border-white/30"
+          >
+            <option value="reviewRating">レビュー評価順</option>
+            <option value="createdAt">新着順</option>
+          </select>
           {[
             { value: 'grid', label: '2列' },
             { value: 'list', label: '1列' },
