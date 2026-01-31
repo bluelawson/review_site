@@ -48,7 +48,7 @@ const sampleReviews = [
     detail:
       '受付からお風呂の段取りまでとにかく丁寧。会話のテンポも落ち着いていて居心地が良かった。マットは余計な力がなく、体重移動がかなり滑らか。恋人感を重視する人に刺さりそう。',
     serviceHighlights: ['マット', '共浴', 'キス◎'],
-    rating: 4.8,
+    castRating: 4.8,
     reviewRating: 4.8,
     damage: '90分 38,000円+オプ2,000円',
     authorEmail: 'guest@seren.jp',
@@ -65,7 +65,7 @@ const sampleReviews = [
     detail:
       '入室直後からスキンシップ多め。ディープキスも申し訳程度ではなく、距離の詰め方が速い。マットもスピードがあってスパっと抜いてくるタイプ。支配されたい人には最高。体感価値は料金以上。',
     serviceHighlights: ['即密着', 'ディープキス', '攻め強'],
-    rating: 4.6,
+    castRating: 4.6,
     reviewRating: 4.6,
     damage: '100分 42,000円 指名料込み',
     authorEmail: 'guest@seren.jp',
@@ -82,7 +82,7 @@ const sampleReviews = [
     detail:
       'ルームは広めで清潔。序盤から終盤までテンポが一定で、安心して身を任せられる。トークで場を温めてからマットも丁寧で初心者に優しい。ハードさは控えめ。',
     serviceHighlights: ['会話巧者', 'ビギナー向け', '安心感'],
-    rating: 4.3,
+    castRating: 4.3,
     reviewRating: 4.3,
     damage: '80分 32,000円',
     authorEmail: 'guest@seren.jp',
@@ -99,7 +99,7 @@ const sampleReviews = [
     detail:
       '清潔感があり、会話のテンポが良い。初回でも不安なく入れた。マットは優しめで、雰囲気重視。安心感が強く、初回向け。',
     serviceHighlights: ['初回向け', '会話◎', '清潔感'],
-    rating: 4.1,
+    castRating: 4.1,
     reviewRating: 4.1,
     damage: '90分 34,000円',
     authorEmail: 'guest@seren.jp',
@@ -116,7 +116,7 @@ const sampleReviews = [
     detail:
       '会話は控えめだが、手数は多い。落ち着いた空気でゆったり過ごしたい人向け。マットはスローだが丁寧。',
     serviceHighlights: ['静かな空気', '丁寧', '落ち着き'],
-    rating: 4.0,
+    castRating: 4.0,
     reviewRating: 4.0,
     damage: '80分 30,000円',
     authorEmail: 'guest@seren.jp',
@@ -133,7 +133,7 @@ const sampleReviews = [
     detail:
       '会話もサービスもテンポ良い。終始リードしてくれるので任せたい人に良い。体感時間が短く感じた。',
     serviceHighlights: ['テンポ◎', 'リード上手', '密着'],
-    rating: 4.4,
+    castRating: 4.4,
     reviewRating: 4.4,
     damage: '70分 28,000円',
     authorEmail: 'guest@seren.jp',
@@ -150,7 +150,7 @@ const sampleReviews = [
     detail:
       '落ち着いた空気で、こちらのペースに合わせてくれる。マットはゆっくり、丁寧。疲れている日に向いている。',
     serviceHighlights: ['リラックス', '丁寧', '癒やし'],
-    rating: 4.2,
+    castRating: 4.2,
     reviewRating: 4.2,
     damage: '100分 40,000円',
     authorEmail: 'guest@seren.jp',
@@ -167,7 +167,7 @@ const sampleReviews = [
     detail:
       '入りから攻めが強く、テンション高め。ディープキス多めで刺激が強い。濃いめが好きな人に向く。',
     serviceHighlights: ['攻め強', '濃厚', '刺激'],
-    rating: 4.7,
+    castRating: 4.7,
     reviewRating: 4.7,
     damage: '110分 45,000円',
     authorEmail: 'guest@seren.jp',
@@ -184,7 +184,7 @@ const sampleReviews = [
     detail:
       '派手さはないが、終始丁寧で安定感がある。会話は少なめだが心地よい。長く通いたいタイプ。',
     serviceHighlights: ['安定感', '丁寧', 'リピート向き'],
-    rating: 4.0,
+    castRating: 4.0,
     reviewRating: 4.0,
     damage: '90分 33,000円',
     authorEmail: 'guest@seren.jp',
@@ -201,7 +201,7 @@ const sampleReviews = [
     detail:
       '入室から笑顔で迎えてくれる。会話のテンポが良く、気疲れしない。マットも適度にしっかり。',
     serviceHighlights: ['笑顔', '会話◎', '安心感'],
-    rating: 4.3,
+    castRating: 4.3,
     reviewRating: 4.3,
     damage: '90分 35,000円',
     authorEmail: 'guest@seren.jp',
@@ -218,7 +218,7 @@ const sampleReviews = [
     detail:
       '会話も動きもゆっくりで、安心できる。疲れを抜きたい時に合う。派手さはないが満足度は高い。',
     serviceHighlights: ['癒やし', 'ゆったり', '安心感'],
-    rating: 4.1,
+    castRating: 4.1,
     reviewRating: 4.1,
     damage: '80分 31,000円',
     authorEmail: 'guest@seren.jp',
@@ -235,7 +235,7 @@ const sampleReviews = [
     detail:
       'とにかく明るく盛り上げてくれる。テンポが良く、時間が早く感じる。賑やかさ重視の人におすすめ。',
     serviceHighlights: ['元気', 'テンポ◎', '賑やか'],
-    rating: 4.2,
+    castRating: 4.2,
     reviewRating: 4.2,
     damage: '70分 27,000円',
     authorEmail: 'guest@seren.jp',
@@ -252,7 +252,7 @@ const sampleReviews = [
     detail:
       '落ち着いた会話だが、サービスはしっかり濃い。緩急があり飽きない。大人の雰囲気で過ごせる。',
     serviceHighlights: ['大人', '濃厚', '緩急'],
-    rating: 4.5,
+    castRating: 4.5,
     reviewRating: 4.5,
     damage: '100分 41,000円',
     authorEmail: 'guest@seren.jp',
@@ -269,7 +269,7 @@ const sampleReviews = [
     detail:
       '会話で場を温めつつサービスも丁寧。テンポが心地よく、初回でも満足度が高い。',
     serviceHighlights: ['バランス型', '丁寧', '安心'],
-    rating: 4.3,
+    castRating: 4.3,
     reviewRating: 4.3,
     damage: '90分 36,000円',
     authorEmail: 'guest@seren.jp',
@@ -286,7 +286,7 @@ const sampleReviews = [
     detail:
       '派手さはないが全体の安定感が高い。緊張しやすい人に合う。ゆっくりしたい日におすすめ。',
     serviceHighlights: ['安定感', '丁寧', '癒やし'],
-    rating: 4.1,
+    castRating: 4.1,
     reviewRating: 4.1,
     damage: '85分 32,000円',
     authorEmail: 'guest@seren.jp',
@@ -303,7 +303,7 @@ const sampleReviews = [
     detail:
       '入室から話しかけてくれて緊張がほぐれる。サービスの説明も丁寧。初回におすすめ。',
     serviceHighlights: ['フレンドリー', '丁寧', '安心'],
-    rating: 4.0,
+    castRating: 4.0,
     reviewRating: 4.0,
     damage: '80分 29,000円',
     authorEmail: 'guest@seren.jp',
@@ -332,7 +332,7 @@ async function main() {
       data: {
         ...rest,
         serviceHighlights: rest.serviceHighlights ?? [],
-        reviewRating: rest.reviewRating ?? rest.rating,
+        reviewRating: rest.reviewRating ?? rest.castRating,
         author: {
           connect: { email: authorEmail },
         },

@@ -24,7 +24,7 @@ const typeDefs = gql`
     headline: String!
     detail: String!
     serviceHighlights: [String!]!
-    rating: Float!
+    castRating: Float!
     reviewRating: Float!
     isPublished: Boolean!
     damage: String
@@ -42,7 +42,7 @@ const typeDefs = gql`
     bustSize: String
     heightMin: Int
     heightMax: Int
-    ratingMin: Float
+    castRatingMin: Float
   }
 
   input ReviewInput {
@@ -56,7 +56,7 @@ const typeDefs = gql`
     headline: String!
     detail: String!
     serviceHighlights: [String!]
-    rating: Float!
+    castRating: Float!
     damage: String
     authorEmail: String!
   }

@@ -11,7 +11,7 @@ query Reviews($filter: ReviewFilterInput) {
     headline
     detail
     serviceHighlights
-    rating
+    castRating
     reviewRating
     isPublished
     damage
@@ -38,7 +38,7 @@ query Review($id: ID!) {
     headline
     detail
     serviceHighlights
-    rating
+    castRating
     reviewRating
     isPublished
     damage
@@ -65,7 +65,7 @@ mutation CreateReview($input: ReviewInput!) {
     headline
     detail
     serviceHighlights
-    rating
+    castRating
     reviewRating
     isPublished
     damage
@@ -96,7 +96,7 @@ mutation SetReviewVisibility($id: ID!, $isPublished: Boolean!) {
     headline
     detail
     serviceHighlights
-    rating
+    castRating
     reviewRating
     isPublished
     damage

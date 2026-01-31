@@ -7,7 +7,7 @@ export type ReviewFilterDto = {
   bustSize?: string | null;
   heightMin?: number | null;
   heightMax?: number | null;
-  ratingMin?: number | null;
+  castRatingMin?: number | null;
 };
 
 export type CreateReviewDto = {
@@ -21,7 +21,7 @@ export type CreateReviewDto = {
   headline: string;
   detail: string;
   serviceHighlights?: string[] | null;
-  rating: number;
+  castRating: number;
   damage?: string | null;
   authorEmail: string;
 };

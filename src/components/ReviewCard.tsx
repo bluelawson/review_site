@@ -75,7 +75,7 @@ export default function ReviewCard({
       </p>
       <div className="mt-4 flex flex-col gap-2 text-xs text-slate-400">
         <span>Damage: {review.damage ?? '非公開'}</span>
-        <span>Rating: {review.rating.toFixed(1)}</span>
+        <span>Cast Rating: {review.castRating.toFixed(1)}</span>
         <span>Review Rating: {review.reviewRating.toFixed(1)}</span>
       </div>
       <div className="mt-6 flex items-center justify-between">

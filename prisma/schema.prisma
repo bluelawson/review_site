@@ -31,7 +31,7 @@ model Review {
   headline          String
   detail            String
   serviceHighlights Json?
-  rating            Float
+  castRating            Float   @map("rating")
   reviewRating      Float    @default(0)
   isPublished       Boolean  @default(true)
   damage            String?

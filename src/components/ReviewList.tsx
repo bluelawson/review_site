@@ -19,7 +19,7 @@ const defaultFilter: ReviewFilter = {
   personality: '',
   heightMin: undefined,
   heightMax: undefined,
-  minRating: 0,
+  minCastRating: 0,
 };
 
 const filterReviews = (reviews: Review[], filter: ReviewFilter) => {
@@ -57,7 +57,7 @@ const filterReviews = (reviews: Review[], filter: ReviewFilter) => {
     const matchesHeightMax =
       !filter.heightMax || height <= Number(filter.heightMax);
     const matchesRating =
-      !filter.minRating || review.rating >= Number(filter.minRating);
+      !filter.minCastRating || review.castRating >= Number(filter.minCastRating);
 
     return (
       matchesKeyword &&
@@ -162,7 +162,7 @@ export default function ReviewList() {
     return [...visible].sort((a, b) => {
       if (sortKey === 'reviewRating') {
         const ratingDiff =
-          (b.reviewRating ?? b.rating) - (a.reviewRating ?? a.rating);
+          (b.reviewRating ?? b.castRating) - (a.reviewRating ?? a.castRating);
         if (ratingDiff !== 0) return ratingDiff;
       }
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();

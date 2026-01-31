@@ -16,7 +16,7 @@ export type CreateReviewInput = {
   headline: string;
   detail: string;
   serviceHighlights: string[];
-  rating: number;
+  castRating: number;
   damage?: string;
   authorEmail: string;
 };

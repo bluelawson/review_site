@@ -52,7 +52,7 @@ export default function TopRatedReviewList() {
       : reviews.filter((review) => review.isPublished);
     const sorted = [...visible].sort((a, b) => {
       const ratingDiff =
-        (b.reviewRating ?? b.rating) - (a.reviewRating ?? a.rating);
+        (b.reviewRating ?? b.castRating) - (a.reviewRating ?? a.castRating);
       if (ratingDiff !== 0) return ratingDiff;
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });

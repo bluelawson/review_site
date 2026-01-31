@@ -38,7 +38,7 @@ export default function Hero() {
 
   const averageRating = useMemo(() => {
     if (reviews.length === 0) return '0.0';
-    const sum = reviews.reduce((acc, r) => acc + r.rating, 0);
+    const sum = reviews.reduce((acc, r) => acc + r.castRating, 0);
     return (sum / reviews.length).toFixed(1);
   }, [reviews]);
 

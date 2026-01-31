@@ -37,7 +37,7 @@ export default function ReviewForm() {
     headline: '',
     detail: '',
     serviceHighlights: '',
-    rating: 4.5,
+    castRating: 4.5,
     damage: '',
   });
 
@@ -83,7 +83,7 @@ export default function ReviewForm() {
         headline: '',
         detail: '',
         serviceHighlights: '',
-        rating: 4.5,
+        castRating: 4.5,
         damage: '',
       });
     } catch (error) {
@@ -199,8 +199,8 @@ export default function ReviewForm() {
           min={0}
           max={5}
           step={0.1}
-          value={form.rating}
-          onChange={(e) => handleChange('rating', Number(e.target.value))}
+          value={form.castRating}
+          onChange={(e) => handleChange('castRating', Number(e.target.value))}
         />
       </FieldWrapper>
       <FieldWrapper label="料金">

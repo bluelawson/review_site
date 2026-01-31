@@ -23,7 +23,7 @@ export type Review = {
   headline: string;
   detail: string;
   serviceHighlights: string[];
-  rating: number;
+  castRating: number;
   reviewRating: number;
   isPublished: boolean;
   damage?: string | null;
@@ -45,7 +45,7 @@ export type ReviewFilter = {
   bustSize?: string;
   heightMin?: number;
   heightMax?: number;
-  minRating?: number;
+  minCastRating?: number;
 };
 
 export type UserProfile = {

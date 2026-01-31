@@ -44,8 +44,8 @@ const buildWhere = (
       where.heightCm.lte = filter.heightMax;
     }
   }
-  if (filter.ratingMin) {
-    where.rating = { gte: filter.ratingMin };
+  if (filter.castRatingMin) {
+    where.castRating = { gte: filter.castRatingMin };
   }
   return where;
 };
@@ -77,7 +77,7 @@ export const reviewRepository: ReviewRepository = {
     const review = await prisma.review.create({
       data: {
         ...input,
-        reviewRating: input.rating,
+        reviewRating: input.castRating,
         heightCm: input.heightCm ?? null,
         serviceHighlights: serviceHighlightsValue,
         author: {

@@ -147,13 +147,13 @@ export default function ReviewFilters({ reviews, value, onChange }: Props) {
             />
           </div>
         </FieldWrapper>
-        <FieldWrapper label="最低評価">
+        <FieldWrapper label="最低キャスト評価">
           <div className="mt-2 flex flex-wrap gap-3">
             {[0, 3, 4, 4.5].map((threshold) => (
               <PillButton
                 key={threshold}
-                onClick={() => handleChange('minRating', threshold)}
-                active={(value.minRating ?? 0) === threshold}
+                onClick={() => handleChange('minCastRating', threshold)}
+                active={(value.minCastRating ?? 0) === threshold}
                 type="button"
               >
                 {threshold === 0 ? 'ALL' : `${threshold}+`}

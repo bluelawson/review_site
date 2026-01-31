@@ -163,7 +163,7 @@ export default function ReviewDetail({ id }: Props) {
         <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-xs text-slate-400">
           <p>料金: {review.damage}</p>
           <p>サービス: {review.serviceHighlights.join(' / ')}</p>
-          <p>評価: {review.rating.toFixed(1)}</p>
+          <p>キャスト評価: {review.castRating.toFixed(1)}</p>
           <p>レビュー評価: {review.reviewRating.toFixed(1)}</p>
           <p className="text-[10px] uppercase tracking-[0.3em] text-slate-500">
             Posted by {review.author.name} ({review.author.email})
