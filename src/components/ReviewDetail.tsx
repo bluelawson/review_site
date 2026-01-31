@@ -88,6 +88,7 @@ export default function ReviewDetail({ id }: Props) {
 
   const unlocked =
     !!user && (user.reviewsSubmitted > 0 || user.plan === 'premium');
+  const canDelete = !!user && user.email === review.author.email;
 
   return (
     <article className="glass-panel mx-auto max-w-4xl rounded-3xl border border-white/10 px-8 py-10">
@@ -138,13 +139,15 @@ export default function ReviewDetail({ id }: Props) {
       </div>
       <div className="mt-8 flex flex-wrap items-center justify-between gap-4 text-xs uppercase tracking-[0.4em] text-slate-500">
         <Link href="/">← 戻る</Link>
-        <Button
-          variant="ghost"
-          onClick={handleDelete}
-          disabled={deleting}
-        >
-          {deleting ? '削除中...' : 'DELETE'}
-        </Button>
+        {canDelete && (
+          <Button
+            variant="ghost"
+            onClick={handleDelete}
+            disabled={deleting}
+          >
+            {deleting ? '削除中...' : 'DELETE'}
+          </Button>
+        )}
       </div>
     </article>
   );
