@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import ReviewCard from '@/components/ReviewCard';
 import ReviewFilters from '@/components/ReviewFilters';
 import PanelMessage from '@/components/ui/PanelMessage';
+import PillButton from '@/components/ui/PillButton';
 import { fetchReviews, removeReview } from '@/lib/reviewApi';
 import type { Review, ReviewFilter } from '@/types';
 
@@ -74,6 +75,9 @@ export default function ReviewList() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<ReviewFilter>(defaultFilter);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [page, setPage] = useState(1);
+  const pageSize = 8;
 
   useEffect(() => {
     let active = true;
@@ -123,10 +127,50 @@ export default function ReviewList() {
     () => filterReviews(reviews, filter),
     [reviews, filter],
   );
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredReviews.length / pageSize),
+  );
+  const pagedReviews = useMemo(() => {
+    const start = (page - 1) * pageSize;
+    return filteredReviews.slice(start, start + pageSize);
+  }, [filteredReviews, page, pageSize]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [filter]);
+
+  useEffect(() => {
+    if (page > totalPages) {
+      setPage(totalPages);
+    }
+  }, [page, totalPages]);
 
   return (
     <section className="space-y-8">
       <ReviewFilters reviews={reviews} value={filter} onChange={setFilter} />
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="text-xs uppercase tracking-[0.3em] text-slate-500">
+          {filteredReviews.length} 件の口コミ
+        </div>
+        <div className="flex items-center gap-2">
+          {[
+            { value: 'grid', label: '2列' },
+            { value: 'list', label: '1列' },
+          ].map((option) => (
+            <PillButton
+              key={option.value}
+              type="button"
+              onClick={() =>
+                setViewMode(option.value as 'grid' | 'list')
+              }
+              active={viewMode === option.value}
+            >
+              {option.label}
+            </PillButton>
+          ))}
+        </div>
+      </div>
       {error ? (
         <PanelMessage tone="error">{error}</PanelMessage>
       ) : loading ? (
@@ -140,15 +184,57 @@ export default function ReviewList() {
           してください。
         </PanelMessage>
       ) : (
-        <div className="grid gap-6 md:grid-cols-2" id="review-grid">
-          {filteredReviews.map((review) => (
-            <ReviewCard
-              review={review}
-              key={review.id}
-              onDelete={handleDelete}
-            />
-          ))}
-        </div>
+        <>
+          <div
+            className={
+              viewMode === 'grid'
+                ? 'grid gap-6 md:grid-cols-2'
+                : 'flex flex-col gap-6'
+            }
+            id="review-grid"
+          >
+            {pagedReviews.map((review) => (
+              <ReviewCard
+                review={review}
+                key={review.id}
+                onDelete={handleDelete}
+              />
+            ))}
+          </div>
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="text-xs uppercase tracking-[0.3em] text-slate-500">
+              Page {page} / {totalPages}
+            </div>
+            <div className="flex items-center gap-2">
+              <PillButton
+                type="button"
+                onClick={() => setPage((prev) => Math.max(1, prev - 1))}
+                disabled={page === 1}
+                className={
+                  page === 1
+                    ? ''
+                    : 'border-white/30 text-slate-200 hover:border-white/60 hover:text-white'
+                }
+              >
+                Prev
+              </PillButton>
+              <PillButton
+                type="button"
+                onClick={() =>
+                  setPage((prev) => Math.min(totalPages, prev + 1))
+                }
+                disabled={page === totalPages}
+                className={
+                  page === totalPages
+                    ? ''
+                    : 'border-white/30 text-slate-200 hover:border-white/60 hover:text-white'
+                }
+              >
+                Next
+              </PillButton>
+            </div>
+          </div>
+        </>
       )}
     </section>
   );

@@ -2,6 +2,7 @@
 import { useMemo } from 'react';
 
 import { FieldWrapper, SelectField, TextField } from '@/components/ui/Input';
+import PillButton from '@/components/ui/PillButton';
 import { bodyTypes, personalityTones } from '@/types';
 import type { Review, ReviewFilter } from '@/types';
 
@@ -142,18 +143,14 @@ export default function ReviewFilters({ reviews, value, onChange }: Props) {
         <FieldWrapper label="最低評価">
           <div className="mt-2 flex flex-wrap gap-3">
             {[0, 3, 4, 4.5].map((threshold) => (
-              <button
+              <PillButton
                 key={threshold}
                 onClick={() => handleChange('minRating', threshold)}
-                className={`rounded-full border px-4 py-2 text-xs ${
-                  (value.minRating ?? 0) === threshold
-                    ? 'border-white/60 bg-white/10 text-white'
-                    : 'border-white/10 text-slate-400 hover:border-white/30 hover:text-white'
-                }`}
+                active={(value.minRating ?? 0) === threshold}
                 type="button"
               >
                 {threshold === 0 ? 'ALL' : `${threshold}+`}
-              </button>
+              </PillButton>
             ))}
           </div>
         </FieldWrapper>

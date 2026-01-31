@@ -8,7 +8,7 @@ import { useAuthState } from '@/hooks/useAuthState';
 
 const navLinks = [
   { href: '/', label: 'トップ' },
-  { href: '/#reviews', label: 'レビュー' },
+  { href: '/review/search', label: 'レビュー検索' },
   { href: '/#access', label: '閲覧条件' },
   { href: '/review/register', label: '投稿する' },
 ];
