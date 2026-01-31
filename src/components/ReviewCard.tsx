@@ -121,7 +121,7 @@ export default function ReviewCard({
                   : 'border-amber-300/50 text-amber-200 hover:border-amber-200/80'
               }
             >
-              {review.isPublished ? '非公開にする' : '公開にする'}
+              {review.isPublished ? '非公開にする' : '公開する'}
             </Button>
           )}
           {canDelete && onDelete && (

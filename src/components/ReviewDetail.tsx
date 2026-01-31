@@ -69,8 +69,7 @@ export default function ReviewDetail({ id }: Props) {
           const likesDiff = b.likesCount - a.likesCount;
           if (likesDiff !== 0) return likesDiff;
           return (
-            new Date(b.createdAt).getTime() -
-            new Date(a.createdAt).getTime()
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
           );
         });
         const topRatedIds = new Set(
@@ -88,15 +87,11 @@ export default function ReviewDetail({ id }: Props) {
   }, [id]);
 
   if (!review && loading) {
-    return (
-      <PanelMessage>読み込み中...</PanelMessage>
-    );
+    return <PanelMessage>読み込み中...</PanelMessage>;
   }
 
   if (error) {
-    return (
-      <PanelMessage tone="error">{error}</PanelMessage>
-    );
+    return <PanelMessage tone="error">{error}</PanelMessage>;
   }
 
   if (!review && !loading) {
@@ -130,30 +125,22 @@ export default function ReviewDetail({ id }: Props) {
   const canViewAll =
     !!user && (user.reviewsSubmitted > 0 || user.plan === 'premium');
   const canViewUnpublished = isAdmin || canViewAll;
-  const unlocked =
-    review.isPublished || isTopRated || canViewUnpublished;
+  const unlocked = review.isPublished || isTopRated || canViewUnpublished;
   const canManage = isAdmin;
   const isOwner = user?.email === review.author.email;
   const canDelete = !!user && (isAdmin || isOwner);
   const canLike =
-    !!user &&
-    user.email !== 'guest@seren.jp' &&
-    user.id !== 'guest';
+    !!user && user.email !== 'guest@seren.jp' && user.id !== 'guest';
 
   if (!review.isPublished && !isTopRated && !canViewUnpublished) {
-    return (
-      <PanelMessage>このレビューは非公開です。</PanelMessage>
-    );
+    return <PanelMessage>このレビューは非公開です。</PanelMessage>;
   }
 
   const handleTogglePublish = async () => {
     if (!review || updatingVisibility) return;
     try {
       setUpdatingVisibility(true);
-      const updated = await setReviewVisibility(
-        review.id,
-        !review.isPublished,
-      );
+      const updated = await setReviewVisibility(review.id, !review.isPublished);
       setReview(updated);
     } catch (err) {
       console.error(err);
@@ -191,10 +178,7 @@ export default function ReviewDetail({ id }: Props) {
         prev
           ? {
               ...prev,
-              likesCount: Math.max(
-                0,
-                prev.likesCount + (nextLiked ? -1 : 1),
-              ),
+              likesCount: Math.max(0, prev.likesCount + (nextLiked ? -1 : 1)),
             }
           : prev,
       );
@@ -276,9 +260,7 @@ export default function ReviewDetail({ id }: Props) {
               variant="ghost"
               onClick={handleLike}
               disabled={liking}
-              className={
-                hasLiked ? 'text-rose-300 border-rose-300/60' : ''
-              }
+              className={hasLiked ? 'text-rose-300 border-rose-300/60' : ''}
             >
               {hasLiked ? '♥' : '♡'}
             </Button>
@@ -294,15 +276,11 @@ export default function ReviewDetail({ id }: Props) {
                   : 'border-amber-300/50 text-amber-200 hover:border-amber-200/80'
               }
             >
-              {review.isPublished ? '非公開にする' : '公開にする'}
+              {review.isPublished ? '非公開にする' : '公開する'}
             </Button>
           )}
           {canDelete && (
-            <Button
-              variant="ghost"
-              onClick={handleDelete}
-              disabled={deleting}
-            >
+            <Button variant="ghost" onClick={handleDelete} disabled={deleting}>
               {deleting ? '削除中...' : 'DELETE'}
             </Button>
           )}
