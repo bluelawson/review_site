@@ -8,10 +8,12 @@ import PanelMessage from '@/components/ui/PanelMessage';
 import { useAuthState } from '@/hooks/useAuthState';
 import {
   fetchReviewByIdWithViewer,
+  fetchReviews,
   likeReview,
   removeReview,
   setReviewVisibility,
 } from '@/lib/reviewApi';
+import { TOP_RATED_REVIEW_COUNT } from '@/constants/review';
 import type { Review } from '@/types';
 
 type Props = {
@@ -28,6 +30,7 @@ export default function ReviewDetail({ id }: Props) {
   const [updatingVisibility, setUpdatingVisibility] = useState(false);
   const [liking, setLiking] = useState(false);
   const [hasLiked, setHasLiked] = useState(false);
+  const [isTopRated, setIsTopRated] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -55,6 +58,34 @@ export default function ReviewDetail({ id }: Props) {
       active = false;
     };
   }, [id, user?.email]);
+
+  useEffect(() => {
+    let active = true;
+    const loadTopRated = async () => {
+      try {
+        const data = await fetchReviews();
+        if (!active) return;
+        const sorted = [...data].sort((a, b) => {
+          const likesDiff = b.likesCount - a.likesCount;
+          if (likesDiff !== 0) return likesDiff;
+          return (
+            new Date(b.createdAt).getTime() -
+            new Date(a.createdAt).getTime()
+          );
+        });
+        const topRatedIds = new Set(
+          sorted.slice(0, TOP_RATED_REVIEW_COUNT).map((item) => item.id),
+        );
+        setIsTopRated(topRatedIds.has(id));
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    loadTopRated();
+    return () => {
+      active = false;
+    };
+  }, [id]);
 
   if (!review && loading) {
     return (
@@ -99,7 +130,8 @@ export default function ReviewDetail({ id }: Props) {
   const canViewAll =
     !!user && (user.reviewsSubmitted > 0 || user.plan === 'premium');
   const canViewUnpublished = isAdmin || canViewAll;
-  const unlocked = review.isPublished || canViewUnpublished;
+  const unlocked =
+    review.isPublished || isTopRated || canViewUnpublished;
   const canManage = isAdmin;
   const isOwner = user?.email === review.author.email;
   const canDelete = !!user && (isAdmin || isOwner);
@@ -108,7 +140,7 @@ export default function ReviewDetail({ id }: Props) {
     user.email !== 'guest@seren.jp' &&
     user.id !== 'guest';
 
-  if (!review.isPublished && !canViewUnpublished) {
+  if (!review.isPublished && !isTopRated && !canViewUnpublished) {
     return (
       <PanelMessage>このレビューは非公開です。</PanelMessage>
     );
@@ -174,8 +206,24 @@ export default function ReviewDetail({ id }: Props) {
 
   return (
     <article className="glass-panel mx-auto max-w-4xl rounded-3xl border border-white/10 px-8 py-10">
-      <div className="text-xs uppercase tracking-[0.4em] text-slate-400">
-        {review.shopName} / {new Date(review.createdAt).toLocaleString('ja-JP')}
+      <div className="flex items-center justify-between text-xs uppercase tracking-[0.4em] text-slate-400">
+        <div className="flex items-center gap-2">
+          <span>
+            {review.shopName} /{' '}
+            {new Date(review.createdAt).toLocaleString('ja-JP')}
+          </span>
+          {isAdmin && (
+            <span
+              className={`rounded-full px-2 py-0.5 text-[10px] uppercase tracking-[0.3em] ${
+                isTopRated || review.isPublished
+                  ? 'bg-emerald-400/10 text-emerald-200'
+                  : 'bg-amber-300/10 text-amber-200'
+              }`}
+            >
+              {isTopRated || review.isPublished ? '公開中' : '非公開'}
+            </span>
+          )}
+        </div>
       </div>
       <h1 className="mt-4 text-4xl font-semibold text-white">
         {review.headline}
@@ -235,13 +283,18 @@ export default function ReviewDetail({ id }: Props) {
               {hasLiked ? '♥' : '♡'}
             </Button>
           )}
-          {canManage && (
+          {canManage && !isTopRated && (
             <Button
-              variant="ghost"
+              variant={review.isPublished ? 'ghost' : 'outline'}
               onClick={handleTogglePublish}
               disabled={updatingVisibility}
+              className={
+                review.isPublished
+                  ? ''
+                  : 'border-amber-300/50 text-amber-200 hover:border-amber-200/80'
+              }
             >
-              {review.isPublished ? '非公開' : '公開'}
+              {review.isPublished ? '非公開にする' : '公開にする'}
             </Button>
           )}
           {canDelete && (

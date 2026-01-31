@@ -74,7 +74,13 @@ export default function TopRatedReviewList() {
       ) : (
         <div className="grid gap-6 md:grid-cols-2" id="review-grid">
           {topRatedReviews.map((review) => (
-            <ReviewCard review={review} key={review.id} forceShowDetail />
+            <ReviewCard
+              review={review}
+              key={review.id}
+              forceShowDetail
+              hidePublishToggle
+              forcePublishedTag
+            />
           ))}
         </div>
       )}

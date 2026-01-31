@@ -12,6 +12,8 @@ type Props = {
   canDelete?: boolean;
   canTogglePublish?: boolean;
   forceShowDetail?: boolean;
+  hidePublishToggle?: boolean;
+  forcePublishedTag?: boolean;
 };
 
 export default function ReviewCard({
@@ -21,14 +23,21 @@ export default function ReviewCard({
   canDelete = false,
   canTogglePublish = false,
   forceShowDetail = false,
+  hidePublishToggle = false,
+  forcePublishedTag = false,
 }: Props) {
   const { user } = useAuthState();
   const isAdmin = user?.plan === 'admin';
   const canViewAll =
     !!user && (user.reviewsSubmitted > 0 || user.plan === 'premium');
   const unlocked = review.isPublished || isAdmin || canViewAll;
+  const isForcePublished = forcePublishedTag;
   const shouldBlur =
-    !forceShowDetail && !review.isPublished && !isAdmin && !canViewAll;
+    !forceShowDetail &&
+    !isForcePublished &&
+    !review.isPublished &&
+    !isAdmin &&
+    !canViewAll;
   const highlights = review.serviceHighlights ?? [];
   const createdAtLabel = new Date(review.createdAt).toLocaleDateString('ja-JP');
 
@@ -46,7 +55,20 @@ export default function ReviewCard({
   return (
     <article className="group relative flex flex-col rounded-3xl border border-white/10 bg-white/5 p-5 shadow-lg transition hover:-translate-y-1 hover:border-white/30">
       <div className="flex items-center justify-between text-xs uppercase tracking-[0.4em] text-slate-500">
-        <span>{review.shopName}</span>
+        <div className="flex items-center gap-2">
+          <span>{review.shopName}</span>
+          {isAdmin && (
+            <span
+              className={`rounded-full px-2 py-0.5 text-[10px] uppercase tracking-[0.3em] ${
+                isForcePublished || review.isPublished
+                  ? 'bg-emerald-400/10 text-emerald-200'
+                  : 'bg-amber-300/10 text-amber-200'
+              }`}
+            >
+              {isForcePublished || review.isPublished ? '公開中' : '非公開'}
+            </span>
+          )}
+        </div>
         <span>{createdAtLabel}</span>
       </div>
       <h3 className="mt-3 text-xl font-semibold text-white">
@@ -88,9 +110,18 @@ export default function ReviewCard({
           {unlocked ? '全文を読む' : '詳細を見る'}
         </Link>
         <div className="flex items-center gap-2">
-          {canTogglePublish && onTogglePublish && (
-            <Button variant="ghost" type="button" onClick={handleTogglePublish}>
-              {review.isPublished ? '非公開' : '公開'}
+          {canTogglePublish && onTogglePublish && !hidePublishToggle && (
+            <Button
+              variant={review.isPublished ? 'ghost' : 'outline'}
+              type="button"
+              onClick={handleTogglePublish}
+              className={
+                review.isPublished
+                  ? ''
+                  : 'border-amber-300/50 text-amber-200 hover:border-amber-200/80'
+              }
+            >
+              {review.isPublished ? '非公開にする' : '公開にする'}
             </Button>
           )}
           {canDelete && onDelete && (

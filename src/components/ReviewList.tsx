@@ -168,12 +168,15 @@ export default function ReviewList() {
     });
   }, [reviews, filter, sortKey]);
   const topRatedIds = useMemo(() => {
+    const sorted = [...reviews].sort((a, b) => {
+      const likesDiff = b.likesCount - a.likesCount;
+      if (likesDiff !== 0) return likesDiff;
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    });
     return new Set(
-      filteredReviews
-        .slice(0, TOP_RATED_REVIEW_COUNT)
-        .map((review) => review.id),
+      sorted.slice(0, TOP_RATED_REVIEW_COUNT).map((review) => review.id),
     );
-  }, [filteredReviews]);
+  }, [reviews]);
   const totalPages = Math.max(1, Math.ceil(filteredReviews.length / pageSize));
   const pagedReviews = useMemo(() => {
     const start = (page - 1) * pageSize;
@@ -262,6 +265,8 @@ export default function ReviewList() {
                 }
                 canTogglePublish={canManage}
                 forceShowDetail={topRatedIds.has(review.id)}
+                hidePublishToggle={topRatedIds.has(review.id)}
+                forcePublishedTag={topRatedIds.has(review.id)}
               />
             ))}
           </div>
