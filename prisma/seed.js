@@ -26,6 +26,8 @@ const sampleUsers = [
   },
 ];
 
+const baseDate = new Date('2025-12-01T00:00:00.000Z');
+
 const sampleReviews = [
   {
     shopName: '水色りぼん',
@@ -299,7 +301,14 @@ const sampleReviews = [
     damage: '80分 29,000円',
     authorEmail: 'guest@seren.jp',
   },
-];
+].map((review, index) => {
+  const createdAt = new Date(baseDate.getTime() + index * 24 * 60 * 60 * 1000);
+  return {
+    ...review,
+    createdAt,
+    updatedAt: createdAt,
+  };
+});
 
 async function main() {
   await prisma.review.deleteMany();

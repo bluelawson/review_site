@@ -15,7 +15,7 @@ export type Review = {
   rating: number;
   reviewRating: number;
   damage: string | null;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   author: User;
 };

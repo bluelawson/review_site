@@ -24,7 +24,7 @@ export const mapReview = (
   rating: review.rating,
   reviewRating: review.reviewRating,
   damage: review.damage,
-  createdAt: review.createdAt,
-  updatedAt: review.updatedAt,
+  createdAt: review.createdAt.toISOString(),
+  updatedAt: review.updatedAt.toISOString(),
   author: mapUser(review.author),
 });

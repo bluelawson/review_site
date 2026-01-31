@@ -131,15 +131,10 @@ export default function ReviewList() {
       const ratingDiff =
         (b.reviewRating ?? b.rating) - (a.reviewRating ?? a.rating);
       if (ratingDiff !== 0) return ratingDiff;
-      return (
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      );
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
   }, [reviews, filter]);
-  const totalPages = Math.max(
-    1,
-    Math.ceil(filteredReviews.length / pageSize),
-  );
+  const totalPages = Math.max(1, Math.ceil(filteredReviews.length / pageSize));
   const pagedReviews = useMemo(() => {
     const start = (page - 1) * pageSize;
     return filteredReviews.slice(start, start + pageSize);
@@ -170,9 +165,7 @@ export default function ReviewList() {
             <PillButton
               key={option.value}
               type="button"
-              onClick={() =>
-                setViewMode(option.value as 'grid' | 'list')
-              }
+              onClick={() => setViewMode(option.value as 'grid' | 'list')}
               active={viewMode === option.value}
             >
               {option.label}
