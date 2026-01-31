@@ -6,7 +6,12 @@ import { useEffect, useState } from 'react';
 import Button from '@/components/ui/Button';
 import PanelMessage from '@/components/ui/PanelMessage';
 import { useAuthState } from '@/hooks/useAuthState';
-import { fetchReviewById, removeReview, setReviewVisibility } from '@/lib/reviewApi';
+import {
+  fetchReviewByIdWithViewer,
+  likeReview,
+  removeReview,
+  setReviewVisibility,
+} from '@/lib/reviewApi';
 import type { Review } from '@/types';
 
 type Props = {
@@ -21,15 +26,18 @@ export default function ReviewDetail({ id }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [updatingVisibility, setUpdatingVisibility] = useState(false);
+  const [liking, setLiking] = useState(false);
+  const [hasLiked, setHasLiked] = useState(false);
 
   useEffect(() => {
     let active = true;
     setLoading(true);
     setError(null);
-    fetchReviewById(id)
+    fetchReviewByIdWithViewer(id, user?.email)
       .then((data) => {
         if (!active) return;
         setReview(data);
+        setHasLiked(!!data?.likedByMe);
       })
       .catch((err) => {
         console.error(err);
@@ -46,7 +54,7 @@ export default function ReviewDetail({ id }: Props) {
     return () => {
       active = false;
     };
-  }, [id]);
+  }, [id, user?.email]);
 
   if (!review && loading) {
     return (
@@ -95,6 +103,10 @@ export default function ReviewDetail({ id }: Props) {
   const canManage = isAdmin;
   const isOwner = user?.email === review.author.email;
   const canDelete = !!user && (isAdmin || isOwner);
+  const canLike =
+    !!user &&
+    user.email !== 'guest@seren.jp' &&
+    user.id !== 'guest';
 
   if (!review.isPublished && !canViewUnpublished) {
     return (
@@ -118,6 +130,45 @@ export default function ReviewDetail({ id }: Props) {
       );
     } finally {
       setUpdatingVisibility(false);
+    }
+  };
+
+  const handleLike = async () => {
+    if (!review || liking || !canLike) return;
+    const nextLiked = !hasLiked;
+    try {
+      setLiking(true);
+      setHasLiked(nextLiked);
+      setReview((prev) =>
+        prev
+          ? {
+              ...prev,
+              likesCount: prev.likesCount + (nextLiked ? 1 : -1),
+            }
+          : prev,
+      );
+      const updated = await likeReview(review.id, user!.email);
+      setReview((prev) =>
+        prev ? { ...prev, likesCount: updated.likesCount } : prev,
+      );
+      setHasLiked(updated.likedByMe);
+    } catch (err) {
+      console.error(err);
+      setError(err instanceof Error ? err.message : 'いいねに失敗しました。');
+      setReview((prev) =>
+        prev
+          ? {
+              ...prev,
+              likesCount: Math.max(
+                0,
+                prev.likesCount + (nextLiked ? -1 : 1),
+              ),
+            }
+          : prev,
+      );
+      setHasLiked(!nextLiked);
+    } finally {
+      setLiking(false);
     }
   };
 
@@ -163,7 +214,7 @@ export default function ReviewDetail({ id }: Props) {
           <p>料金: {review.damage}</p>
           <p>サービス: {review.serviceHighlights.join(' / ')}</p>
           <p>キャスト評価: {review.castRating.toFixed(1)}</p>
-          <p>レビュー評価: {review.reviewRating.toFixed(1)}</p>
+          <p>いいね: {review.likesCount}</p>
           <p className="text-[10px] uppercase tracking-[0.3em] text-slate-500">
             Posted by {review.author.name} ({review.author.email})
           </p>
@@ -172,6 +223,18 @@ export default function ReviewDetail({ id }: Props) {
       <div className="mt-8 flex flex-wrap items-center justify-between gap-4 text-xs uppercase tracking-[0.4em] text-slate-500">
         <Link href="/">← 戻る</Link>
         <div className="flex items-center gap-2">
+          {canLike && (
+            <Button
+              variant="ghost"
+              onClick={handleLike}
+              disabled={liking}
+              className={
+                hasLiked ? 'text-rose-300 border-rose-300/60' : ''
+              }
+            >
+              {hasLiked ? '♥' : '♡'}
+            </Button>
+          )}
           {canManage && (
             <Button
               variant="ghost"

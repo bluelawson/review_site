@@ -12,7 +12,8 @@ query Reviews($filter: ReviewFilterInput) {
     detail
     serviceHighlights
     castRating
-    reviewRating
+    likesCount
+    likedByMe
     isPublished
     damage
     createdAt
@@ -25,8 +26,8 @@ query Reviews($filter: ReviewFilterInput) {
   }
 }
 
-query Review($id: ID!) {
-  review(id: $id) {
+query Review($id: ID!, $viewerEmail: String) {
+  review(id: $id, viewerEmail: $viewerEmail) {
     id
     shopName
     castName
@@ -39,7 +40,8 @@ query Review($id: ID!) {
     detail
     serviceHighlights
     castRating
-    reviewRating
+    likesCount
+    likedByMe
     isPublished
     damage
     createdAt
@@ -66,7 +68,8 @@ mutation CreateReview($input: ReviewInput!) {
     detail
     serviceHighlights
     castRating
-    reviewRating
+    likesCount
+    likedByMe
     isPublished
     damage
     createdAt
@@ -97,7 +100,8 @@ mutation SetReviewVisibility($id: ID!, $isPublished: Boolean!) {
     detail
     serviceHighlights
     castRating
-    reviewRating
+    likesCount
+    likedByMe
     isPublished
     damage
     createdAt
@@ -107,5 +111,13 @@ mutation SetReviewVisibility($id: ID!, $isPublished: Boolean!) {
       name
       email
     }
+  }
+}
+
+mutation LikeReview($id: ID!, $userEmail: String!) {
+  likeReview(id: $id, userEmail: $userEmail) {
+    id
+    likesCount
+    likedByMe
   }
 }

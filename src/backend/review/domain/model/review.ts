@@ -13,7 +13,8 @@ export type Review = {
   detail: string;
   serviceHighlights: string[];
   castRating: number;
-  reviewRating: number;
+  likesCount: number;
+  likedByMe?: boolean;
   isPublished: boolean;
   damage: string | null;
   createdAt: string;

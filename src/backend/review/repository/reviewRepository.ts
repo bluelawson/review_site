@@ -13,6 +13,8 @@ export type ReviewRepository = {
   findById(id: string): Promise<Review | null>;
   create(input: CreateReviewData, authorId: string): Promise<Review>;
   setVisibility(id: string, isPublished: boolean): Promise<Review>;
+  toggleLike(reviewId: string, userId: string): Promise<Review>;
+  hasUserLiked(reviewId: string, userId: string): Promise<boolean>;
   deleteById(id: string): Promise<void>;
 };
 
@@ -32,9 +34,11 @@ const buildWhere = (
   }
   if (filter.shopName) where.shopName = filter.shopName;
   if (filter.castName) where.castName = { contains: filter.castName };
-  if (filter.bodyType) where.bodyType = filter.bodyType;
-  if (filter.personality) where.personality = filter.personality;
-  if (filter.bustSize) where.bustSize = filter.bustSize;
+  if (filter.bodyTypes?.length) where.bodyType = { in: filter.bodyTypes };
+  if (filter.personalities?.length) {
+    where.personality = { in: filter.personalities };
+  }
+  if (filter.bustSizes?.length) where.bustSize = { in: filter.bustSizes };
   if (filter.heightMin || filter.heightMax) {
     where.heightCm = {};
     if (filter.heightMin) {
@@ -54,15 +58,15 @@ export const reviewRepository: ReviewRepository = {
   async findMany(filter?: ReviewFilterDto | null) {
     const reviews = await prisma.review.findMany({
       where: buildWhere(filter),
-      orderBy: [{ reviewRating: 'desc' }, { createdAt: 'desc' }],
-      include: { author: true },
+      orderBy: [{ likes: { _count: 'desc' } }, { createdAt: 'desc' }],
+      include: { author: true, _count: { select: { likes: true } } },
     });
     return reviews.map(mapReview);
   },
   async findById(id: string) {
     const review = await prisma.review.findUnique({
       where: { id },
-      include: { author: true },
+      include: { author: true, _count: { select: { likes: true } } },
     });
     return review ? mapReview(review) : null;
   },
@@ -77,14 +81,13 @@ export const reviewRepository: ReviewRepository = {
     const review = await prisma.review.create({
       data: {
         ...input,
-        reviewRating: input.castRating,
         heightCm: input.heightCm ?? null,
         serviceHighlights: serviceHighlightsValue,
         author: {
           connect: { id: authorId },
         },
       },
-      include: { author: true },
+      include: { author: true, _count: { select: { likes: true } } },
     });
     return mapReview(review);
   },
@@ -92,9 +95,49 @@ export const reviewRepository: ReviewRepository = {
     const review = await prisma.review.update({
       where: { id },
       data: { isPublished },
-      include: { author: true },
+      include: { author: true, _count: { select: { likes: true } } },
     });
     return mapReview(review);
+  },
+  async toggleLike(reviewId: string, userId: string) {
+    const existing = await prisma.reviewLike.findUnique({
+      where: {
+        reviewId_userId: {
+          reviewId,
+          userId,
+        },
+      },
+    });
+    await prisma.$transaction(async (tx) => {
+      if (existing) {
+        await tx.reviewLike.delete({
+          where: { reviewId_userId: { reviewId, userId } },
+        });
+      } else {
+        await tx.reviewLike.create({
+          data: { reviewId, userId },
+        });
+      }
+    });
+    const review = await prisma.review.findUnique({
+      where: { id: reviewId },
+      include: { author: true, _count: { select: { likes: true } } },
+    });
+    if (!review) {
+      throw new Error('レビューが見つかりませんでした。');
+    }
+    return mapReview(review);
+  },
+  async hasUserLiked(reviewId: string, userId: string) {
+    const existing = await prisma.reviewLike.findUnique({
+      where: {
+        reviewId_userId: {
+          reviewId,
+          userId,
+        },
+      },
+    });
+    return !!existing;
   },
   async deleteById(id: string) {
     await prisma.review.delete({

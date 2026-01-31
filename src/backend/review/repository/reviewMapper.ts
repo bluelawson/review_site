@@ -7,8 +7,13 @@ import type { Review } from '../domain/model/review';
 import { normalizeServiceHighlights } from '../domain/service/reviewDomainService';
 import { mapUser } from '../../user/repository/userMapper';
 
+type ReviewWithRelations = PrismaReview & {
+  author: PrismaUser;
+  _count?: { likes: number };
+};
+
 export const mapReview = (
-  review: PrismaReview & { author: PrismaUser },
+  review: ReviewWithRelations,
 ): Review => ({
   id: review.id,
   shopName: review.shopName,
@@ -22,7 +27,8 @@ export const mapReview = (
   detail: review.detail,
   serviceHighlights: normalizeServiceHighlights(review.serviceHighlights),
   castRating: review.castRating,
-  reviewRating: review.reviewRating,
+  likesCount: review._count?.likes ?? 0,
+  likedByMe: false,
   isPublished: review.isPublished,
   damage: review.damage,
   createdAt: review.createdAt.toISOString(),

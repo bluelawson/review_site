@@ -78,7 +78,7 @@ export default function ReviewCard({
       <div className="mt-4 flex flex-col gap-2 text-xs text-slate-400">
         <span>料金: {review.damage ?? '非公開'}</span>
         <span>キャスト評価: {review.castRating.toFixed(1)}</span>
-        <span>レビュー評価: {review.reviewRating.toFixed(1)}</span>
+        <span>いいね: {review.likesCount}</span>
       </div>
       <div className="mt-6 flex items-center justify-between">
         <Link

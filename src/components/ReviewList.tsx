@@ -85,8 +85,8 @@ export default function ReviewList() {
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<ReviewFilter>(defaultFilter);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [sortKey, setSortKey] = useState<'reviewRating' | 'createdAt'>(
-    'reviewRating',
+  const [sortKey, setSortKey] = useState<'likes' | 'createdAt'>(
+    'likes',
   );
   const [page, setPage] = useState(1);
   const pageSize = 8;
@@ -160,10 +160,9 @@ export default function ReviewList() {
   const filteredReviews = useMemo(() => {
     const result = filterReviews(reviews, filter);
     return [...result].sort((a, b) => {
-      if (sortKey === 'reviewRating') {
-        const ratingDiff =
-          (b.reviewRating ?? b.castRating) - (a.reviewRating ?? a.castRating);
-        if (ratingDiff !== 0) return ratingDiff;
+      if (sortKey === 'likes') {
+        const likesDiff = b.likesCount - a.likesCount;
+        if (likesDiff !== 0) return likesDiff;
       }
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
@@ -202,12 +201,12 @@ export default function ReviewList() {
           <select
             value={sortKey}
             onChange={(e) =>
-              setSortKey(e.target.value as 'reviewRating' | 'createdAt')
+              setSortKey(e.target.value as 'likes' | 'createdAt')
             }
             className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-white hover:border-white/30"
           >
-            <option value="reviewRating" className="bg-slate-900 text-white">
-              レビュー評価順
+            <option value="likes" className="bg-slate-900 text-white">
+              いいね数順
             </option>
             <option value="createdAt" className="bg-slate-900 text-white">
               新着順

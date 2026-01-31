@@ -25,7 +25,8 @@ const typeDefs = gql`
     detail: String!
     serviceHighlights: [String!]!
     castRating: Float!
-    reviewRating: Float!
+    likesCount: Int!
+    likedByMe: Boolean!
     isPublished: Boolean!
     damage: String
     createdAt: String!
@@ -63,13 +64,14 @@ const typeDefs = gql`
 
   type Query {
     reviews(filter: ReviewFilterInput): [Review!]!
-    review(id: ID!): Review
+    review(id: ID!, viewerEmail: String): Review
   }
 
   type Mutation {
     createReview(input: ReviewInput!): Review!
     deleteReview(id: ID!): Boolean!
     setReviewVisibility(id: ID!, isPublished: Boolean!): Review!
+    likeReview(id: ID!, userEmail: String!): Review!
   }
 `;
 

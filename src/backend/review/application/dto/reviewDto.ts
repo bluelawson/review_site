@@ -2,9 +2,9 @@ export type ReviewFilterDto = {
   keyword?: string | null;
   shopName?: string | null;
   castName?: string | null;
-  bodyType?: string | null;
-  personality?: string | null;
-  bustSize?: string | null;
+  bodyTypes?: string[] | null;
+  personalities?: string[] | null;
+  bustSizes?: string[] | null;
   heightMin?: number | null;
   heightMax?: number | null;
   castRatingMin?: number | null;
@@ -31,4 +31,9 @@ export type CreateReviewData = Omit<CreateReviewDto, 'authorEmail'>;
 export type UpdateReviewVisibilityDto = {
   id: string;
   isPublished: boolean;
+};
+
+export type LikeReviewDto = {
+  id: string;
+  userEmail: string;
 };

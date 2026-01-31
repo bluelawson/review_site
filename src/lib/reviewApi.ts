@@ -63,12 +63,7 @@ export async function fetchReviews(): Promise<Review[]> {
 }
 
 export async function fetchReviewById(id: string): Promise<Review | null> {
-  const data = await requestGraphQL<{ review: Review | null }>(
-    ReviewsDocument,
-    { id },
-    'Review',
-  );
-  return data.review;
+  return fetchReviewByIdWithViewer(id);
 }
 
 export async function createReview(
@@ -100,4 +95,30 @@ export async function setReviewVisibility(
     'SetReviewVisibility',
   );
   return data.setReviewVisibility;
+}
+
+export async function fetchReviewByIdWithViewer(
+  id: string,
+  viewerEmail?: string,
+): Promise<Review | null> {
+  const data = await requestGraphQL<{ review: Review | null }>(
+    ReviewsDocument,
+    { id, viewerEmail },
+    'Review',
+  );
+  return data.review;
+}
+
+export async function likeReview(
+  id: string,
+  userEmail: string,
+): Promise<{ id: string; likesCount: number; likedByMe: boolean }> {
+  const data = await requestGraphQL<{
+    likeReview: { id: string; likesCount: number; likedByMe: boolean };
+  }>(
+    ReviewsDocument,
+    { id, userEmail },
+    'LikeReview',
+  );
+  return data.likeReview;
 }

@@ -15,6 +15,7 @@ model User {
   plan             String   @default("guest")
   reviewsSubmitted Int      @default(0)
   reviews          Review[]
+  reviewLikes      ReviewLike[]
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 }
@@ -32,7 +33,6 @@ model Review {
   detail            String
   serviceHighlights Json?
   castRating            Float   @map("rating")
-  reviewRating      Float    @default(0)
   isPublished       Boolean  @default(true)
   damage            String?
   createdAt         DateTime @default(now())
@@ -40,4 +40,16 @@ model Review {
 
   author   User   @relation(fields: [authorId], references: [id])
   authorId String
+  likes    ReviewLike[]
+}
+
+model ReviewLike {
+  id        String   @id @default(cuid())
+  review    Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  reviewId  String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  createdAt DateTime @default(now())
+
+  @@unique([reviewId, userId])
 }

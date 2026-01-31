@@ -44,9 +44,8 @@ export default function TopRatedReviewList() {
 
   const topRatedReviews = useMemo(() => {
     const sorted = [...reviews].sort((a, b) => {
-      const ratingDiff =
-        (b.reviewRating ?? b.castRating) - (a.reviewRating ?? a.castRating);
-      if (ratingDiff !== 0) return ratingDiff;
+      const likesDiff = b.likesCount - a.likesCount;
+      if (likesDiff !== 0) return likesDiff;
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
     return sorted.slice(0, TOP_RATED_REVIEW_COUNT);

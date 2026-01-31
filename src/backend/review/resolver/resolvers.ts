@@ -1,5 +1,6 @@
 import type {
   CreateReviewDto,
+  LikeReviewDto,
   ReviewFilterDto,
   UpdateReviewVisibilityDto,
 } from '../application/dto/reviewDto';
@@ -17,8 +18,11 @@ const resolvers = {
     ) => {
       return reviewService.listReviews(args.filter);
     },
-    review: async (_parent: unknown, args: { id: string }) => {
-      return reviewService.getReview(args.id);
+    review: async (
+      _parent: unknown,
+      args: { id: string; viewerEmail?: string | null },
+    ) => {
+      return reviewService.getReviewWithViewer(args.id, args.viewerEmail);
     },
   },
   Mutation: {
@@ -36,6 +40,9 @@ const resolvers = {
       args: UpdateReviewVisibilityDto,
     ) => {
       return reviewService.setReviewVisibility(args);
+    },
+    likeReview: async (_parent: unknown, args: LikeReviewDto) => {
+      return reviewService.likeReview(args);
     },
   },
 };
