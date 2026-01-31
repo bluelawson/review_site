@@ -6,6 +6,7 @@ const typeDefs = gql`
   type User {
     id: ID!
     name: String!
+    userName: String!
     email: String!
     plan: String!
     reviewsSubmitted: Int!

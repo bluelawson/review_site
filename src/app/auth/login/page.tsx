@@ -14,7 +14,7 @@ export default function LoginPage() {
       </header>
       <AuthForm mode="login" />
       <div className="text-center text-xs text-slate-500">
-        ゲスト: guest@seren.jp / seren123
+        ゲスト: guest / seren123
       </div>
     </div>
   );

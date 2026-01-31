@@ -36,16 +36,16 @@ export const useAuthState = () => {
   }, [refresh]);
 
   const handleLogin = useCallback(
-    async (email: string, password: string) => {
-      await login(email, password);
+    async (userName: string, password: string) => {
+      await login(userName, password);
       refresh();
     },
     [refresh],
   );
 
   const handleRegister = useCallback(
-    async (name: string, email: string, password: string) => {
-      await register(name, email, password);
+    async (name: string, userName: string, password: string) => {
+      await register(name, userName, password);
       refresh();
     },
     [refresh],

@@ -33,7 +33,7 @@ export type Review = {
   author: {
     id: string;
     name: string;
-    email: string;
+    userName: string;
   };
 };
 
@@ -51,6 +51,7 @@ export type ReviewFilter = {
 
 export type UserProfile = {
   id: string;
+  userName: string;
   name: string;
   email: string;
   password: string;

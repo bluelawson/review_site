@@ -127,8 +127,9 @@ export default function ReviewDetail({ id }: Props) {
   const canViewUnpublished = isAdmin || canViewAll;
   const unlocked = review.isPublished || isTopRated || canViewUnpublished;
   const canManage = isAdmin;
-  const isOwner = user?.email === review.author.email;
-  const canDelete = !!user && (isAdmin || isOwner);
+  const canDelete =
+    !!user &&
+    (isAdmin || (review ? user.userName === review.author.userName : false));
   const canLike =
     !!user && user.email !== 'guest@seren.jp' && user.id !== 'guest';
 
@@ -248,7 +249,7 @@ export default function ReviewDetail({ id }: Props) {
           <p>キャスト評価: {review.castRating.toFixed(1)}</p>
           <p>いいね: {review.likesCount}</p>
           <p className="text-[10px] uppercase tracking-[0.3em] text-slate-500">
-            Posted by {review.author.name} ({review.author.email})
+            Posted by {review.author.name}
           </p>
         </div>
       </div>

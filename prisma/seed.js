@@ -11,6 +11,7 @@ const prisma = new PrismaClient({
 
 const sampleUsers = [
   {
+    userName: 'guest',
     name: 'ゲストレビュアー',
     email: 'guest@seren.jp',
     password: 'seren123',
@@ -18,6 +19,7 @@ const sampleUsers = [
     reviewsSubmitted: 0,
   },
   {
+    userName: 'member',
     name: '未投稿ユーザー',
     email: 'member@seren.jp',
     password: 'member123',
@@ -25,6 +27,7 @@ const sampleUsers = [
     reviewsSubmitted: 0,
   },
   {
+    userName: 'admin',
     name: '管理者',
     email: 'admin@seren.jp',
     password: 'admin123',

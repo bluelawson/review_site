@@ -21,7 +21,7 @@ query Reviews($filter: ReviewFilterInput) {
     author {
       id
       name
-      email
+      userName
     }
   }
 }
@@ -49,7 +49,7 @@ query Review($id: ID!, $viewerEmail: String) {
     author {
       id
       name
-      email
+      userName
     }
   }
 }
@@ -77,7 +77,7 @@ mutation CreateReview($input: ReviewInput!) {
     author {
       id
       name
-      email
+      userName
     }
   }
 }
@@ -109,7 +109,7 @@ mutation SetReviewVisibility($id: ID!, $isPublished: Boolean!) {
     author {
       id
       name
-      email
+      userName
     }
   }
 }

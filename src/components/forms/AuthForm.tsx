@@ -17,7 +17,7 @@ export default function AuthForm({ mode }: Props) {
   const [message, setMessage] = useState('');
   const [form, setForm] = useState({
     name: '',
-    email: '',
+    userName: '',
     password: '',
   });
 
@@ -27,10 +27,10 @@ export default function AuthForm({ mode }: Props) {
     setMessage('');
     try {
       if (mode === 'login') {
-        await login(form.email, form.password);
+        await login(form.userName, form.password);
         setMessage('ログインに成功しました。');
       } else {
-        await register(form.name, form.email, form.password);
+        await register(form.name, form.userName, form.password);
         setMessage('登録が完了しました。レビュー投稿をはじめましょう。');
       }
       setTimeout(() => router.push('/'), 600);
@@ -61,13 +61,12 @@ export default function AuthForm({ mode }: Props) {
           />
         </FieldWrapper>
       )}
-      <FieldWrapper label="メールアドレス">
+      <FieldWrapper label="ユーザー名">
         <TextField
-          type="email"
           required
-          value={form.email}
+          value={form.userName}
           onChange={(e) =>
-            setForm((prev) => ({ ...prev, email: e.target.value }))
+            setForm((prev) => ({ ...prev, userName: e.target.value }))
           }
         />
       </FieldWrapper>

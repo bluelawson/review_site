@@ -9,11 +9,15 @@ export type UserRepository = {
 
 export const userRepository: UserRepository = {
   async upsertByEmail(email: string) {
+    const userName = email.split('@')[0];
     const user = await prisma.user.upsert({
       where: { email },
-      update: {},
+      update: {
+        userName,
+      },
       create: {
-        name: email.split('@')[0],
+        name: userName,
+        userName,
         email,
         password: 'changeme',
       },

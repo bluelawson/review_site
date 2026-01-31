@@ -5,6 +5,7 @@ import type { User } from '../domain/model/user';
 export const mapUser = (user: PrismaUser): User => ({
   id: user.id,
   name: user.name,
+  userName: user.userName,
   email: user.email,
   plan: user.plan,
   reviewsSubmitted: user.reviewsSubmitted,

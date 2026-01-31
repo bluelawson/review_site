@@ -266,7 +266,8 @@ export default function ReviewList() {
                 publishLoading={togglingId === review.id}
                 canDelete={
                   !!user &&
-                  (user.plan === 'admin' || user.email === review.author.email)
+                  (user.plan === 'admin' ||
+                    user.userName === review.author.userName)
                 }
                 canTogglePublish={canManage}
                 forceShowDetail={topRatedIds.has(review.id)}
