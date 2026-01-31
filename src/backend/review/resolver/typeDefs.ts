@@ -25,6 +25,7 @@ const typeDefs = gql`
     detail: String!
     serviceHighlights: [String!]!
     rating: Float!
+    reviewRating: Float!
     damage: String
     createdAt: String!
     updatedAt: String!

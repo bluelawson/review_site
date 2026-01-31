@@ -13,6 +13,7 @@ Docker Compose を使って Next.js の開発サーバーと MySQL を同時に�
 
    - アプリは `http://localhost:3000` で配信されます。
    - MySQL は `localhost:3306` で `review_user` / `review_pass` により待ち受け、Prisma は `mysql://review_user:review_pass@db:3306/review_site` で接続できます。
+   - 権限付与の初期化SQLは初回起動時のみ適用されるため、既存の DB ボリュームがある場合は `docker compose down -v` で再生成が必要です。
 
 3. 必要に応じて Prisma のマイグレーションを実行します。
 
@@ -61,6 +62,7 @@ src/backend/
 - マイグレーション作成＋適用: `docker compose exec app npx prisma migrate dev --name <change-name>`
 - 既存マイグレーション適用（開発時）: `docker compose exec app npx prisma migrate dev`
 - Prisma Client 生成: `docker compose exec app npx prisma generate`
+- TypeScript の型更新（エディタがホストの node_modules を読む場合）: `npx prisma generate`
 - Prisma Studio 起動: `docker compose exec app npx prisma studio`
 - DBを初期化して再作成: `docker compose exec app npx prisma migrate reset`
 - マイグレーションを作らず反映（試作向け）: `docker compose exec app npx prisma db push`

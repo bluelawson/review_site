@@ -53,7 +53,7 @@ export const reviewRepository: ReviewRepository = {
   async findMany(filter?: ReviewFilterDto | null) {
     const reviews = await prisma.review.findMany({
       where: buildWhere(filter),
-      orderBy: { createdAt: 'desc' },
+      orderBy: [{ reviewRating: 'desc' }, { createdAt: 'desc' }],
       include: { author: true },
     });
     return reviews.map(mapReview);
@@ -76,6 +76,7 @@ export const reviewRepository: ReviewRepository = {
     const review = await prisma.review.create({
       data: {
         ...input,
+        reviewRating: input.rating,
         heightCm: input.heightCm ?? null,
         serviceHighlights: serviceHighlightsValue,
         author: {

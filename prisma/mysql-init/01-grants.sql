@@ -1,0 +1,2 @@
+GRANT ALL PRIVILEGES ON *.* TO 'review_user'@'%';
+FLUSH PRIVILEGES;

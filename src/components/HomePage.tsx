@@ -9,7 +9,7 @@ export default function HomePage() {
     <div className="space-y-16">
       <Hero />
       <AccessPanel />
-      <ReviewList />
+      <ReviewList showFilters={false} title="高評価のレビュー" />
       <CTASection />
     </div>
   );

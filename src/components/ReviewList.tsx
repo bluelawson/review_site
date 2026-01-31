@@ -70,7 +70,17 @@ const filterReviews = (reviews: Review[], filter: ReviewFilter) => {
   });
 };
 
-export default function ReviewList() {
+type ReviewListProps = {
+  showFilters?: boolean;
+  title?: string;
+  description?: string;
+};
+
+export default function ReviewList({
+  showFilters = true,
+  title,
+  description,
+}: ReviewListProps) {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -123,10 +133,17 @@ export default function ReviewList() {
     }
   };
 
-  const filteredReviews = useMemo(
-    () => filterReviews(reviews, filter),
-    [reviews, filter],
-  );
+  const filteredReviews = useMemo(() => {
+    const result = filterReviews(reviews, filter);
+    return [...result].sort((a, b) => {
+      const ratingDiff =
+        (b.reviewRating ?? b.rating) - (a.reviewRating ?? a.rating);
+      if (ratingDiff !== 0) return ratingDiff;
+      return (
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+    });
+  }, [reviews, filter]);
   const totalPages = Math.max(
     1,
     Math.ceil(filteredReviews.length / pageSize),
@@ -148,7 +165,21 @@ export default function ReviewList() {
 
   return (
     <section className="space-y-8">
-      <ReviewFilters reviews={reviews} value={filter} onChange={setFilter} />
+      {showFilters ? (
+        <ReviewFilters reviews={reviews} value={filter} onChange={setFilter} />
+      ) : (
+        <header className="space-y-2">
+          <p className="text-xs uppercase tracking-[0.4em] text-slate-400">
+            Top Rated
+          </p>
+          <h2 className="text-3xl font-semibold text-white">
+            {title ?? '高評価のレビュー'}
+          </h2>
+          {description && (
+            <p className="text-sm text-slate-400">{description}</p>
+          )}
+        </header>
+      )}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="text-xs uppercase tracking-[0.3em] text-slate-500">
           {filteredReviews.length} 件の口コミ

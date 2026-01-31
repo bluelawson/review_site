@@ -22,6 +22,7 @@ export const mapReview = (
   detail: review.detail,
   serviceHighlights: normalizeServiceHighlights(review.serviceHighlights),
   rating: review.rating,
+  reviewRating: review.reviewRating,
   damage: review.damage,
   createdAt: review.createdAt,
   updatedAt: review.updatedAt,
