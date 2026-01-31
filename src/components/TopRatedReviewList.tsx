@@ -53,7 +53,7 @@ export default function TopRatedReviewList() {
 
   return (
     <section className="space-y-8">
-      <header className="space-y-2">
+      <header className="space-y-2 pl-6">
         <p className="text-xs uppercase tracking-[0.4em] text-slate-400">
           Top Rated
         </p>
