@@ -260,6 +260,7 @@ export default function ReviewDetail({ id }: Props) {
               variant="ghost"
               onClick={handleLike}
               disabled={liking}
+              type="button"
               className={hasLiked ? 'text-rose-300 border-rose-300/60' : ''}
             >
               {hasLiked ? '♥' : '♡'}
@@ -270,6 +271,7 @@ export default function ReviewDetail({ id }: Props) {
               variant={review.isPublished ? 'ghost' : 'outline'}
               onClick={handleTogglePublish}
               disabled={updatingVisibility}
+              type="button"
               className={
                 review.isPublished
                   ? ''
@@ -280,7 +282,12 @@ export default function ReviewDetail({ id }: Props) {
             </Button>
           )}
           {canDelete && (
-            <Button variant="ghost" onClick={handleDelete} disabled={deleting}>
+            <Button
+              variant="ghost"
+              onClick={handleDelete}
+              disabled={deleting}
+              type="button"
+            >
               {deleting ? '削除中...' : 'DELETE'}
             </Button>
           )}

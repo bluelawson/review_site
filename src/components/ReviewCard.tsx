@@ -14,6 +14,7 @@ type Props = {
   forceShowDetail?: boolean;
   hidePublishToggle?: boolean;
   forcePublishedTag?: boolean;
+  publishLoading?: boolean;
 };
 
 export default function ReviewCard({
@@ -25,6 +26,7 @@ export default function ReviewCard({
   forceShowDetail = false,
   hidePublishToggle = false,
   forcePublishedTag = false,
+  publishLoading = false,
 }: Props) {
   const { user } = useAuthState();
   const isAdmin = user?.plan === 'admin';
@@ -41,13 +43,21 @@ export default function ReviewCard({
   const highlights = review.serviceHighlights ?? [];
   const createdAtLabel = new Date(review.createdAt).toLocaleDateString('ja-JP');
 
-  const handleDelete = async () => {
+  const handleDelete = async (
+    event?: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    event?.preventDefault();
+    event?.stopPropagation();
     if (!onDelete) return;
     if (!confirm('このレビューを削除しますか？')) return;
     await onDelete(review.id);
   };
 
-  const handleTogglePublish = async () => {
+  const handleTogglePublish = async (
+    event?: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    event?.preventDefault();
+    event?.stopPropagation();
     if (!onTogglePublish) return;
     await onTogglePublish(review.id, !review.isPublished);
   };
@@ -115,6 +125,7 @@ export default function ReviewCard({
               variant={review.isPublished ? 'ghost' : 'outline'}
               type="button"
               onClick={handleTogglePublish}
+              disabled={publishLoading}
               className={
                 review.isPublished
                   ? ''

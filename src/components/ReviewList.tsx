@@ -7,7 +7,11 @@ import ReviewFilters from '@/components/ReviewFilters';
 import PanelMessage from '@/components/ui/PanelMessage';
 import PillButton from '@/components/ui/PillButton';
 import { useAuthState } from '@/hooks/useAuthState';
-import { fetchReviews, removeReview, setReviewVisibility } from '@/lib/reviewApi';
+import {
+  fetchReviews,
+  removeReview,
+  setReviewVisibility,
+} from '@/lib/reviewApi';
 import { TOP_RATED_REVIEW_COUNT } from '@/constants/review';
 import type { Review, ReviewFilter } from '@/types';
 
@@ -47,7 +51,8 @@ const filterReviews = (reviews: Review[], filter: ReviewFilter) => {
       !filter.castName ||
       review.castName.toLowerCase().includes(filter.castName.toLowerCase());
     const matchesBody =
-      !filter.bodyTypes?.length || filter.bodyTypes.includes(review.bodyType ?? '');
+      !filter.bodyTypes?.length ||
+      filter.bodyTypes.includes(review.bodyType ?? '');
     const matchesPersonality =
       !filter.personalities?.length ||
       filter.personalities.includes(review.personality ?? '');
@@ -62,7 +67,8 @@ const filterReviews = (reviews: Review[], filter: ReviewFilter) => {
     const matchesHeightMax =
       !filter.heightMax || height <= Number(filter.heightMax);
     const matchesRating =
-      !filter.minCastRating || review.castRating >= Number(filter.minCastRating);
+      !filter.minCastRating ||
+      review.castRating >= Number(filter.minCastRating);
 
     return (
       matchesKeyword &&
@@ -83,11 +89,10 @@ export default function ReviewList() {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [togglingId, setTogglingId] = useState<string | null>(null);
   const [filter, setFilter] = useState<ReviewFilter>(defaultFilter);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [sortKey, setSortKey] = useState<'likes' | 'createdAt'>(
-    'likes',
-  );
+  const [sortKey, setSortKey] = useState<'likes' | 'createdAt'>('likes');
   const [page, setPage] = useState(1);
   const pageSize = 8;
   const canViewAll =
@@ -141,8 +146,8 @@ export default function ReviewList() {
 
   const handleTogglePublish = async (id: string, isPublished: boolean) => {
     try {
-      setLoading(true);
       setError(null);
+      setTogglingId(id);
       const updated = await setReviewVisibility(id, isPublished);
       setReviews((prev) =>
         prev.map((review) => (review.id === id ? updated : review)),
@@ -153,7 +158,7 @@ export default function ReviewList() {
         err instanceof Error ? err.message : '公開状態の更新に失敗しました。',
       );
     } finally {
-      setLoading(false);
+      setTogglingId(null);
     }
   };
 
@@ -258,10 +263,10 @@ export default function ReviewList() {
                 key={review.id}
                 onDelete={handleDelete}
                 onTogglePublish={canManage ? handleTogglePublish : undefined}
+                publishLoading={togglingId === review.id}
                 canDelete={
                   !!user &&
-                  (user.plan === 'admin' ||
-                    user.email === review.author.email)
+                  (user.plan === 'admin' || user.email === review.author.email)
                 }
                 canTogglePublish={canManage}
                 forceShowDetail={topRatedIds.has(review.id)}
