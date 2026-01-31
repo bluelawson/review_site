@@ -1,5 +1,5 @@
 'use client';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { FieldWrapper, SelectField, TextField } from '@/components/ui/Input';
 import PillButton from '@/components/ui/PillButton';
@@ -12,6 +12,110 @@ type Props = {
   onChange: (value: ReviewFilter) => void;
 };
 
+type MultiSelectOption = {
+  label: string;
+  value: string;
+};
+
+type MultiSelectProps = {
+  label: string;
+  placeholder: string;
+  options: MultiSelectOption[];
+  value: string[];
+  onChange: (next: string[]) => void;
+};
+
+function MultiSelect({
+  label,
+  placeholder,
+  options,
+  value,
+  onChange,
+}: MultiSelectProps) {
+  const [open, setOpen] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const selectedLabels = options
+    .filter((option) => value.includes(option.value))
+    .map((option) => option.label);
+
+  useEffect(() => {
+    const handleClick = (event: MouseEvent) => {
+      if (!wrapperRef.current) return;
+      if (!wrapperRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+    window.addEventListener('mousedown', handleClick);
+    return () => window.removeEventListener('mousedown', handleClick);
+  }, []);
+
+  const toggleValue = (nextValue: string) => {
+    if (value.includes(nextValue)) {
+      onChange(value.filter((item) => item !== nextValue));
+    } else {
+      onChange([...value, nextValue]);
+    }
+  };
+  const allSelected =
+    options.length > 0 && value.length === options.length;
+  const toggleAll = () => {
+    if (allSelected) {
+      onChange([]);
+    } else {
+      onChange(options.map((option) => option.value));
+    }
+  };
+
+  return (
+    <FieldWrapper label={label}>
+      <div className="relative" ref={wrapperRef}>
+        <button
+          type="button"
+          onClick={() => setOpen((prev) => !prev)}
+          className="flex w-full items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-left text-sm text-white focus:border-white focus:outline-none"
+        >
+          <span className={selectedLabels.length ? '' : 'text-slate-500'}>
+            {selectedLabels.length ? selectedLabels.join(', ') : placeholder}
+          </span>
+          <span className="text-slate-400">▾</span>
+        </button>
+        {open && (
+          <div className="absolute z-50 mt-2 w-full rounded-2xl border border-white/10 bg-slate-900/95 p-2 shadow-2xl">
+            <div className="max-h-56 overflow-y-auto pr-1">
+              <label className="flex cursor-pointer items-center gap-2 rounded-xl px-3 py-2 text-sm text-slate-200 hover:bg-white/5">
+                <input
+                  type="checkbox"
+                  checked={allSelected}
+                  onChange={toggleAll}
+                  className="size-4 rounded border-white/30 bg-white/10 text-white"
+                />
+                <span>すべて</span>
+              </label>
+              {options.map((option) => {
+                const checked = value.includes(option.value);
+                return (
+                  <label
+                    key={option.value}
+                    className="flex cursor-pointer items-center gap-2 rounded-xl px-3 py-2 text-sm text-slate-200 hover:bg-white/5"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() => toggleValue(option.value)}
+                      className="size-4 rounded border-white/30 bg-white/10 text-white"
+                    />
+                    <span>{option.label}</span>
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+    </FieldWrapper>
+  );
+}
+
 export default function ReviewFilters({ reviews, value, onChange }: Props) {
   const shops = useMemo(
     () => Array.from(new Set(reviews.map((review) => review.shopName))),
@@ -23,14 +127,19 @@ export default function ReviewFilters({ reviews, value, onChange }: Props) {
   );
   const handleChange = (
     key: keyof ReviewFilter,
-    val: string | number | undefined,
+    val: string | number | string[] | undefined,
   ) => {
     onChange({ ...value, [key]: val });
   };
 
+  const bustOptions = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].map((item) => ({
+    label: item,
+    value: item,
+  }));
+
   return (
     <section
-      className="glass-panel rounded-3xl border border-white/10 px-6 py-6"
+      className="glass-panel relative z-40 overflow-visible rounded-3xl border border-white/10 px-6 py-6 [isolation:isolate]"
       id="reviews"
     >
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
@@ -80,27 +189,20 @@ export default function ReviewFilters({ reviews, value, onChange }: Props) {
             className="text-sm"
           />
         </FieldWrapper>
-        <FieldWrapper label="バスト">
-          <TextField
-            value={value.bustSize ?? ''}
-            onChange={(e) => handleChange('bustSize', e.target.value)}
-            placeholder="例) E"
-            className="text-sm"
-          />
-        </FieldWrapper>
-        <FieldWrapper label="体型">
-          <SelectField
-            value={value.bodyType ?? ''}
-            onChange={(e) =>
-              handleChange('bodyType', e.target.value || undefined)
-            }
-            className="text-sm"
-            options={[
-              { label: 'すべて', value: '' },
-              ...bodyTypes.map((body) => ({ label: body, value: body })),
-            ]}
-          />
-        </FieldWrapper>
+        <MultiSelect
+          label="バスト"
+          placeholder="選択してください"
+          options={bustOptions}
+          value={value.bustSizes ?? []}
+          onChange={(next) => handleChange('bustSizes', next)}
+        />
+        <MultiSelect
+          label="体型"
+          placeholder="選択してください"
+          options={bodyTypes.map((body) => ({ label: body, value: body }))}
+          value={value.bodyTypes ?? []}
+          onChange={(next) => handleChange('bodyTypes', next)}
+        />
         <FieldWrapper label="性格">
           <SelectField
             value={value.personality ?? ''}

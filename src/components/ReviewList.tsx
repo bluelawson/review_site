@@ -14,8 +14,8 @@ const defaultFilter: ReviewFilter = {
   search: '',
   shop: '',
   castName: '',
-  bustSize: '',
-  bodyType: '',
+  bustSizes: [],
+  bodyTypes: [],
   personality: '',
   heightMin: undefined,
   heightMax: undefined,
@@ -45,12 +45,15 @@ const filterReviews = (reviews: Review[], filter: ReviewFilter) => {
     const matchesWorker =
       !filter.castName ||
       review.castName.toLowerCase().includes(filter.castName.toLowerCase());
-    const matchesBody = !filter.bodyType || review.bodyType === filter.bodyType;
+    const matchesBody =
+      !filter.bodyTypes?.length || filter.bodyTypes.includes(review.bodyType ?? '');
     const matchesPersonality =
       !filter.personality || review.personality === filter.personality;
     const matchesBust =
-      !filter.bustSize ||
-      (review.bustSize ?? '').toLowerCase() === filter.bustSize.toLowerCase();
+      !filter.bustSizes?.length ||
+      filter.bustSizes
+        .map((size) => size.toLowerCase())
+        .includes((review.bustSize ?? '').toLowerCase());
     const height = review.heightCm ?? 0;
     const matchesHeightMin =
       !filter.heightMin || height >= Number(filter.heightMin);
