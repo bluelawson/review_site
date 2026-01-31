@@ -44,8 +44,8 @@ export const useAuthState = () => {
   );
 
   const handleRegister = useCallback(
-    async (name: string, userName: string, password: string) => {
-      await register(name, userName, password);
+    async (name: string, userName: string, email: string, password: string) => {
+      await register(name, userName, email, password);
       refresh();
     },
     [refresh],

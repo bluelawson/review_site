@@ -171,6 +171,7 @@ export const login = async (userNameOrEmail: string, password: string) => {
 export const register = async (
   name: string,
   userName: string,
+  email: string,
   password: string,
 ) => {
   ensureAuthStorage();
@@ -186,12 +187,18 @@ export const register = async (
   if (users.some((entry) => entry.userName === normalized)) {
     throw new Error('既に登録済みのユーザー名です');
   }
-  const email = toEmailFromUserName(normalized);
+  const normalizedEmail = email.trim().toLowerCase();
+  if (!normalizedEmail) {
+    throw new Error('メールアドレスを入力してください');
+  }
+  if (users.some((entry) => entry.email === normalizedEmail)) {
+    throw new Error('既に登録済みのメールアドレスです');
+  }
   const newUser: UserProfile = {
     id: crypto.randomUUID(),
     userName: normalized,
     name,
-    email,
+    email: normalizedEmail,
     password,
     plan: 'guest',
     reviewsSubmitted: 0,
