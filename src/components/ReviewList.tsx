@@ -70,17 +70,7 @@ const filterReviews = (reviews: Review[], filter: ReviewFilter) => {
   });
 };
 
-type ReviewListProps = {
-  showFilters?: boolean;
-  title?: string;
-  description?: string;
-};
-
-export default function ReviewList({
-  showFilters = true,
-  title,
-  description,
-}: ReviewListProps) {
+export default function ReviewList() {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -165,21 +155,7 @@ export default function ReviewList({
 
   return (
     <section className="space-y-8">
-      {showFilters ? (
-        <ReviewFilters reviews={reviews} value={filter} onChange={setFilter} />
-      ) : (
-        <header className="space-y-2">
-          <p className="text-xs uppercase tracking-[0.4em] text-slate-400">
-            Top Rated
-          </p>
-          <h2 className="text-3xl font-semibold text-white">
-            {title ?? '高評価のレビュー'}
-          </h2>
-          {description && (
-            <p className="text-sm text-slate-400">{description}</p>
-          )}
-        </header>
-      )}
+      <ReviewFilters reviews={reviews} value={filter} onChange={setFilter} />
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="text-xs uppercase tracking-[0.3em] text-slate-500">
           {filteredReviews.length} 件の口コミ

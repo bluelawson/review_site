@@ -2,14 +2,14 @@
 import AccessPanel from '@/components/AccessPanel';
 import CTASection from '@/components/CTASection';
 import Hero from '@/components/Hero';
-import ReviewList from '@/components/ReviewList';
+import TopRatedReviewList from '@/components/TopRatedReviewList';
 
 export default function HomePage() {
   return (
     <div className="space-y-16">
       <Hero />
       <AccessPanel />
-      <ReviewList showFilters={false} title="高評価のレビュー" />
+      <TopRatedReviewList />
       <CTASection />
     </div>
   );
