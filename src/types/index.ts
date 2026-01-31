@@ -41,7 +41,7 @@ export type ReviewFilter = {
   shop?: string;
   castName?: string;
   bodyTypes?: string[];
-  personality?: string;
+  personalities?: string[];
   bustSizes?: string[];
   heightMin?: number;
   heightMax?: number;

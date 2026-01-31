@@ -16,7 +16,7 @@ const defaultFilter: ReviewFilter = {
   castName: '',
   bustSizes: [],
   bodyTypes: [],
-  personality: '',
+  personalities: [],
   heightMin: undefined,
   heightMax: undefined,
   minCastRating: 0,
@@ -48,7 +48,8 @@ const filterReviews = (reviews: Review[], filter: ReviewFilter) => {
     const matchesBody =
       !filter.bodyTypes?.length || filter.bodyTypes.includes(review.bodyType ?? '');
     const matchesPersonality =
-      !filter.personality || review.personality === filter.personality;
+      !filter.personalities?.length ||
+      filter.personalities.includes(review.personality ?? '');
     const matchesBust =
       !filter.bustSizes?.length ||
       filter.bustSizes

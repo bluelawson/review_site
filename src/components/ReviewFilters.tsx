@@ -203,19 +203,16 @@ export default function ReviewFilters({ reviews, value, onChange }: Props) {
           value={value.bodyTypes ?? []}
           onChange={(next) => handleChange('bodyTypes', next)}
         />
-        <FieldWrapper label="性格">
-          <SelectField
-            value={value.personality ?? ''}
-            onChange={(e) =>
-              handleChange('personality', e.target.value || undefined)
-            }
-            className="text-sm"
-            options={[
-              { label: 'すべて', value: '' },
-              ...personalityTones.map((item) => ({ label: item, value: item })),
-            ]}
-          />
-        </FieldWrapper>
+        <MultiSelect
+          label="性格"
+          placeholder="選択してください"
+          options={personalityTones.map((item) => ({
+            label: item,
+            value: item,
+          }))}
+          value={value.personalities ?? []}
+          onChange={(next) => handleChange('personalities', next)}
+        />
         <FieldWrapper label="身長">
           <div className="mt-2 flex items-center gap-2">
             <TextField
