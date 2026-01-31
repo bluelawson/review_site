@@ -38,7 +38,9 @@ const filterReviews = (reviews: Review[], filter: ReviewFilter) => {
         .map((field) => (field ?? '').toString().toLowerCase())
         .some((field) => field.includes(keyword));
 
-    const matchesShop = !filter.shop || review.shopName === filter.shop;
+    const matchesShop =
+      !filter.shop ||
+      review.shopName.toLowerCase().includes(filter.shop.toLowerCase());
     const matchesWorker =
       !filter.workerName ||
       review.workerName.toLowerCase().includes(filter.workerName.toLowerCase());

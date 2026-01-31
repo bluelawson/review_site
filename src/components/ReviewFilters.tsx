@@ -17,6 +17,10 @@ export default function ReviewFilters({ reviews, value, onChange }: Props) {
     () => Array.from(new Set(reviews.map((review) => review.shopName))),
     [reviews],
   );
+  const shopOptions = useMemo(
+    () => Array.from(new Set(shops.map((shop) => shop.trim()))).filter(Boolean),
+    [shops],
+  );
   const handleChange = (
     key: keyof ReviewFilter,
     val: string | number | undefined,
@@ -54,15 +58,18 @@ export default function ReviewFilters({ reviews, value, onChange }: Props) {
       </div>
       <div className="mt-6 grid gap-4 md:grid-cols-3">
         <FieldWrapper label="店舗">
-          <SelectField
+          <input
+            list="shop-options"
             value={value.shop ?? ''}
             onChange={(e) => handleChange('shop', e.target.value || undefined)}
-            className="text-sm"
-            options={[
-              { label: 'すべて', value: '' },
-              ...shops.map((shop) => ({ label: shop, value: shop })),
-            ]}
+            className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:border-white focus:outline-none focus:ring-1 focus:ring-white/60"
+            placeholder="入力または選択"
           />
+          <datalist id="shop-options">
+            {shopOptions.map((shop) => (
+              <option key={shop} value={shop} />
+            ))}
+          </datalist>
         </FieldWrapper>
         <FieldWrapper label="嬢の名前">
           <TextField
