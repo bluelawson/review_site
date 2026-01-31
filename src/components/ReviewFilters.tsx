@@ -56,8 +56,7 @@ function MultiSelect({
       onChange([...value, nextValue]);
     }
   };
-  const allSelected =
-    options.length > 0 && value.length === options.length;
+  const allSelected = options.length > 0 && value.length === options.length;
   const toggleAll = () => {
     if (allSelected) {
       onChange([]);
@@ -139,17 +138,13 @@ export default function ReviewFilters({ reviews, value, onChange }: Props) {
 
   return (
     <section
-      className="glass-panel relative z-40 overflow-visible rounded-3xl border border-white/10 px-6 py-6 [isolation:isolate]"
+      className="glass-panel relative z-40 overflow-visible rounded-3xl border border-white/10 px-6 py-6 isolate"
       id="reviews"
     >
-      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+      <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div>
-          <p className="text-xs uppercase tracking-[0.5em] text-slate-400">
-            検索
-          </p>
-          <h2 className="text-2xl font-semibold text-white">口コミを探す</h2>
-          <p className="text-sm text-slate-400">
-            キーワードや属性でフィルタリングできます。
+          <p className="text-reg uppercase tracking-[0.5em] text-slate-400">
+            CONDITIONS
           </p>
         </div>
         <div className="w-full md:max-w-md">
