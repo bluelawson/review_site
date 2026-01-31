@@ -60,7 +60,7 @@ export function SelectField({
 }) {
   return (
     <select
-      className={`w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-white focus:border-white focus:outline-none ${className ?? ''}`}
+      className={`w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-white focus:border-white focus:outline-none cursor-pointer ${className ?? ''}`}
       {...props}
     >
       {options.map((option) => (

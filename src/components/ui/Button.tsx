@@ -25,7 +25,7 @@ export default function Button({
 }: PropsWithChildren<ButtonProps>) {
   const base =
     'inline-flex items-center justify-center rounded-full px-5 py-2 text-xs font-semibold uppercase tracking-[0.4em] transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2';
-  const stateClass = disabled ? 'opacity-60 cursor-not-allowed' : '';
+  const stateClass = disabled ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer';
 
   return (
     <button
