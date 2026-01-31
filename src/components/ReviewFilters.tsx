@@ -51,7 +51,7 @@ export default function ReviewFilters({ reviews, value, onChange }: Props) {
               value={value.search ?? ''}
               onChange={(e) => handleChange('search', e.target.value)}
               className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:border-white focus:outline-none"
-              placeholder="嬢名／店名／感想"
+              placeholder="キャスト名／店名／感想"
             />
           </label>
         </div>
@@ -71,11 +71,11 @@ export default function ReviewFilters({ reviews, value, onChange }: Props) {
             ))}
           </datalist>
         </FieldWrapper>
-        <FieldWrapper label="嬢の名前">
+        <FieldWrapper label="キャスト名">
           <TextField
             type="text"
-            value={value.workerName ?? ''}
-            onChange={(e) => handleChange('workerName', e.target.value)}
+            value={value.castName ?? ''}
+            onChange={(e) => handleChange('castName', e.target.value)}
             placeholder="例) らら"
             className="text-sm"
           />

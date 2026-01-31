@@ -51,7 +51,7 @@ export default function ReviewCard({
         {review.headline}
       </h3>
       <p className="text-sm text-slate-400">
-        {review.workerName}
+        {review.castName}
         {review.estimatedAge ? ` / ${review.estimatedAge}歳推定` : ''}
         {review.bodyType ? ` / ${review.bodyType}` : ''}
         {review.heightCm ? ` / ${review.heightCm}cm` : ''}

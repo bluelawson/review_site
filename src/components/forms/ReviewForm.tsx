@@ -28,7 +28,7 @@ export default function ReviewForm() {
 
   const [form, setForm] = useState({
     shopName: shopOptions[0],
-    workerName: '',
+    castName: '',
     estimatedAge: '',
     bodyType: bodyTypes[0],
     bustSize: '',
@@ -74,7 +74,7 @@ export default function ReviewForm() {
       setMessage('投稿が完了しました。審査後に公開されます。');
       setForm({
         shopName: shopOptions[0],
-        workerName: '',
+        castName: '',
         estimatedAge: '',
         bodyType: bodyTypes[0],
         bustSize: '',
@@ -124,11 +124,11 @@ export default function ReviewForm() {
             options={shopOptions.map((shop) => ({ label: shop, value: shop }))}
           />
         </FieldWrapper>
-        <FieldWrapper label="嬢の名前" description="伏字可">
+        <FieldWrapper label="キャスト名" description="伏字可">
           <TextField
             required
-            value={form.workerName}
-            onChange={(e) => handleChange('workerName', e.target.value)}
+            value={form.castName}
+            onChange={(e) => handleChange('castName', e.target.value)}
           />
         </FieldWrapper>
         <FieldWrapper label="推定年齢">

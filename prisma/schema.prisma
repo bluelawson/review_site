@@ -22,7 +22,7 @@ model User {
 model Review {
   id                String   @id @default(cuid())
   shopName          String
-  workerName        String
+  castName        String   @map("workerName")
   estimatedAge      String?
   bodyType          String?
   bustSize          String?

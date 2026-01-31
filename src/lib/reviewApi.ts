@@ -7,7 +7,7 @@ const GRAPHQL_ENDPOINT = '/api/graphql';
 
 export type CreateReviewInput = {
   shopName: string;
-  workerName: string;
+  castName: string;
   estimatedAge?: string;
   bodyType?: string;
   bustSize?: string;

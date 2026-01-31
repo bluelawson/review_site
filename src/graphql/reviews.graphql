@@ -2,7 +2,7 @@ query Reviews($filter: ReviewFilterInput) {
   reviews(filter: $filter) {
     id
     shopName
-    workerName
+    castName
     estimatedAge
     bodyType
     bustSize
@@ -29,7 +29,7 @@ query Review($id: ID!) {
   review(id: $id) {
     id
     shopName
-    workerName
+    castName
     estimatedAge
     bodyType
     bustSize
@@ -56,7 +56,7 @@ mutation CreateReview($input: ReviewInput!) {
   createReview(input: $input) {
     id
     shopName
-    workerName
+    castName
     estimatedAge
     bodyType
     bustSize
@@ -87,7 +87,7 @@ mutation SetReviewVisibility($id: ID!, $isPublished: Boolean!) {
   setReviewVisibility(id: $id, isPublished: $isPublished) {
     id
     shopName
-    workerName
+    castName
     estimatedAge
     bodyType
     bustSize

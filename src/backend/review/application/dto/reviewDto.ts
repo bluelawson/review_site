@@ -1,7 +1,7 @@
 export type ReviewFilterDto = {
   keyword?: string | null;
   shopName?: string | null;
-  workerName?: string | null;
+  castName?: string | null;
   bodyType?: string | null;
   personality?: string | null;
   bustSize?: string | null;
@@ -12,7 +12,7 @@ export type ReviewFilterDto = {
 
 export type CreateReviewDto = {
   shopName: string;
-  workerName: string;
+  castName: string;
   estimatedAge?: string | null;
   bodyType?: string | null;
   bustSize?: string | null;

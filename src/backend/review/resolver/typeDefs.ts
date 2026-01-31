@@ -15,7 +15,7 @@ const typeDefs = gql`
   type Review {
     id: ID!
     shopName: String!
-    workerName: String!
+    castName: String!
     estimatedAge: String
     bodyType: String
     bustSize: String
@@ -36,7 +36,7 @@ const typeDefs = gql`
   input ReviewFilterInput {
     keyword: String
     shopName: String
-    workerName: String
+    castName: String
     bodyType: String
     personality: String
     bustSize: String
@@ -47,7 +47,7 @@ const typeDefs = gql`
 
   input ReviewInput {
     shopName: String!
-    workerName: String!
+    castName: String!
     estimatedAge: String
     bodyType: String
     bustSize: String

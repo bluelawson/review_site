@@ -12,7 +12,7 @@ export const mapReview = (
 ): Review => ({
   id: review.id,
   shopName: review.shopName,
-  workerName: review.workerName,
+  castName: review.castName,
   estimatedAge: review.estimatedAge,
   bodyType: review.bodyType,
   bustSize: review.bustSize,

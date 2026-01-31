@@ -14,7 +14,7 @@ export type BodyType = (typeof bodyTypes)[number];
 export type Review = {
   id: string;
   shopName: string;
-  workerName: string;
+  castName: string;
   estimatedAge?: string | null;
   bodyType?: BodyType | string | null;
   bustSize?: string | null;
@@ -39,7 +39,7 @@ export type Review = {
 export type ReviewFilter = {
   search?: string;
   shop?: string;
-  workerName?: string;
+  castName?: string;
   bodyType?: string;
   personality?: string;
   bustSize?: string;

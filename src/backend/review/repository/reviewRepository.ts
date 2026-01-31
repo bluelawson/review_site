@@ -27,11 +27,11 @@ const buildWhere = (
       { headline: { contains: filter.keyword } },
       { detail: { contains: filter.keyword } },
       { shopName: { contains: filter.keyword } },
-      { workerName: { contains: filter.keyword } },
+      { castName: { contains: filter.keyword } },
     ];
   }
   if (filter.shopName) where.shopName = filter.shopName;
-  if (filter.workerName) where.workerName = { contains: filter.workerName };
+  if (filter.castName) where.castName = { contains: filter.castName };
   if (filter.bodyType) where.bodyType = filter.bodyType;
   if (filter.personality) where.personality = filter.personality;
   if (filter.bustSize) where.bustSize = filter.bustSize;

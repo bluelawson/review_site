@@ -13,7 +13,7 @@ import type { Review, ReviewFilter } from '@/types';
 const defaultFilter: ReviewFilter = {
   search: '',
   shop: '',
-  workerName: '',
+  castName: '',
   bustSize: '',
   bodyType: '',
   personality: '',
@@ -28,7 +28,7 @@ const filterReviews = (reviews: Review[], filter: ReviewFilter) => {
     const matchesKeyword =
       !keyword ||
       [
-        review.workerName,
+        review.castName,
         review.shopName,
         review.detail,
         review.headline,
@@ -43,8 +43,8 @@ const filterReviews = (reviews: Review[], filter: ReviewFilter) => {
       !filter.shop ||
       review.shopName.toLowerCase().includes(filter.shop.toLowerCase());
     const matchesWorker =
-      !filter.workerName ||
-      review.workerName.toLowerCase().includes(filter.workerName.toLowerCase());
+      !filter.castName ||
+      review.castName.toLowerCase().includes(filter.castName.toLowerCase());
     const matchesBody = !filter.bodyType || review.bodyType === filter.bodyType;
     const matchesPersonality =
       !filter.personality || review.personality === filter.personality;

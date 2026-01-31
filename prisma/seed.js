@@ -38,7 +38,7 @@ const baseDate = new Date('2025-12-01T00:00:00.000Z');
 const sampleReviews = [
   {
     shopName: '水色りぼん',
-    workerName: 'らら',
+    castName: 'らら',
     estimatedAge: '23-25',
     bodyType: 'スレンダー',
     bustSize: 'D',
@@ -55,7 +55,7 @@ const sampleReviews = [
   },
   {
     shopName: 'fantasy',
-    workerName: 'リノ',
+    castName: 'リノ',
     estimatedAge: '26-28',
     bodyType: 'グラマラス',
     bustSize: 'F',
@@ -72,7 +72,7 @@ const sampleReviews = [
   },
   {
     shopName: '女帝',
-    workerName: 'マリア',
+    castName: 'マリア',
     estimatedAge: '30-32',
     bodyType: 'メリハリ',
     bustSize: 'E',
@@ -89,7 +89,7 @@ const sampleReviews = [
   },
   {
     shopName: 'Velvet Garden',
-    workerName: 'ユイ',
+    castName: 'ユイ',
     estimatedAge: '24-26',
     bodyType: '標準',
     bustSize: 'C',
@@ -106,7 +106,7 @@ const sampleReviews = [
   },
   {
     shopName: 'Secret Lagoon',
-    workerName: 'サラ',
+    castName: 'サラ',
     estimatedAge: '27-29',
     bodyType: 'スレンダー',
     bustSize: 'B',
@@ -123,7 +123,7 @@ const sampleReviews = [
   },
   {
     shopName: '水色りぼん',
-    workerName: 'ミオ',
+    castName: 'ミオ',
     estimatedAge: '22-24',
     bodyType: '小柄',
     bustSize: 'E',
@@ -140,7 +140,7 @@ const sampleReviews = [
   },
   {
     shopName: 'fantasy',
-    workerName: 'アヤ',
+    castName: 'アヤ',
     estimatedAge: '25-27',
     bodyType: '長身',
     bustSize: 'D',
@@ -157,7 +157,7 @@ const sampleReviews = [
   },
   {
     shopName: '女帝',
-    workerName: 'カレン',
+    castName: 'カレン',
     estimatedAge: '28-30',
     bodyType: 'メリハリ',
     bustSize: 'G',
@@ -174,7 +174,7 @@ const sampleReviews = [
   },
   {
     shopName: 'Velvet Garden',
-    workerName: 'レイ',
+    castName: 'レイ',
     estimatedAge: '29-31',
     bodyType: '標準',
     bustSize: 'C',
@@ -191,7 +191,7 @@ const sampleReviews = [
   },
   {
     shopName: 'Secret Lagoon',
-    workerName: 'ナナ',
+    castName: 'ナナ',
     estimatedAge: '23-25',
     bodyType: 'スレンダー',
     bustSize: 'D',
@@ -208,7 +208,7 @@ const sampleReviews = [
   },
   {
     shopName: '水色りぼん',
-    workerName: 'リン',
+    castName: 'リン',
     estimatedAge: '24-26',
     bodyType: '標準',
     bustSize: 'C',
@@ -225,7 +225,7 @@ const sampleReviews = [
   },
   {
     shopName: 'fantasy',
-    workerName: 'モエ',
+    castName: 'モエ',
     estimatedAge: '21-23',
     bodyType: '小柄',
     bustSize: 'B',
@@ -242,7 +242,7 @@ const sampleReviews = [
   },
   {
     shopName: '女帝',
-    workerName: 'シノ',
+    castName: 'シノ',
     estimatedAge: '31-33',
     bodyType: 'グラマラス',
     bustSize: 'F',
@@ -259,7 +259,7 @@ const sampleReviews = [
   },
   {
     shopName: 'Velvet Garden',
-    workerName: 'ハル',
+    castName: 'ハル',
     estimatedAge: '26-28',
     bodyType: 'メリハリ',
     bustSize: 'E',
@@ -276,7 +276,7 @@ const sampleReviews = [
   },
   {
     shopName: 'Secret Lagoon',
-    workerName: 'ユリ',
+    castName: 'ユリ',
     estimatedAge: '25-27',
     bodyType: '標準',
     bustSize: 'C',
@@ -293,7 +293,7 @@ const sampleReviews = [
   },
   {
     shopName: '水色りぼん',
-    workerName: 'サキ',
+    castName: 'サキ',
     estimatedAge: '23-25',
     bodyType: 'スレンダー',
     bustSize: 'D',

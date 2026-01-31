@@ -36,7 +36,7 @@ export default function AccessPanel() {
               自分の体験談を投稿
             </h3>
             <p className="mt-2 text-sm text-emerald-100/90">
-              店舗名、担当嬢、料金、感想を具体的に書いてください。スタッフが24時間以内に審査し、合格後に解錠します。
+              店舗名、担当キャスト、料金、感想を具体的に書いてください。スタッフが24時間以内に審査し、合格後に解錠します。
             </p>
             <Link
               href="/review/register"

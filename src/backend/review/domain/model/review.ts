@@ -3,7 +3,7 @@ import type { User } from '../../../user/domain/model/user';
 export type Review = {
   id: string;
   shopName: string;
-  workerName: string;
+  castName: string;
   estimatedAge: string | null;
   bodyType: string | null;
   bustSize: string | null;

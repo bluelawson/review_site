@@ -131,7 +131,7 @@ export default function ReviewDetail({ id }: Props) {
         {review.headline}
       </h1>
       <p className="mt-2 text-sm text-slate-400">
-        {review.workerName}
+        {review.castName}
         {review.estimatedAge ? ` / 推定 ${review.estimatedAge}` : ''}
         {review.bodyType ? ` / ${review.bodyType}` : ''}
         {review.bustSize ? ` / ${review.bustSize} cup` : ''}
