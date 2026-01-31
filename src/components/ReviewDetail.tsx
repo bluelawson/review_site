@@ -253,7 +253,13 @@ export default function ReviewDetail({ id }: Props) {
         </div>
       </div>
       <div className="mt-8 flex flex-wrap items-center justify-between gap-4 text-xs uppercase tracking-[0.4em] text-slate-500">
-        <Link href="/">← 戻る</Link>
+        <button
+          type="button"
+          onClick={() => router.back()}
+          className="text-left"
+        >
+          ← 戻る
+        </button>
         <div className="flex items-center gap-2">
           {canLike && (
             <Button
