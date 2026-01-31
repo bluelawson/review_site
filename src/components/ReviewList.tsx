@@ -199,8 +199,12 @@ export default function ReviewList() {
             }
             className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-white hover:border-white/30"
           >
-            <option value="reviewRating">レビュー評価順</option>
-            <option value="createdAt">新着順</option>
+            <option value="reviewRating" className="bg-slate-900 text-white">
+              レビュー評価順
+            </option>
+            <option value="createdAt" className="bg-slate-900 text-white">
+              新着順
+            </option>
           </select>
           {[
             { value: 'grid', label: '2列' },
