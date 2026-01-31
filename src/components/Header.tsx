@@ -29,7 +29,10 @@ export default function Header() {
   }, [user]);
 
   const isUnlocked =
-    !!user && (user.plan === 'premium' || user.reviewsSubmitted > 0);
+    !!user &&
+    (user.plan === 'premium' ||
+      user.plan === 'admin' ||
+      user.reviewsSubmitted > 0);
 
   const handleLogout = () => {
     logout();

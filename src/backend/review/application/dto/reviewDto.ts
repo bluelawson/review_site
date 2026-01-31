@@ -27,3 +27,8 @@ export type CreateReviewDto = {
 };
 
 export type CreateReviewData = Omit<CreateReviewDto, 'authorEmail'>;
+
+export type UpdateReviewVisibilityDto = {
+  id: string;
+  isPublished: boolean;
+};

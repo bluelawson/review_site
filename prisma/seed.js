@@ -24,6 +24,13 @@ const sampleUsers = [
     plan: 'guest',
     reviewsSubmitted: 0,
   },
+  {
+    name: '管理者',
+    email: 'admin@seren.jp',
+    password: 'admin123',
+    plan: 'admin',
+    reviewsSubmitted: 0,
+  },
 ];
 
 const baseDate = new Date('2025-12-01T00:00:00.000Z');
@@ -305,6 +312,7 @@ const sampleReviews = [
   const createdAt = new Date(baseDate.getTime() + index * 24 * 60 * 60 * 1000);
   return {
     ...review,
+    isPublished: review.isPublished ?? true,
     createdAt,
     updatedAt: createdAt,
   };

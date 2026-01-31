@@ -89,3 +89,15 @@ export async function removeReview(id: string): Promise<void> {
     'DeleteReview',
   );
 }
+
+export async function setReviewVisibility(
+  id: string,
+  isPublished: boolean,
+): Promise<Review> {
+  const data = await requestGraphQL<{ setReviewVisibility: Review }>(
+    ReviewsDocument,
+    { id, isPublished },
+    'SetReviewVisibility',
+  );
+  return data.setReviewVisibility;
+}

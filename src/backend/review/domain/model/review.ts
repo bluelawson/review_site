@@ -14,6 +14,7 @@ export type Review = {
   serviceHighlights: string[];
   rating: number;
   reviewRating: number;
+  isPublished: boolean;
   damage: string | null;
   createdAt: string;
   updatedAt: string;

@@ -13,6 +13,7 @@ query Reviews($filter: ReviewFilterInput) {
     serviceHighlights
     rating
     reviewRating
+    isPublished
     damage
     createdAt
     updatedAt
@@ -39,6 +40,7 @@ query Review($id: ID!) {
     serviceHighlights
     rating
     reviewRating
+    isPublished
     damage
     createdAt
     updatedAt
@@ -65,6 +67,7 @@ mutation CreateReview($input: ReviewInput!) {
     serviceHighlights
     rating
     reviewRating
+    isPublished
     damage
     createdAt
     updatedAt
@@ -78,4 +81,31 @@ mutation CreateReview($input: ReviewInput!) {
 
 mutation DeleteReview($id: ID!) {
   deleteReview(id: $id)
+}
+
+mutation SetReviewVisibility($id: ID!, $isPublished: Boolean!) {
+  setReviewVisibility(id: $id, isPublished: $isPublished) {
+    id
+    shopName
+    workerName
+    estimatedAge
+    bodyType
+    bustSize
+    heightCm
+    personality
+    headline
+    detail
+    serviceHighlights
+    rating
+    reviewRating
+    isPublished
+    damage
+    createdAt
+    updatedAt
+    author {
+      id
+      name
+      email
+    }
+  }
 }

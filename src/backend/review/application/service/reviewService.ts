@@ -1,4 +1,8 @@
-import type { CreateReviewDto, ReviewFilterDto } from '../dto/reviewDto';
+import type {
+  CreateReviewDto,
+  ReviewFilterDto,
+  UpdateReviewVisibilityDto,
+} from '../dto/reviewDto';
 import type { Review } from '../../domain/model/review';
 import type { ReviewRepository } from '../../repository/reviewRepository';
 import type { UserRepository } from '../../../user/repository/userRepository';
@@ -28,5 +32,11 @@ export class ReviewService {
   async deleteReview(id: string): Promise<boolean> {
     await this.reviewRepository.deleteById(id);
     return true;
+  }
+
+  async setReviewVisibility(
+    input: UpdateReviewVisibilityDto,
+  ): Promise<Review> {
+    return this.reviewRepository.setVisibility(input.id, input.isPublished);
   }
 }

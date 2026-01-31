@@ -8,13 +8,25 @@ import type { Review } from '@/types';
 type Props = {
   review: Review;
   onDelete?: (id: string) => Promise<void> | void;
+  onTogglePublish?: (id: string, isPublished: boolean) => Promise<void> | void;
+  canDelete?: boolean;
+  canTogglePublish?: boolean;
 };
 
-export default function ReviewCard({ review, onDelete }: Props) {
+export default function ReviewCard({
+  review,
+  onDelete,
+  onTogglePublish,
+  canDelete = false,
+  canTogglePublish = false,
+}: Props) {
   const { user } = useAuthState();
-  const isOwner = user?.email === review.author.email;
   const unlocked =
-    !!user && (user.reviewsSubmitted > 0 || user.plan === 'premium');
+    review.isPublished ||
+    (!!user &&
+      (user.reviewsSubmitted > 0 ||
+        user.plan === 'premium' ||
+        user.plan === 'admin'));
   const highlights = review.serviceHighlights ?? [];
   const createdAtLabel = new Date(review.createdAt).toLocaleDateString('ja-JP');
 
@@ -22,6 +34,11 @@ export default function ReviewCard({ review, onDelete }: Props) {
     if (!onDelete) return;
     if (!confirm('このレビューを削除しますか？')) return;
     await onDelete(review.id);
+  };
+
+  const handleTogglePublish = async () => {
+    if (!onTogglePublish) return;
+    await onTogglePublish(review.id, !review.isPublished);
   };
 
   return (
@@ -67,11 +84,18 @@ export default function ReviewCard({ review, onDelete }: Props) {
         >
           {unlocked ? '全文を読む' : '詳細を見る'}
         </Link>
-        {isOwner && onDelete && (
-          <Button variant="ghost" type="button" onClick={handleDelete}>
-            Delete
-          </Button>
-        )}
+        <div className="flex items-center gap-2">
+          {canTogglePublish && onTogglePublish && (
+            <Button variant="ghost" type="button" onClick={handleTogglePublish}>
+              {review.isPublished ? '非公開' : '公開'}
+            </Button>
+          )}
+          {canDelete && onDelete && (
+            <Button variant="ghost" type="button" onClick={handleDelete}>
+              Delete
+            </Button>
+          )}
+        </div>
       </div>
       {!unlocked && (
         <div className="pointer-events-none absolute inset-0 rounded-3xl border border-amber-400/20"></div>

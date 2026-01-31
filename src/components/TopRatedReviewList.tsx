@@ -4,10 +4,12 @@ import { useEffect, useMemo, useState } from 'react';
 
 import ReviewCard from '@/components/ReviewCard';
 import PanelMessage from '@/components/ui/PanelMessage';
+import { useAuthState } from '@/hooks/useAuthState';
 import { fetchReviews } from '@/lib/reviewApi';
 import type { Review } from '@/types';
 
 export default function TopRatedReviewList() {
+  const { user } = useAuthState();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -40,14 +42,22 @@ export default function TopRatedReviewList() {
   }, []);
 
   const topRatedReviews = useMemo(() => {
-    const sorted = [...reviews].sort((a, b) => {
+    const canViewAll =
+      !!user &&
+      (user.reviewsSubmitted > 0 ||
+        user.plan === 'premium' ||
+        user.plan === 'admin');
+    const visible = canViewAll
+      ? reviews
+      : reviews.filter((review) => review.isPublished);
+    const sorted = [...visible].sort((a, b) => {
       const ratingDiff =
         (b.reviewRating ?? b.rating) - (a.reviewRating ?? a.rating);
       if (ratingDiff !== 0) return ratingDiff;
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
     return sorted.slice(0, 4);
-  }, [reviews]);
+  }, [reviews, user]);
 
   return (
     <section className="space-y-8">

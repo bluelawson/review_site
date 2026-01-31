@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import Button from '@/components/ui/Button';
 import PanelMessage from '@/components/ui/PanelMessage';
 import { useAuthState } from '@/hooks/useAuthState';
-import { fetchReviewById, removeReview } from '@/lib/reviewApi';
+import { fetchReviewById, removeReview, setReviewVisibility } from '@/lib/reviewApi';
 import type { Review } from '@/types';
 
 type Props = {
@@ -20,6 +20,7 @@ export default function ReviewDetail({ id }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [updatingVisibility, setUpdatingVisibility] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -86,9 +87,40 @@ export default function ReviewDetail({ id }: Props) {
     }
   };
 
-  const unlocked =
-    !!user && (user.reviewsSubmitted > 0 || user.plan === 'premium');
-  const canDelete = !!user && user.email === review.author.email;
+  const canViewAll =
+    !!user &&
+    (user.reviewsSubmitted > 0 ||
+      user.plan === 'premium' ||
+      user.plan === 'admin');
+  const unlocked = canViewAll || review.isPublished;
+  const canManage = user?.plan === 'admin';
+  const canDelete =
+    !!user && (user.plan === 'admin' || user.email === review.author.email);
+
+  if (!canViewAll && !review.isPublished) {
+    return (
+      <PanelMessage>このレビューは非公開です。</PanelMessage>
+    );
+  }
+
+  const handleTogglePublish = async () => {
+    if (!review || updatingVisibility) return;
+    try {
+      setUpdatingVisibility(true);
+      const updated = await setReviewVisibility(
+        review.id,
+        !review.isPublished,
+      );
+      setReview(updated);
+    } catch (err) {
+      console.error(err);
+      setError(
+        err instanceof Error ? err.message : '公開状態の更新に失敗しました。',
+      );
+    } finally {
+      setUpdatingVisibility(false);
+    }
+  };
 
   return (
     <article className="glass-panel mx-auto max-w-4xl rounded-3xl border border-white/10 px-8 py-10">
@@ -139,15 +171,26 @@ export default function ReviewDetail({ id }: Props) {
       </div>
       <div className="mt-8 flex flex-wrap items-center justify-between gap-4 text-xs uppercase tracking-[0.4em] text-slate-500">
         <Link href="/">← 戻る</Link>
-        {canDelete && (
-          <Button
-            variant="ghost"
-            onClick={handleDelete}
-            disabled={deleting}
-          >
-            {deleting ? '削除中...' : 'DELETE'}
-          </Button>
-        )}
+        <div className="flex items-center gap-2">
+          {canManage && (
+            <Button
+              variant="ghost"
+              onClick={handleTogglePublish}
+              disabled={updatingVisibility}
+            >
+              {review.isPublished ? '非公開' : '公開'}
+            </Button>
+          )}
+          {canDelete && (
+            <Button
+              variant="ghost"
+              onClick={handleDelete}
+              disabled={deleting}
+            >
+              {deleting ? '削除中...' : 'DELETE'}
+            </Button>
+          )}
+        </div>
       </div>
     </article>
   );

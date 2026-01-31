@@ -97,9 +97,11 @@ export default function Hero() {
         </h2>
         <p className="mt-3 text-sm text-slate-400">
           {user
-            ? user.reviewsSubmitted > 0
-              ? 'すでに投稿済みのため、全てのレビューがアンロックされています。'
-              : 'まだレビュー未投稿。自分の体験談を1本書くと即時で解錠されます。'
+            ? user.plan === 'admin'
+              ? '管理者アカウントのため、すべてのレビューが常に閲覧可能です。'
+              : user.reviewsSubmitted > 0
+                ? 'すでに投稿済みのため、全てのレビューがアンロックされています。'
+                : 'まだレビュー未投稿。自分の体験談を1本書くと即時で解錠されます。'
             : 'ログインまたは新規登録で閲覧履歴を保存し、レビューを書き込めるようになります。'}
         </p>
         <div className="divider my-6"></div>

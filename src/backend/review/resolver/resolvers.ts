@@ -1,6 +1,7 @@
 import type {
   CreateReviewDto,
   ReviewFilterDto,
+  UpdateReviewVisibilityDto,
 } from '../application/dto/reviewDto';
 import { ReviewService } from '../application/service/reviewService';
 import { reviewRepository } from '../repository/reviewRepository';
@@ -29,6 +30,12 @@ const resolvers = {
     },
     deleteReview: async (_parent: unknown, args: { id: string }) => {
       return reviewService.deleteReview(args.id);
+    },
+    setReviewVisibility: async (
+      _parent: unknown,
+      args: UpdateReviewVisibilityDto,
+    ) => {
+      return reviewService.setReviewVisibility(args);
     },
   },
 };

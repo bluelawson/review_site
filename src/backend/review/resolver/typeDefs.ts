@@ -26,6 +26,7 @@ const typeDefs = gql`
     serviceHighlights: [String!]!
     rating: Float!
     reviewRating: Float!
+    isPublished: Boolean!
     damage: String
     createdAt: String!
     updatedAt: String!
@@ -68,6 +69,7 @@ const typeDefs = gql`
   type Mutation {
     createReview(input: ReviewInput!): Review!
     deleteReview(id: ID!): Boolean!
+    setReviewVisibility(id: ID!, isPublished: Boolean!): Review!
   }
 `;
 

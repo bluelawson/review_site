@@ -25,6 +25,7 @@ export type Review = {
   serviceHighlights: string[];
   rating: number;
   reviewRating: number;
+  isPublished: boolean;
   damage?: string | null;
   createdAt: string;
   updatedAt: string;
@@ -52,6 +53,6 @@ export type UserProfile = {
   name: string;
   email: string;
   password: string;
-  plan: 'guest' | 'premium';
+  plan: 'guest' | 'premium' | 'admin';
   reviewsSubmitted: number;
 };

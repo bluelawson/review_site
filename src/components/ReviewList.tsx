@@ -6,7 +6,8 @@ import ReviewCard from '@/components/ReviewCard';
 import ReviewFilters from '@/components/ReviewFilters';
 import PanelMessage from '@/components/ui/PanelMessage';
 import PillButton from '@/components/ui/PillButton';
-import { fetchReviews, removeReview } from '@/lib/reviewApi';
+import { useAuthState } from '@/hooks/useAuthState';
+import { fetchReviews, removeReview, setReviewVisibility } from '@/lib/reviewApi';
 import type { Review, ReviewFilter } from '@/types';
 
 const defaultFilter: ReviewFilter = {
@@ -73,6 +74,7 @@ const filterReviews = (reviews: Review[], filter: ReviewFilter) => {
 };
 
 export default function ReviewList() {
+  const { user } = useAuthState();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -80,6 +82,12 @@ export default function ReviewList() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [page, setPage] = useState(1);
   const pageSize = 8;
+  const canViewAll =
+    !!user &&
+    (user.plan === 'premium' ||
+      user.plan === 'admin' ||
+      user.reviewsSubmitted > 0);
+  const canManage = user?.plan === 'admin';
 
   useEffect(() => {
     let active = true;
@@ -125,15 +133,36 @@ export default function ReviewList() {
     }
   };
 
+  const handleTogglePublish = async (id: string, isPublished: boolean) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const updated = await setReviewVisibility(id, isPublished);
+      setReviews((prev) =>
+        prev.map((review) => (review.id === id ? updated : review)),
+      );
+    } catch (err) {
+      console.error(err);
+      setError(
+        err instanceof Error ? err.message : '公開状態の更新に失敗しました。',
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const filteredReviews = useMemo(() => {
     const result = filterReviews(reviews, filter);
-    return [...result].sort((a, b) => {
+    const visible = canViewAll
+      ? result
+      : result.filter((review) => review.isPublished);
+    return [...visible].sort((a, b) => {
       const ratingDiff =
         (b.reviewRating ?? b.rating) - (a.reviewRating ?? a.rating);
       if (ratingDiff !== 0) return ratingDiff;
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
-  }, [reviews, filter]);
+  }, [reviews, filter, canViewAll]);
   const totalPages = Math.max(1, Math.ceil(filteredReviews.length / pageSize));
   const pagedReviews = useMemo(() => {
     const start = (page - 1) * pageSize;
@@ -200,6 +229,13 @@ export default function ReviewList() {
                 review={review}
                 key={review.id}
                 onDelete={handleDelete}
+                onTogglePublish={canManage ? handleTogglePublish : undefined}
+                canDelete={
+                  !!user &&
+                  (user.plan === 'admin' ||
+                    user.email === review.author.email)
+                }
+                canTogglePublish={canManage}
               />
             ))}
           </div>

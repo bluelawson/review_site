@@ -21,6 +21,14 @@ const defaultUsers: UserProfile[] = [
     plan: 'guest',
     reviewsSubmitted: 0,
   },
+  {
+    id: 'admin',
+    name: '管理者',
+    email: 'admin@seren.jp',
+    password: 'admin123',
+    plan: 'admin',
+    reviewsSubmitted: 0,
+  },
 ];
 
 const AUTH_EVENT = 'seren-auth-change';
@@ -57,7 +65,18 @@ export const getUsers = (): UserProfile[] => {
     return defaultUsers;
   }
   try {
-    return JSON.parse(raw) as UserProfile[];
+    const users = JSON.parse(raw) as UserProfile[];
+    if (!users.some((entry) => entry.email === 'admin@seren.jp')) {
+      const adminUser = defaultUsers.find(
+        (entry) => entry.email === 'admin@seren.jp',
+      );
+      if (adminUser) {
+        const updated = [...users, adminUser];
+        storage.setItem(STORAGE_KEY, JSON.stringify(updated));
+        return updated;
+      }
+    }
+    return users;
   } catch {
     storage.setItem(STORAGE_KEY, JSON.stringify(defaultUsers));
     return defaultUsers;

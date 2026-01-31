@@ -12,6 +12,7 @@ export type ReviewRepository = {
   findMany(filter?: ReviewFilterDto | null): Promise<Review[]>;
   findById(id: string): Promise<Review | null>;
   create(input: CreateReviewData, authorId: string): Promise<Review>;
+  setVisibility(id: string, isPublished: boolean): Promise<Review>;
   deleteById(id: string): Promise<void>;
 };
 
@@ -83,6 +84,14 @@ export const reviewRepository: ReviewRepository = {
           connect: { id: authorId },
         },
       },
+      include: { author: true },
+    });
+    return mapReview(review);
+  },
+  async setVisibility(id: string, isPublished: boolean) {
+    const review = await prisma.review.update({
+      where: { id },
+      data: { isPublished },
       include: { author: true },
     });
     return mapReview(review);
