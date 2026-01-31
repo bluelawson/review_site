@@ -23,6 +23,9 @@ export const metadata: Metadata = {
   title: 'SEREN | Soapland Review Exchange',
   description:
     'SERENはソープ体験者のためのクローズドレビューコミュニティです。料金を支払うか自分のレビューを投稿することで、他の口コミが閲覧可能になります。',
+  icons: {
+    icon: '/favicon.svg',
+  },
 };
 
 export default function RootLayout({
