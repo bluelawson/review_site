@@ -6,6 +6,7 @@ import ReviewCard from '@/components/ReviewCard';
 import PanelMessage from '@/components/ui/PanelMessage';
 import { useAuthState } from '@/hooks/useAuthState';
 import { fetchReviews } from '@/lib/reviewApi';
+import { TOP_RATED_REVIEW_COUNT } from '@/constants/review';
 import type { Review } from '@/types';
 
 export default function TopRatedReviewList() {
@@ -42,22 +43,14 @@ export default function TopRatedReviewList() {
   }, []);
 
   const topRatedReviews = useMemo(() => {
-    const canViewAll =
-      !!user &&
-      (user.reviewsSubmitted > 0 ||
-        user.plan === 'premium' ||
-        user.plan === 'admin');
-    const visible = canViewAll
-      ? reviews
-      : reviews.filter((review) => review.isPublished);
-    const sorted = [...visible].sort((a, b) => {
+    const sorted = [...reviews].sort((a, b) => {
       const ratingDiff =
         (b.reviewRating ?? b.castRating) - (a.reviewRating ?? a.castRating);
       if (ratingDiff !== 0) return ratingDiff;
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
-    return sorted.slice(0, 4);
-  }, [reviews, user]);
+    return sorted.slice(0, TOP_RATED_REVIEW_COUNT);
+  }, [reviews]);
 
   return (
     <section className="space-y-8">
@@ -65,9 +58,7 @@ export default function TopRatedReviewList() {
         <p className="text-xs uppercase tracking-[0.4em] text-slate-400">
           Top Rated
         </p>
-        <h2 className="text-3xl font-semibold text-white">
-          高評価のレビュー
-        </h2>
+        <h2 className="text-3xl font-semibold text-white">高評価のレビュー</h2>
       </header>
       {error ? (
         <PanelMessage tone="error">{error}</PanelMessage>
@@ -84,7 +75,7 @@ export default function TopRatedReviewList() {
       ) : (
         <div className="grid gap-6 md:grid-cols-2" id="review-grid">
           {topRatedReviews.map((review) => (
-            <ReviewCard review={review} key={review.id} />
+            <ReviewCard review={review} key={review.id} forceShowDetail />
           ))}
         </div>
       )}

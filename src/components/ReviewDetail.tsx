@@ -87,17 +87,16 @@ export default function ReviewDetail({ id }: Props) {
     }
   };
 
+  const isAdmin = user?.plan === 'admin';
   const canViewAll =
-    !!user &&
-    (user.reviewsSubmitted > 0 ||
-      user.plan === 'premium' ||
-      user.plan === 'admin');
-  const unlocked = canViewAll || review.isPublished;
-  const canManage = user?.plan === 'admin';
-  const canDelete =
-    !!user && (user.plan === 'admin' || user.email === review.author.email);
+    !!user && (user.reviewsSubmitted > 0 || user.plan === 'premium');
+  const canViewUnpublished = isAdmin || canViewAll;
+  const unlocked = review.isPublished || canViewUnpublished;
+  const canManage = isAdmin;
+  const isOwner = user?.email === review.author.email;
+  const canDelete = !!user && (isAdmin || isOwner);
 
-  if (!canViewAll && !review.isPublished) {
+  if (!review.isPublished && !canViewUnpublished) {
     return (
       <PanelMessage>このレビューは非公開です。</PanelMessage>
     );

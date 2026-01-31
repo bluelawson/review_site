@@ -11,7 +11,7 @@ const defaultUsers: UserProfile[] = [
     email: 'guest@seren.jp',
     password: 'seren123',
     plan: 'guest',
-    reviewsSubmitted: 1,
+    reviewsSubmitted: 0,
   },
   {
     id: 'fresh',

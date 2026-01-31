@@ -8,6 +8,7 @@ import PanelMessage from '@/components/ui/PanelMessage';
 import PillButton from '@/components/ui/PillButton';
 import { useAuthState } from '@/hooks/useAuthState';
 import { fetchReviews, removeReview, setReviewVisibility } from '@/lib/reviewApi';
+import { TOP_RATED_REVIEW_COUNT } from '@/constants/review';
 import type { Review, ReviewFilter } from '@/types';
 
 const defaultFilter: ReviewFilter = {
@@ -90,11 +91,9 @@ export default function ReviewList() {
   const [page, setPage] = useState(1);
   const pageSize = 8;
   const canViewAll =
-    !!user &&
-    (user.plan === 'premium' ||
-      user.plan === 'admin' ||
-      user.reviewsSubmitted > 0);
-  const canManage = user?.plan === 'admin';
+    !!user && (user.plan === 'premium' || user.reviewsSubmitted > 0);
+  const isAdmin = user?.plan === 'admin';
+  const canManage = isAdmin;
 
   useEffect(() => {
     let active = true;
@@ -160,10 +159,7 @@ export default function ReviewList() {
 
   const filteredReviews = useMemo(() => {
     const result = filterReviews(reviews, filter);
-    const visible = canViewAll
-      ? result
-      : result.filter((review) => review.isPublished);
-    return [...visible].sort((a, b) => {
+    return [...result].sort((a, b) => {
       if (sortKey === 'reviewRating') {
         const ratingDiff =
           (b.reviewRating ?? b.castRating) - (a.reviewRating ?? a.castRating);
@@ -171,7 +167,14 @@ export default function ReviewList() {
       }
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
-  }, [reviews, filter, canViewAll, sortKey]);
+  }, [reviews, filter, sortKey]);
+  const topRatedIds = useMemo(() => {
+    return new Set(
+      filteredReviews
+        .slice(0, TOP_RATED_REVIEW_COUNT)
+        .map((review) => review.id),
+    );
+  }, [filteredReviews]);
   const totalPages = Math.max(1, Math.ceil(filteredReviews.length / pageSize));
   const pagedReviews = useMemo(() => {
     const start = (page - 1) * pageSize;
@@ -259,6 +262,7 @@ export default function ReviewList() {
                     user.email === review.author.email)
                 }
                 canTogglePublish={canManage}
+                forceShowDetail={topRatedIds.has(review.id)}
               />
             ))}
           </div>

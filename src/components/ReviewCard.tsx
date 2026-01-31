@@ -11,6 +11,7 @@ type Props = {
   onTogglePublish?: (id: string, isPublished: boolean) => Promise<void> | void;
   canDelete?: boolean;
   canTogglePublish?: boolean;
+  forceShowDetail?: boolean;
 };
 
 export default function ReviewCard({
@@ -19,14 +20,15 @@ export default function ReviewCard({
   onTogglePublish,
   canDelete = false,
   canTogglePublish = false,
+  forceShowDetail = false,
 }: Props) {
   const { user } = useAuthState();
-  const unlocked =
-    review.isPublished ||
-    (!!user &&
-      (user.reviewsSubmitted > 0 ||
-        user.plan === 'premium' ||
-        user.plan === 'admin'));
+  const isAdmin = user?.plan === 'admin';
+  const canViewAll =
+    !!user && (user.reviewsSubmitted > 0 || user.plan === 'premium');
+  const unlocked = review.isPublished || isAdmin || canViewAll;
+  const shouldBlur =
+    !forceShowDetail && !review.isPublished && !isAdmin && !canViewAll;
   const highlights = review.serviceHighlights ?? [];
   const createdAtLabel = new Date(review.createdAt).toLocaleDateString('ja-JP');
 
@@ -68,7 +70,7 @@ export default function ReviewCard({
       </div>
       <p
         className={`mt-4 text-sm leading-relaxed ${
-          unlocked ? 'text-slate-300' : 'text-slate-500 blur-[2px]'
+          shouldBlur ? 'text-slate-500 blur-[2px]' : 'text-slate-300'
         }`}
       >
         {review.detail}
@@ -98,7 +100,7 @@ export default function ReviewCard({
           )}
         </div>
       </div>
-      {!unlocked && (
+      {shouldBlur && (
         <div className="pointer-events-none absolute inset-0 rounded-3xl border border-amber-400/20"></div>
       )}
     </article>
