@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import Button from '@/components/ui/Button';
 import PanelMessage from '@/components/ui/PanelMessage';
 import { useAuthState } from '@/hooks/useAuthState';
-import { fetchReviewById } from '@/lib/reviewApi';
+import { fetchReviewById, removeReview } from '@/lib/reviewApi';
 import type { Review } from '@/types';
 
 type Props = {
@@ -19,6 +19,7 @@ export default function ReviewDetail({ id }: Props) {
   const [review, setReview] = useState<Review | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -63,6 +64,27 @@ export default function ReviewDetail({ id }: Props) {
       <PanelMessage>該当するレビューが見つかりませんでした。</PanelMessage>
     );
   }
+  if (!review) {
+    return null;
+  }
+
+  const handleDelete = async () => {
+    if (!review || deleting) return;
+    const confirmed = window.confirm('このレビューを削除しますか？');
+    if (!confirmed) return;
+    try {
+      setDeleting(true);
+      await removeReview(review.id);
+      router.push('/review/search');
+    } catch (err) {
+      console.error(err);
+      setError(
+        err instanceof Error ? err.message : 'レビューの削除に失敗しました。',
+      );
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   const unlocked =
     !!user && (user.reviewsSubmitted > 0 || user.plan === 'premium');
@@ -114,9 +136,15 @@ export default function ReviewDetail({ id }: Props) {
           </p>
         </div>
       </div>
-      <div className="mt-8 flex justify-between text-xs uppercase tracking-[0.4em] text-slate-500">
+      <div className="mt-8 flex flex-wrap items-center justify-between gap-4 text-xs uppercase tracking-[0.4em] text-slate-500">
         <Link href="/">← 戻る</Link>
-        <Link href="/review/register">自分の体験談を投稿</Link>
+        <Button
+          variant="ghost"
+          onClick={handleDelete}
+          disabled={deleting}
+        >
+          {deleting ? '削除中...' : 'DELETE'}
+        </Button>
       </div>
     </article>
   );
