@@ -35,6 +35,7 @@ model Review {
   serviceHighlights Json?
   castRating            Float   @map("rating")
   isPublished       Boolean  @default(true)
+  status            ReviewStatus @default(PENDING)
   damage            String?
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
@@ -42,6 +43,12 @@ model Review {
   author   User   @relation(fields: [authorId], references: [id])
   authorId String
   likes    ReviewLike[]
+}
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }
 
 model ReviewLike {

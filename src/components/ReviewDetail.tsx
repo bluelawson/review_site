@@ -11,6 +11,7 @@ import {
   fetchReviews,
   likeReview,
   removeReview,
+  setReviewStatus,
   setReviewVisibility,
 } from '@/lib/reviewApi';
 import { TOP_RATED_REVIEW_COUNT } from '@/constants/review';
@@ -28,6 +29,7 @@ export default function ReviewDetail({ id }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [updatingVisibility, setUpdatingVisibility] = useState(false);
+  const [updatingStatus, setUpdatingStatus] = useState(false);
   const [liking, setLiking] = useState(false);
   const [hasLiked, setHasLiked] = useState(false);
   const [isTopRated, setIsTopRated] = useState(false);
@@ -125,14 +127,18 @@ export default function ReviewDetail({ id }: Props) {
   const canViewAll =
     !!user && (user.reviewsSubmitted > 0 || user.plan === 'premium');
   const canViewUnpublished = isAdmin || canViewAll;
-  const unlocked = review.isPublished || isTopRated || canViewUnpublished;
+  const isPending = review.status === 'PENDING';
+  const isRejected = review.status === 'REJECTED';
+  const isApproved = review.status === 'APPROVED';
+  const unlocked =
+    !isApproved || review.isPublished || isTopRated || canViewUnpublished;
   const canManage = isAdmin;
   const canDelete =
     !!user &&
     (isAdmin || (review ? user.userName === review.author.userName : false));
-  const canLike = !!user;
+  const canLike = !!user && isApproved;
 
-  if (!review.isPublished && !isTopRated && !canViewUnpublished) {
+  if (isApproved && !review.isPublished && !isTopRated && !canViewUnpublished) {
     return <PanelMessage>このレビューは非公開です。</PanelMessage>;
   }
 
@@ -188,6 +194,28 @@ export default function ReviewDetail({ id }: Props) {
     }
   };
 
+  const handleSetStatus = async (nextStatus: 'APPROVED' | 'REJECTED') => {
+    if (!review || updatingStatus || !user) return;
+    const actionLabel = nextStatus === 'APPROVED' ? '承認' : '否認';
+    if (!confirm(`このレビューを${actionLabel}しますか？`)) return;
+    try {
+      setUpdatingStatus(true);
+      const updated = await setReviewStatus(
+        review.id,
+        nextStatus,
+        user.email,
+      );
+      setReview((prev) => (prev ? { ...prev, ...updated } : prev));
+    } catch (err) {
+      console.error(err);
+      setError(
+        err instanceof Error ? err.message : '審査結果の更新に失敗しました。',
+      );
+    } finally {
+      setUpdatingStatus(false);
+    }
+  };
+
   return (
     <article className="glass-panel mx-auto max-w-4xl rounded-3xl border border-white/10 px-8 py-10">
       <div className="flex items-center justify-between text-xs uppercase tracking-[0.4em] text-slate-400">
@@ -207,6 +235,16 @@ export default function ReviewDetail({ id }: Props) {
               {isTopRated || review.isPublished ? '公開中' : '非公開'}
             </span>
           )}
+          {isPending && (
+            <span className="rounded-full bg-sky-400/10 px-2 py-0.5 text-[10px] uppercase tracking-[0.3em] text-sky-200">
+              審査中
+            </span>
+          )}
+          {isRejected && (
+            <span className="rounded-full bg-rose-400/10 px-2 py-0.5 text-[10px] uppercase tracking-[0.3em] text-rose-200">
+              否認
+            </span>
+          )}
         </div>
       </div>
       <h1 className="mt-4 text-4xl font-semibold text-white">
@@ -220,6 +258,13 @@ export default function ReviewDetail({ id }: Props) {
         {review.heightCm ? ` / ${review.heightCm}cm` : ''}
       </p>
       <div className="divider my-6"></div>
+      {(isPending || isRejected) && (
+        <PanelMessage tone={isPending ? 'info' : 'error'}>
+          {isPending
+            ? 'このレビューは審査中です。公開までもう少しお待ちください。'
+            : 'このレビューは否認されました。内容を見直して再投稿してください。'}
+        </PanelMessage>
+      )}
       <div className="space-y-4 text-sm leading-relaxed text-slate-300">
         {unlocked ? (
           <p className="whitespace-pre-line">{review.detail}</p>
@@ -272,7 +317,7 @@ export default function ReviewDetail({ id }: Props) {
               {hasLiked ? '♥' : '♡'}
             </Button>
           )}
-          {canManage && !isTopRated && (
+          {canManage && !isTopRated && isApproved && (
             <Button
               variant={review.isPublished ? 'ghost' : 'outline'}
               onClick={handleTogglePublish}
@@ -286,6 +331,28 @@ export default function ReviewDetail({ id }: Props) {
             >
               {review.isPublished ? '非公開にする' : '公開する'}
             </Button>
+          )}
+          {canManage && !isApproved && (
+            <>
+              <Button
+                variant="outline"
+                onClick={() => handleSetStatus('APPROVED')}
+                disabled={updatingStatus}
+                type="button"
+                className="border-emerald-300/50 text-emerald-200 hover:border-emerald-200/80"
+              >
+                承認する
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={() => handleSetStatus('REJECTED')}
+                disabled={updatingStatus}
+                type="button"
+                className="text-rose-200 hover:text-rose-100"
+              >
+                否認する
+              </Button>
+            </>
           )}
           {canDelete && (
             <Button

@@ -122,3 +122,27 @@ export async function likeReview(
   );
   return data.likeReview;
 }
+
+export async function fetchReviewRequests(
+  viewerEmail: string,
+): Promise<Review[]> {
+  const data = await requestGraphQL<{ reviewRequests: Review[] }>(
+    ReviewsDocument,
+    { viewerEmail },
+    'ReviewRequests',
+  );
+  return data.reviewRequests;
+}
+
+export async function setReviewStatus(
+  id: string,
+  status: 'PENDING' | 'APPROVED' | 'REJECTED',
+  reviewerEmail: string,
+): Promise<Review> {
+  const data = await requestGraphQL<{ setReviewStatus: Review }>(
+    ReviewsDocument,
+    { id, status, reviewerEmail },
+    'SetReviewStatus',
+  );
+  return data.setReviewStatus;
+}

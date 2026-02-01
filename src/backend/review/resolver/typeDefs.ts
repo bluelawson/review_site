@@ -3,6 +3,12 @@ import { gql } from 'graphql-tag';
 const typeDefs = gql`
   scalar JSON
 
+  enum ReviewStatus {
+    PENDING
+    APPROVED
+    REJECTED
+  }
+
   type User {
     id: ID!
     name: String!
@@ -29,6 +35,7 @@ const typeDefs = gql`
     likesCount: Int!
     likedByMe: Boolean!
     isPublished: Boolean!
+    status: ReviewStatus!
     damage: String
     createdAt: String!
     updatedAt: String!
@@ -66,6 +73,7 @@ const typeDefs = gql`
   type Query {
     reviews(filter: ReviewFilterInput): [Review!]!
     review(id: ID!, viewerEmail: String): Review
+    reviewRequests(viewerEmail: String!): [Review!]!
   }
 
   type Mutation {
@@ -73,6 +81,7 @@ const typeDefs = gql`
     deleteReview(id: ID!): Boolean!
     setReviewVisibility(id: ID!, isPublished: Boolean!): Review!
     likeReview(id: ID!, userEmail: String!): Review!
+    setReviewStatus(id: ID!, status: ReviewStatus!, reviewerEmail: String!): Review!
   }
 `;
 

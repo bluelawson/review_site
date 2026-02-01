@@ -6,8 +6,7 @@ import { useMemo } from 'react';
 import Button from '@/components/ui/Button';
 import { useAuthState } from '@/hooks/useAuthState';
 
-const navLinks = [
-  { href: '/', label: 'トップ' },
+const baseLinks = [
   { href: '/review/search', label: 'レビュー検索' },
   { href: '/review/register', label: '投稿する' },
   { href: '/mypage', label: 'マイページ' },
@@ -38,6 +37,10 @@ export default function Header() {
     logout();
     router.push('/auth/logout');
   };
+
+  const navLinks = user
+    ? [...baseLinks, { href: '/review/requests', label: '審査一覧' }]
+    : baseLinks;
 
   return (
     <header className="sticky top-0 z-30 border-b border-white/10 bg-[#050505]/90 backdrop-blur-xl">

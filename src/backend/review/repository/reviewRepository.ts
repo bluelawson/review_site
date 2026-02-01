@@ -13,6 +13,11 @@ export type ReviewRepository = {
   findById(id: string): Promise<Review | null>;
   create(input: CreateReviewData, authorId: string): Promise<Review>;
   setVisibility(id: string, isPublished: boolean): Promise<Review>;
+  setStatus(id: string, status: Prisma.ReviewStatus): Promise<Review>;
+  findByStatuses(
+    statuses: Prisma.ReviewStatus[],
+    authorId?: string,
+  ): Promise<Review[]>;
   toggleLike(reviewId: string, userId: string): Promise<Review>;
   hasUserLiked(reviewId: string, userId: string): Promise<boolean>;
   deleteById(id: string): Promise<void>;
@@ -57,7 +62,7 @@ const buildWhere = (
 export const reviewRepository: ReviewRepository = {
   async findMany(filter?: ReviewFilterDto | null) {
     const reviews = await prisma.review.findMany({
-      where: buildWhere(filter),
+      where: { ...buildWhere(filter), status: 'APPROVED' },
       orderBy: [{ likes: { _count: 'desc' } }, { createdAt: 'desc' }],
       include: { author: true, _count: { select: { likes: true } } },
     });
@@ -83,6 +88,8 @@ export const reviewRepository: ReviewRepository = {
         ...input,
         heightCm: input.heightCm ?? null,
         serviceHighlights: serviceHighlightsValue,
+        status: 'PENDING',
+        isPublished: false,
         author: {
           connect: { id: authorId },
         },
@@ -98,6 +105,28 @@ export const reviewRepository: ReviewRepository = {
       include: { author: true, _count: { select: { likes: true } } },
     });
     return mapReview(review);
+  },
+  async setStatus(id: string, status: Prisma.ReviewStatus) {
+    const review = await prisma.review.update({
+      where: { id },
+      data: {
+        status,
+        isPublished: status === 'APPROVED',
+      },
+      include: { author: true, _count: { select: { likes: true } } },
+    });
+    return mapReview(review);
+  },
+  async findByStatuses(statuses: Prisma.ReviewStatus[], authorId?: string) {
+    const reviews = await prisma.review.findMany({
+      where: {
+        status: { in: statuses },
+        ...(authorId ? { authorId } : {}),
+      },
+      orderBy: [{ createdAt: 'desc' }],
+      include: { author: true, _count: { select: { likes: true } } },
+    });
+    return reviews.map(mapReview);
   },
   async toggleLike(reviewId: string, userId: string) {
     const existing = await prisma.reviewLike.findUnique({

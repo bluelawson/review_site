@@ -28,6 +28,13 @@ export class ReviewService {
   ): Promise<Review | null> {
     const review = await this.reviewRepository.findById(id);
     if (!review) return null;
+    if (review.status !== 'APPROVED') {
+      if (!viewerEmail) return null;
+      const viewer = await this.userRepository.upsertByEmail(viewerEmail);
+      const isAuthor = viewer.email === review.author.email;
+      const isAdmin = viewer.plan === 'admin';
+      if (!isAuthor && !isAdmin) return null;
+    }
     if (!viewerEmail) {
       return { ...review, likedByMe: false };
     }
@@ -50,7 +57,37 @@ export class ReviewService {
   }
 
   async setReviewVisibility(input: UpdateReviewVisibilityDto): Promise<Review> {
+    const review = await this.reviewRepository.findById(input.id);
+    if (!review) {
+      throw new Error('レビューが見つかりませんでした。');
+    }
+    if (review.status !== 'APPROVED') {
+      throw new Error('審査中のレビューは公開状態を変更できません。');
+    }
     return this.reviewRepository.setVisibility(input.id, input.isPublished);
+  }
+
+  async listModerationReviews(viewerEmail: string): Promise<Review[]> {
+    const viewer = await this.userRepository.upsertByEmail(viewerEmail);
+    const statuses = ['PENDING', 'REJECTED'] as const;
+    if (viewer.plan === 'admin') {
+      return this.reviewRepository.findByStatuses([...statuses]);
+    }
+    return this.reviewRepository.findByStatuses([...statuses], viewer.id);
+  }
+
+  async setReviewStatus(input: {
+    id: string;
+    status: 'PENDING' | 'APPROVED' | 'REJECTED';
+    reviewerEmail: string;
+  }): Promise<Review> {
+    const reviewer = await this.userRepository.upsertByEmail(
+      input.reviewerEmail,
+    );
+    if (reviewer.plan !== 'admin') {
+      throw new Error('この操作は管理者のみ実行できます。');
+    }
+    return this.reviewRepository.setStatus(input.id, input.status);
   }
 
   async likeReview(input: LikeReviewDto): Promise<Review> {

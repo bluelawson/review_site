@@ -37,3 +37,9 @@ export type LikeReviewDto = {
   id: string;
   userEmail: string;
 };
+
+export type SetReviewStatusDto = {
+  id: string;
+  status: 'PENDING' | 'APPROVED' | 'REJECTED';
+  reviewerEmail: string;
+};

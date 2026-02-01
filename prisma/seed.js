@@ -307,6 +307,7 @@ const sampleReviews = [
   const createdAt = new Date(baseDate.getTime() + index * 24 * 60 * 60 * 1000);
   return {
     ...review,
+    status: 'APPROVED',
     createdAt,
     updatedAt: createdAt,
   };

@@ -27,6 +27,7 @@ export type Review = {
   likesCount: number;
   likedByMe?: boolean;
   isPublished: boolean;
+  status: 'PENDING' | 'APPROVED' | 'REJECTED';
   damage?: string | null;
   createdAt: string;
   updatedAt: string;

@@ -15,6 +15,7 @@ query Reviews($filter: ReviewFilterInput) {
     likesCount
     likedByMe
     isPublished
+    status
     damage
     createdAt
     updatedAt
@@ -43,6 +44,7 @@ query Review($id: ID!, $viewerEmail: String) {
     likesCount
     likedByMe
     isPublished
+    status
     damage
     createdAt
     updatedAt
@@ -71,6 +73,7 @@ mutation CreateReview($input: ReviewInput!) {
     likesCount
     likedByMe
     isPublished
+    status
     damage
     createdAt
     updatedAt
@@ -103,6 +106,7 @@ mutation SetReviewVisibility($id: ID!, $isPublished: Boolean!) {
     likesCount
     likedByMe
     isPublished
+    status
     damage
     createdAt
     updatedAt
@@ -119,5 +123,67 @@ mutation LikeReview($id: ID!, $userEmail: String!) {
     id
     likesCount
     likedByMe
+  }
+}
+
+query ReviewRequests($viewerEmail: String!) {
+  reviewRequests(viewerEmail: $viewerEmail) {
+    id
+    shopName
+    castName
+    estimatedAge
+    bodyType
+    bustSize
+    heightCm
+    personality
+    headline
+    detail
+    serviceHighlights
+    castRating
+    likesCount
+    likedByMe
+    isPublished
+    status
+    damage
+    createdAt
+    updatedAt
+    author {
+      id
+      name
+      userName
+    }
+  }
+}
+
+mutation SetReviewStatus(
+  $id: ID!
+  $status: ReviewStatus!
+  $reviewerEmail: String!
+) {
+  setReviewStatus(id: $id, status: $status, reviewerEmail: $reviewerEmail) {
+    id
+    shopName
+    castName
+    estimatedAge
+    bodyType
+    bustSize
+    heightCm
+    personality
+    headline
+    detail
+    serviceHighlights
+    castRating
+    likesCount
+    likedByMe
+    status
+    isPublished
+    damage
+    createdAt
+    updatedAt
+    author {
+      id
+      name
+      userName
+    }
   }
 }
