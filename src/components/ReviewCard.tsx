@@ -32,9 +32,8 @@ export default function ReviewCard({
   const isAdmin = user?.plan === 'admin';
   const canViewAll =
     !!user && (user.reviewsSubmitted > 0 || user.plan === 'premium');
-  const unlocked = review.isPublished || isAdmin || canViewAll;
   const isForcePublished = forcePublishedTag;
-  const shouldBlur =
+  const locked =
     !forceShowDetail &&
     !isForcePublished &&
     !review.isPublished &&
@@ -43,9 +42,7 @@ export default function ReviewCard({
   const highlights = review.serviceHighlights ?? [];
   const createdAtLabel = new Date(review.createdAt).toLocaleDateString('ja-JP');
 
-  const handleDelete = async (
-    event?: React.MouseEvent<HTMLButtonElement>,
-  ) => {
+  const handleDelete = async (event?: React.MouseEvent<HTMLButtonElement>) => {
     event?.preventDefault();
     event?.stopPropagation();
     if (!onDelete) return;
@@ -102,7 +99,7 @@ export default function ReviewCard({
       </div>
       <p
         className={`mt-4 text-sm leading-relaxed ${
-          shouldBlur ? 'text-slate-500 blur-[2px]' : 'text-slate-300'
+          locked ? 'text-slate-500 blur-[2px]' : 'text-slate-300'
         }`}
       >
         {review.detail}
@@ -117,7 +114,7 @@ export default function ReviewCard({
           href={`/review/${review.id}`}
           className="text-xs uppercase tracking-[0.4em] text-white underline"
         >
-          {unlocked ? '全文を読む' : '詳細を見る'}
+          {locked ? '詳細を見る' : '全文を読む'}
         </Link>
         <div className="flex items-center gap-2">
           {canTogglePublish && onTogglePublish && !hidePublishToggle && (
@@ -142,7 +139,7 @@ export default function ReviewCard({
           )}
         </div>
       </div>
-      {shouldBlur && (
+      {locked && (
         <div className="pointer-events-none absolute inset-0 rounded-3xl border border-amber-400/20"></div>
       )}
     </article>
