@@ -12,8 +12,17 @@ export type ReviewRepository = {
   findMany(filter?: ReviewFilterDto | null): Promise<Review[]>;
   findById(id: string): Promise<Review | null>;
   create(input: CreateReviewData, authorId: string): Promise<Review>;
+  update(
+    id: string,
+    input: CreateReviewData,
+    authorId: string,
+  ): Promise<Review>;
   setVisibility(id: string, isPublished: boolean): Promise<Review>;
-  setStatus(id: string, status: Prisma.ReviewStatus): Promise<Review>;
+  setStatus(
+    id: string,
+    status: Prisma.ReviewStatus,
+    remandReason?: string | null,
+  ): Promise<Review>;
   findByStatuses(
     statuses: Prisma.ReviewStatus[],
     authorId?: string,
@@ -98,6 +107,31 @@ export const reviewRepository: ReviewRepository = {
     });
     return mapReview(review);
   },
+  async update(id: string, input: CreateReviewData, authorId: string) {
+    const serviceHighlightsValue:
+      | Prisma.NullableJsonNullValueInput
+      | Prisma.InputJsonValue =
+      input.serviceHighlights == null
+        ? Prisma.JsonNull
+        : (input.serviceHighlights as Prisma.InputJsonValue);
+
+    const review = await prisma.review.update({
+      where: { id },
+      data: {
+        ...input,
+        heightCm: input.heightCm ?? null,
+        serviceHighlights: serviceHighlightsValue,
+        status: 'PENDING',
+        isPublished: false,
+        remandReason: null,
+        author: {
+          connect: { id: authorId },
+        },
+      },
+      include: { author: true, _count: { select: { likes: true } } },
+    });
+    return mapReview(review);
+  },
   async setVisibility(id: string, isPublished: boolean) {
     const review = await prisma.review.update({
       where: { id },
@@ -106,12 +140,17 @@ export const reviewRepository: ReviewRepository = {
     });
     return mapReview(review);
   },
-  async setStatus(id: string, status: Prisma.ReviewStatus) {
+  async setStatus(
+    id: string,
+    status: Prisma.ReviewStatus,
+    remandReason?: string | null,
+  ) {
     const review = await prisma.review.update({
       where: { id },
       data: {
         status,
         isPublished: status === 'APPROVED',
+        remandReason: status === 'REJECTED' ? remandReason ?? null : null,
       },
       include: { author: true, _count: { select: { likes: true } } },
     });

@@ -28,6 +28,23 @@ export type CreateReviewDto = {
 
 export type CreateReviewData = Omit<CreateReviewDto, 'authorEmail'>;
 
+export type UpdateReviewDto = {
+  id: string;
+  shopName: string;
+  castName: string;
+  estimatedAge?: string | null;
+  bodyType?: string | null;
+  bustSize?: string | null;
+  heightCm?: number | null;
+  personality?: string | null;
+  headline: string;
+  detail: string;
+  serviceHighlights?: string[] | null;
+  castRating: number;
+  damage?: string | null;
+  authorEmail: string;
+};
+
 export type UpdateReviewVisibilityDto = {
   id: string;
   isPublished: boolean;
@@ -42,4 +59,5 @@ export type SetReviewStatusDto = {
   id: string;
   status: 'PENDING' | 'APPROVED' | 'REJECTED';
   reviewerEmail: string;
+  remandReason?: string | null;
 };

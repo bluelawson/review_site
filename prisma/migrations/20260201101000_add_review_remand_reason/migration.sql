@@ -1,0 +1,2 @@
+ALTER TABLE `Review`
+  ADD COLUMN `remandReason` VARCHAR(191) NULL;

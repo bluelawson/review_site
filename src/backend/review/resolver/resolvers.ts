@@ -3,6 +3,7 @@ import type {
   LikeReviewDto,
   ReviewFilterDto,
   SetReviewStatusDto,
+  UpdateReviewDto,
   UpdateReviewVisibilityDto,
 } from '../application/dto/reviewDto';
 import { ReviewService } from '../application/service/reviewService';
@@ -39,6 +40,12 @@ const resolvers = {
     ) => {
       return reviewService.createReview(args.input);
     },
+    updateReview: async (
+      _parent: unknown,
+      args: { input: UpdateReviewDto },
+    ) => {
+      return reviewService.updateReview(args.input);
+    },
     deleteReview: async (_parent: unknown, args: { id: string }) => {
       return reviewService.deleteReview(args.id);
     },
@@ -53,6 +60,15 @@ const resolvers = {
     },
     setReviewStatus: async (_parent: unknown, args: SetReviewStatusDto) => {
       return reviewService.setReviewStatus(args);
+    },
+    updateReviewStatusEmailPreference: async (
+      _parent: unknown,
+      args: { userEmail: string; enabled: boolean },
+    ) => {
+      return userRepository.setReviewStatusEmailEnabled(
+        args.userEmail,
+        args.enabled,
+      );
     },
   },
 };

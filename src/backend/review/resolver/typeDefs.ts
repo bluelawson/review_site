@@ -15,6 +15,7 @@ const typeDefs = gql`
     userName: String!
     email: String!
     plan: String!
+    reviewStatusEmailEnabled: Boolean!
     reviewsSubmitted: Int!
     createdAt: String!
   }
@@ -36,6 +37,7 @@ const typeDefs = gql`
     likedByMe: Boolean!
     isPublished: Boolean!
     status: ReviewStatus!
+    remandReason: String
     damage: String
     createdAt: String!
     updatedAt: String!
@@ -70,6 +72,23 @@ const typeDefs = gql`
     authorEmail: String!
   }
 
+  input ReviewUpdateInput {
+    id: ID!
+    shopName: String!
+    castName: String!
+    estimatedAge: String
+    bodyType: String
+    bustSize: String
+    heightCm: Int
+    personality: String
+    headline: String!
+    detail: String!
+    serviceHighlights: [String!]
+    castRating: Float!
+    damage: String
+    authorEmail: String!
+  }
+
   type Query {
     reviews(filter: ReviewFilterInput): [Review!]!
     review(id: ID!, viewerEmail: String): Review
@@ -78,10 +97,17 @@ const typeDefs = gql`
 
   type Mutation {
     createReview(input: ReviewInput!): Review!
+    updateReview(input: ReviewUpdateInput!): Review!
     deleteReview(id: ID!): Boolean!
     setReviewVisibility(id: ID!, isPublished: Boolean!): Review!
     likeReview(id: ID!, userEmail: String!): Review!
-    setReviewStatus(id: ID!, status: ReviewStatus!, reviewerEmail: String!): Review!
+    setReviewStatus(
+      id: ID!
+      status: ReviewStatus!
+      reviewerEmail: String!
+      remandReason: String
+    ): Review!
+    updateReviewStatusEmailPreference(userEmail: String!, enabled: Boolean!): User!
   }
 `;
 

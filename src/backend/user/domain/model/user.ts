@@ -4,6 +4,7 @@ export type User = {
   userName: string;
   email: string;
   plan: string;
+  reviewStatusEmailEnabled: boolean;
   reviewsSubmitted: number;
   createdAt: Date;
 };

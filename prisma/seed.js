@@ -16,6 +16,7 @@ const sampleUsers = [
     email: 'test@seren.jp',
     password: 'test123',
     plan: 'reviewer',
+    reviewStatusEmailEnabled: true,
     reviewsSubmitted: 17,
   },
   {
@@ -24,6 +25,7 @@ const sampleUsers = [
     email: 'admin@seren.jp',
     password: 'admin123',
     plan: 'admin',
+    reviewStatusEmailEnabled: true,
     reviewsSubmitted: 0,
   },
 ];

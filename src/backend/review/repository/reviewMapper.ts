@@ -31,6 +31,7 @@ export const mapReview = (
   likedByMe: false,
   isPublished: review.isPublished,
   status: review.status,
+  remandReason: review.remandReason ?? null,
   damage: review.damage,
   createdAt: review.createdAt.toISOString(),
   updatedAt: review.updatedAt.toISOString(),

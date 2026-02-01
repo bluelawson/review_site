@@ -8,6 +8,7 @@ export const mapUser = (user: PrismaUser): User => ({
   userName: user.userName,
   email: user.email,
   plan: user.plan,
+  reviewStatusEmailEnabled: user.reviewStatusEmailEnabled,
   reviewsSubmitted: user.reviewsSubmitted,
   createdAt: user.createdAt,
 });

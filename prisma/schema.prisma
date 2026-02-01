@@ -14,6 +14,7 @@ model User {
   email            String   @unique
   password         String
   plan             String   @default("reviewer")
+  reviewStatusEmailEnabled Boolean @default(true)
   reviewsSubmitted Int      @default(0)
   reviews          Review[]
   reviewLikes      ReviewLike[]
@@ -36,6 +37,7 @@ model Review {
   castRating            Float   @map("rating")
   isPublished       Boolean  @default(true)
   status            ReviewStatus @default(PENDING)
+  remandReason      String?
   damage            String?
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt

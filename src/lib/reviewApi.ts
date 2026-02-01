@@ -21,6 +21,10 @@ export type CreateReviewInput = {
   authorEmail: string;
 };
 
+export type UpdateReviewInput = CreateReviewInput & {
+  id: string;
+};
+
 type GraphQLResponse<T> = {
   data?: T;
   errors?: { message: string }[];
@@ -75,6 +79,17 @@ export async function createReview(
     'CreateReview',
   );
   return data.createReview;
+}
+
+export async function updateReview(
+  input: UpdateReviewInput,
+): Promise<Review> {
+  const data = await requestGraphQL<{ updateReview: Review }>(
+    ReviewsDocument,
+    { input },
+    'UpdateReview',
+  );
+  return data.updateReview;
 }
 
 export async function removeReview(id: string): Promise<void> {
@@ -138,10 +153,11 @@ export async function setReviewStatus(
   id: string,
   status: 'PENDING' | 'APPROVED' | 'REJECTED',
   reviewerEmail: string,
+  remandReason?: string,
 ): Promise<Review> {
   const data = await requestGraphQL<{ setReviewStatus: Review }>(
     ReviewsDocument,
-    { id, status, reviewerEmail },
+    { id, status, reviewerEmail, remandReason },
     'SetReviewStatus',
   );
   return data.setReviewStatus;

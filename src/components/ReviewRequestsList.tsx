@@ -12,7 +12,7 @@ type StatusFilter = 'PENDING' | 'REJECTED';
 
 const statusLabels: Record<StatusFilter, string> = {
   PENDING: '審査中',
-  REJECTED: '否認',
+  REJECTED: '差し戻し',
 };
 
 export default function ReviewRequestsList() {
@@ -99,7 +99,7 @@ export default function ReviewRequestsList() {
         <PanelMessage>
           {filter === 'PENDING'
             ? '審査中のレビューはありません。'
-            : '否認されたレビューはありません。'}
+            : '差し戻しされたレビューはありません。'}
         </PanelMessage>
       ) : (
         <div className="space-y-4">
@@ -134,16 +134,37 @@ export default function ReviewRequestsList() {
               <p className="mt-3 line-clamp-3 text-sm text-slate-300">
                 {review.detail}
               </p>
+              {review.status === 'REJECTED' && review.remandReason && (
+                <div className="mt-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.3em] text-rose-200">
+                    差し戻し理由
+                  </p>
+                  <div className="mt-2 rounded-2xl border border-rose-300/40 bg-black/30 px-4 py-3 text-xs text-rose-100 whitespace-pre-line">
+                    {review.remandReason}
+                  </div>
+                </div>
+              )}
               <div className="mt-4 flex items-center justify-between">
                 <div className="text-xs uppercase tracking-[0.3em] text-slate-500">
                   Posted by {review.author.userName}
                 </div>
-                <Link
-                  href={`/review/${review.id}`}
-                  className="text-xs uppercase tracking-[0.4em] text-white underline"
-                >
-                  詳細を見る
-                </Link>
+                <div className="flex items-center gap-3">
+                  {review.status === 'REJECTED' &&
+                    review.author.email === user.email && (
+                      <Link
+                        href={`/review/edit/${review.id}`}
+                        className="text-xs uppercase tracking-[0.4em] text-emerald-200 underline"
+                      >
+                        修正して再申請
+                      </Link>
+                    )}
+                  <Link
+                    href={`/review/${review.id}`}
+                    className="text-xs uppercase tracking-[0.4em] text-white underline"
+                  >
+                    詳細を見る
+                  </Link>
+                </div>
               </div>
             </article>
           ))}

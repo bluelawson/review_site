@@ -17,6 +17,7 @@ export type Review = {
   likedByMe?: boolean;
   isPublished: boolean;
   status: 'PENDING' | 'APPROVED' | 'REJECTED';
+  remandReason: string | null;
   damage: string | null;
   createdAt: string;
   updatedAt: string;

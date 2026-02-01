@@ -2,11 +2,13 @@ import type {
   CreateReviewDto,
   LikeReviewDto,
   ReviewFilterDto,
+  UpdateReviewDto,
   UpdateReviewVisibilityDto,
 } from '../dto/reviewDto';
 import type { Review } from '../../domain/model/review';
 import type { ReviewRepository } from '../../repository/reviewRepository';
 import type { UserRepository } from '../../../user/repository/userRepository';
+import { sendReviewStatusEmail } from '../../../shared/mailer';
 
 export class ReviewService {
   constructor(
@@ -51,6 +53,22 @@ export class ReviewService {
     return review;
   }
 
+  async updateReview(input: UpdateReviewDto): Promise<Review> {
+    const { authorEmail, id, ...data } = input;
+    const user = await this.userRepository.upsertByEmail(authorEmail);
+    const review = await this.reviewRepository.findById(id);
+    if (!review) {
+      throw new Error('レビューが見つかりませんでした。');
+    }
+    if (review.author.email !== user.email) {
+      throw new Error('このレビューは更新できません。');
+    }
+    if (review.status !== 'REJECTED') {
+      throw new Error('差し戻しされたレビューのみ修正できます。');
+    }
+    return this.reviewRepository.update(id, data, user.id);
+  }
+
   async deleteReview(id: string): Promise<boolean> {
     await this.reviewRepository.deleteById(id);
     return true;
@@ -80,6 +98,7 @@ export class ReviewService {
     id: string;
     status: 'PENDING' | 'APPROVED' | 'REJECTED';
     reviewerEmail: string;
+    remandReason?: string | null;
   }): Promise<Review> {
     const reviewer = await this.userRepository.upsertByEmail(
       input.reviewerEmail,
@@ -87,7 +106,27 @@ export class ReviewService {
     if (reviewer.plan !== 'admin') {
       throw new Error('この操作は管理者のみ実行できます。');
     }
-    return this.reviewRepository.setStatus(input.id, input.status);
+    if (input.status === 'REJECTED') {
+      if (!input.remandReason?.trim()) {
+        throw new Error('差し戻し理由を入力してください。');
+      }
+    }
+    const updated = await this.reviewRepository.setStatus(
+      input.id,
+      input.status,
+      input.remandReason,
+    );
+    if (
+      updated.author.reviewStatusEmailEnabled &&
+      (updated.status === 'APPROVED' || updated.status === 'REJECTED')
+    ) {
+      try {
+        await sendReviewStatusEmail(updated);
+      } catch (err) {
+        console.error('Failed to send review status email:', err);
+      }
+    }
+    return updated;
   }
 
   async likeReview(input: LikeReviewDto): Promise<Review> {

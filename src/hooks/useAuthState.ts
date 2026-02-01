@@ -12,6 +12,7 @@ import {
   registerSubmission,
   updatePassword,
   updateProfile,
+  updateReviewStatusEmail,
 } from '@/lib/authApi';
 import type { UserProfile } from '@/types';
 
@@ -79,6 +80,14 @@ export const useAuthState = () => {
     [refresh],
   );
 
+  const handleUpdateReviewStatusEmail = useCallback(
+    async (enabled: boolean) => {
+      await updateReviewStatusEmail(enabled);
+      refresh();
+    },
+    [refresh],
+  );
+
   return {
     user,
     users,
@@ -88,5 +97,6 @@ export const useAuthState = () => {
     registerSubmission: handleRegisterSubmission,
     updateProfile: handleUpdateProfile,
     updatePassword: handleUpdatePassword,
+    updateReviewStatusEmail: handleUpdateReviewStatusEmail,
   };
 };

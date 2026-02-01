@@ -30,6 +30,9 @@ export default function ReviewDetail({ id }: Props) {
   const [deleting, setDeleting] = useState(false);
   const [updatingVisibility, setUpdatingVisibility] = useState(false);
   const [updatingStatus, setUpdatingStatus] = useState(false);
+  const [remandOpen, setRemandOpen] = useState(false);
+  const [remandReason, setRemandReason] = useState('');
+  const [remandError, setRemandError] = useState('');
   const [liking, setLiking] = useState(false);
   const [hasLiked, setHasLiked] = useState(false);
   const [isTopRated, setIsTopRated] = useState(false);
@@ -194,9 +197,12 @@ export default function ReviewDetail({ id }: Props) {
     }
   };
 
-  const handleSetStatus = async (nextStatus: 'APPROVED' | 'REJECTED') => {
+  const handleSetStatus = async (
+    nextStatus: 'APPROVED' | 'REJECTED',
+    reason?: string,
+  ) => {
     if (!review || updatingStatus || !user) return;
-    const actionLabel = nextStatus === 'APPROVED' ? '承認' : '否認';
+    const actionLabel = nextStatus === 'APPROVED' ? '承認' : '差し戻し';
     if (!confirm(`このレビューを${actionLabel}しますか？`)) return;
     try {
       setUpdatingStatus(true);
@@ -204,6 +210,7 @@ export default function ReviewDetail({ id }: Props) {
         review.id,
         nextStatus,
         user.email,
+        reason,
       );
       setReview((prev) => (prev ? { ...prev, ...updated } : prev));
     } catch (err) {
@@ -217,7 +224,8 @@ export default function ReviewDetail({ id }: Props) {
   };
 
   return (
-    <article className="glass-panel mx-auto max-w-4xl rounded-3xl border border-white/10 px-8 py-10">
+    <>
+      <article className="glass-panel mx-auto max-w-4xl rounded-3xl border border-white/10 px-8 py-10">
       <div className="flex items-center justify-between text-xs uppercase tracking-[0.4em] text-slate-400">
         <div className="flex items-center gap-2">
           <span>
@@ -242,7 +250,7 @@ export default function ReviewDetail({ id }: Props) {
           )}
           {isRejected && (
             <span className="rounded-full bg-rose-400/10 px-2 py-0.5 text-[10px] uppercase tracking-[0.3em] text-rose-200">
-              否認
+              差し戻し
             </span>
           )}
         </div>
@@ -262,7 +270,17 @@ export default function ReviewDetail({ id }: Props) {
         <PanelMessage tone={isPending ? 'info' : 'error'}>
           {isPending
             ? 'このレビューは審査中です。公開までもう少しお待ちください。'
-            : 'このレビューは否認されました。内容を見直して再投稿してください。'}
+            : 'このレビューは差し戻されました。内容を見直して再申請してください。'}
+          {isRejected && review.remandReason && (
+            <div className="mt-4 text-left">
+              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-rose-200">
+                差し戻し理由
+              </p>
+              <div className="mt-2 rounded-2xl border border-rose-300/40 bg-black/30 px-4 py-3 text-xs text-rose-100 whitespace-pre-line">
+                {review.remandReason}
+              </div>
+            </div>
+          )}
         </PanelMessage>
       )}
       <div className="space-y-4 text-sm leading-relaxed text-slate-300">
@@ -345,12 +363,16 @@ export default function ReviewDetail({ id }: Props) {
               </Button>
               <Button
                 variant="ghost"
-                onClick={() => handleSetStatus('REJECTED')}
+                onClick={() => {
+                  setRemandReason('');
+                  setRemandError('');
+                  setRemandOpen(true);
+                }}
                 disabled={updatingStatus}
                 type="button"
                 className="text-rose-200 hover:text-rose-100"
               >
-                否認する
+                差し戻す
               </Button>
             </>
           )}
@@ -366,6 +388,56 @@ export default function ReviewDetail({ id }: Props) {
           )}
         </div>
       </div>
-    </article>
+      </article>
+      {remandOpen && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
+        <div className="w-full max-w-lg rounded-3xl border border-white/10 bg-[#0b0b0b] p-6 text-white shadow-2xl">
+          <h2 className="text-lg font-semibold">差し戻し理由</h2>
+          <p className="mt-2 text-xs text-slate-400">
+            差し戻し理由を入力してください。内容は投稿者に通知されます。
+          </p>
+          <textarea
+            className="mt-4 w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white focus:border-rose-300/60 focus:outline-none"
+            rows={6}
+            value={remandReason}
+            onChange={(event) => {
+              setRemandReason(event.target.value);
+              if (remandError) setRemandError('');
+            }}
+            placeholder="例) 具体的な体験内容が不足しています。日時やサービス内容を追記してください。"
+          />
+          {remandError && (
+            <p className="mt-2 text-xs text-rose-200">{remandError}</p>
+          )}
+          <div className="mt-5 flex items-center justify-end gap-3">
+            <Button
+              variant="ghost"
+              type="button"
+              onClick={() => setRemandOpen(false)}
+            >
+              キャンセル
+            </Button>
+            <Button
+              variant="outline"
+              type="button"
+              className="border-rose-300/50 text-rose-200 hover:border-rose-200/80"
+              onClick={async () => {
+                const trimmed = remandReason.trim();
+                if (!trimmed) {
+                  setRemandError('差し戻し理由を入力してください。');
+                  return;
+                }
+                setRemandOpen(false);
+                await handleSetStatus('REJECTED', trimmed);
+              }}
+              disabled={updatingStatus}
+            >
+              差し戻す
+            </Button>
+          </div>
+        </div>
+      </div>
+      )}
+    </>
   );
 }

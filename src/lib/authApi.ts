@@ -1,5 +1,6 @@
 'use client';
 import type { UserProfile } from '@/types';
+import { updateReviewStatusEmailPreference } from '@/lib/userApi';
 
 const STORAGE_KEY = 'seren:users';
 const CURRENT_USER_KEY = 'seren:current-user';
@@ -16,6 +17,7 @@ const defaultUsers: UserProfile[] = [
     email: 'test@seren.jp',
     password: 'test123',
     plan: 'reviewer',
+    reviewStatusEmailEnabled: true,
     reviewsSubmitted: 17,
   },
   {
@@ -25,6 +27,7 @@ const defaultUsers: UserProfile[] = [
     email: 'admin@seren.jp',
     password: 'admin123',
     plan: 'admin',
+    reviewStatusEmailEnabled: true,
     reviewsSubmitted: 0,
   },
 ];
@@ -84,6 +87,8 @@ export const getUsers = (): UserProfile[] => {
           ...entry,
           userName: candidate,
           email: entry.email ?? toEmailFromUserName(candidate),
+          reviewStatusEmailEnabled:
+            entry.reviewStatusEmailEnabled ?? true,
         };
       });
     })();
@@ -111,6 +116,19 @@ export const getCurrentUser = (): UserProfile | null => {
   if (!raw) return null;
   try {
     const current = JSON.parse(raw) as UserProfile;
+    if (current.reviewStatusEmailEnabled === undefined) {
+      const users = getUsers();
+      const matched =
+        users.find((entry) => entry.id === current.id) ??
+        users.find((entry) => entry.email === current.email);
+      if (matched) {
+        setCurrentUser(matched);
+        return matched;
+      }
+      const updated = { ...current, reviewStatusEmailEnabled: true };
+      setCurrentUser(updated);
+      return updated;
+    }
     if (!current.userName) {
       const users = getUsers();
       const matched =
@@ -192,6 +210,7 @@ export const register = async (
     email: normalizedEmail,
     password,
     plan: 'reviewer',
+    reviewStatusEmailEnabled: true,
     reviewsSubmitted: 0,
   };
   const updatedUsers = [...users, newUser];
@@ -260,6 +279,40 @@ export const updatePassword = async (
   setUsers(updatedUsers);
   setCurrentUser(updatedUser);
   dispatchAuthChange();
+  return updatedUser;
+};
+
+export const updateReviewStatusEmail = async (enabled: boolean) => {
+  ensureAuthStorage();
+  const users = getUsers();
+  const current = getCurrentUser();
+  if (!current) {
+    throw new Error('ログインが必要です');
+  }
+  const updatedUser: UserProfile = {
+    ...current,
+    reviewStatusEmailEnabled: enabled,
+  };
+  const updatedUsers = users.map((entry) =>
+    entry.id === updatedUser.id ? updatedUser : entry,
+  );
+  setUsers(updatedUsers);
+  setCurrentUser(updatedUser);
+  dispatchAuthChange();
+  try {
+    await updateReviewStatusEmailPreference(current.email, enabled);
+  } catch (error) {
+    const rollbackUsers = users.map((entry) =>
+      entry.id === current.id ? current : entry,
+    );
+    setUsers(rollbackUsers);
+    setCurrentUser(current);
+    dispatchAuthChange();
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error('通知設定の更新に失敗しました。');
+  }
   return updatedUser;
 };
 

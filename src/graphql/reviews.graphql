@@ -16,6 +16,7 @@ query Reviews($filter: ReviewFilterInput) {
     likedByMe
     isPublished
     status
+    remandReason
     damage
     createdAt
     updatedAt
@@ -23,6 +24,7 @@ query Reviews($filter: ReviewFilterInput) {
       id
       name
       userName
+      email
     }
   }
 }
@@ -45,6 +47,7 @@ query Review($id: ID!, $viewerEmail: String) {
     likedByMe
     isPublished
     status
+    remandReason
     damage
     createdAt
     updatedAt
@@ -52,6 +55,7 @@ query Review($id: ID!, $viewerEmail: String) {
       id
       name
       userName
+      email
     }
   }
 }
@@ -74,6 +78,7 @@ mutation CreateReview($input: ReviewInput!) {
     likedByMe
     isPublished
     status
+    remandReason
     damage
     createdAt
     updatedAt
@@ -81,6 +86,7 @@ mutation CreateReview($input: ReviewInput!) {
       id
       name
       userName
+      email
     }
   }
 }
@@ -107,6 +113,7 @@ mutation SetReviewVisibility($id: ID!, $isPublished: Boolean!) {
     likedByMe
     isPublished
     status
+    remandReason
     damage
     createdAt
     updatedAt
@@ -114,6 +121,7 @@ mutation SetReviewVisibility($id: ID!, $isPublished: Boolean!) {
       id
       name
       userName
+      email
     }
   }
 }
@@ -123,6 +131,19 @@ mutation LikeReview($id: ID!, $userEmail: String!) {
     id
     likesCount
     likedByMe
+  }
+}
+
+mutation UpdateReviewStatusEmailPreference(
+  $userEmail: String!
+  $enabled: Boolean!
+) {
+  updateReviewStatusEmailPreference(userEmail: $userEmail, enabled: $enabled) {
+    id
+    name
+    userName
+    email
+    reviewStatusEmailEnabled
   }
 }
 
@@ -144,6 +165,7 @@ query ReviewRequests($viewerEmail: String!) {
     likedByMe
     isPublished
     status
+    remandReason
     damage
     createdAt
     updatedAt
@@ -151,6 +173,38 @@ query ReviewRequests($viewerEmail: String!) {
       id
       name
       userName
+      email
+    }
+  }
+}
+
+mutation UpdateReview($input: ReviewUpdateInput!) {
+  updateReview(input: $input) {
+    id
+    shopName
+    castName
+    estimatedAge
+    bodyType
+    bustSize
+    heightCm
+    personality
+    headline
+    detail
+    serviceHighlights
+    castRating
+    likesCount
+    likedByMe
+    isPublished
+    status
+    remandReason
+    damage
+    createdAt
+    updatedAt
+    author {
+      id
+      name
+      userName
+      email
     }
   }
 }
@@ -159,8 +213,14 @@ mutation SetReviewStatus(
   $id: ID!
   $status: ReviewStatus!
   $reviewerEmail: String!
+  $remandReason: String
 ) {
-  setReviewStatus(id: $id, status: $status, reviewerEmail: $reviewerEmail) {
+  setReviewStatus(
+    id: $id
+    status: $status
+    reviewerEmail: $reviewerEmail
+    remandReason: $remandReason
+  ) {
     id
     shopName
     castName
@@ -177,6 +237,7 @@ mutation SetReviewStatus(
     likedByMe
     status
     isPublished
+    remandReason
     damage
     createdAt
     updatedAt
@@ -184,6 +245,7 @@ mutation SetReviewStatus(
       id
       name
       userName
+      email
     }
   }
 }

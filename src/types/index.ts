@@ -28,6 +28,7 @@ export type Review = {
   likedByMe?: boolean;
   isPublished: boolean;
   status: 'PENDING' | 'APPROVED' | 'REJECTED';
+  remandReason?: string | null;
   damage?: string | null;
   createdAt: string;
   updatedAt: string;
@@ -35,6 +36,7 @@ export type Review = {
     id: string;
     name: string;
     userName: string;
+    email: string;
   };
 };
 
@@ -57,5 +59,6 @@ export type UserProfile = {
   email: string;
   password: string;
   plan: 'reviewer' | 'premium' | 'admin';
+  reviewStatusEmailEnabled: boolean;
   reviewsSubmitted: number;
 };

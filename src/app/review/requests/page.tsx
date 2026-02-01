@@ -9,7 +9,7 @@ export default function ReviewRequestsPage() {
         </p>
         <h1 className="text-3xl font-semibold text-white">レビュー審査</h1>
         <p className="mt-2 text-sm text-slate-400">
-          審査中・否認レビューの状況を確認できます。
+          審査中・差し戻しレビューの状況を確認できます。
         </p>
       </header>
       <ReviewRequestsList />

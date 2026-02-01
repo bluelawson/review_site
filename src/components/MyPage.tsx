@@ -7,21 +7,26 @@ import PanelMessage from '@/components/ui/PanelMessage';
 import { useAuthState } from '@/hooks/useAuthState';
 
 export default function MyPage() {
-  const { user, updateProfile, updatePassword } = useAuthState();
+  const { user, updateProfile, updatePassword, updateReviewStatusEmail } =
+    useAuthState();
   const [profileForm, setProfileForm] = useState({ name: '', email: '' });
   const [passwordForm, setPasswordForm] = useState({
     current: '',
     next: '',
     confirm: '',
   });
+  const [notificationEnabled, setNotificationEnabled] = useState(true);
   const [profileMessage, setProfileMessage] = useState('');
   const [passwordMessage, setPasswordMessage] = useState('');
+  const [notificationMessage, setNotificationMessage] = useState('');
   const [profileLoading, setProfileLoading] = useState(false);
   const [passwordLoading, setPasswordLoading] = useState(false);
+  const [notificationLoading, setNotificationLoading] = useState(false);
 
   useEffect(() => {
     if (!user) return;
     setProfileForm({ name: user.name, email: user.email });
+    setNotificationEnabled(user.reviewStatusEmailEnabled);
   }, [user]);
 
   if (!user) {
@@ -128,6 +133,43 @@ export default function MyPage() {
             更新する
           </Button>
         </form>
+      </section>
+
+      <section className="glass-panel rounded-3xl border border-white/10 px-8 py-8">
+        <h2 className="text-lg font-semibold text-white">通知設定</h2>
+        <p className="mt-2 text-sm text-slate-400">
+          レビューの承認・差し戻しが行われた際にメールでお知らせします。
+        </p>
+        <label className="mt-6 flex items-center gap-3 text-sm text-slate-200">
+          <input
+            type="checkbox"
+            checked={notificationEnabled}
+            onChange={async (event) => {
+              const nextValue = event.target.checked;
+              setNotificationEnabled(nextValue);
+              setNotificationLoading(true);
+              setNotificationMessage('');
+              try {
+                await updateReviewStatusEmail(nextValue);
+                setNotificationMessage('通知設定を更新しました。');
+              } catch (error) {
+                if (error instanceof Error) {
+                  setNotificationMessage(error.message);
+                } else {
+                  setNotificationMessage('通知設定の更新に失敗しました。');
+                }
+              } finally {
+                setNotificationLoading(false);
+              }
+            }}
+            className="size-4 accent-emerald-400"
+            disabled={notificationLoading}
+          />
+          審査結果のメール通知を受け取る
+        </label>
+        {notificationMessage && (
+          <p className="mt-4 text-xs text-slate-400">{notificationMessage}</p>
+        )}
       </section>
 
       <section className="glass-panel rounded-3xl border border-white/10 px-8 py-8">
