@@ -13,9 +13,6 @@ export default function LoginPage() {
         </p>
       </header>
       <AuthForm mode="login" />
-      <div className="text-center text-xs text-slate-500">
-        ゲスト: guest / seren123
-      </div>
     </div>
   );
 }

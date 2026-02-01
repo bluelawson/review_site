@@ -26,17 +26,7 @@ export default function MyPage() {
 
   if (!user) {
     return (
-      <PanelMessage>
-        マイページを利用するにはログインが必要です。
-      </PanelMessage>
-    );
-  }
-
-  if (user.id === 'guest' || user.email === 'guest@seren.jp') {
-    return (
-      <PanelMessage>
-        ゲストユーザーはマイページの編集ができません。
-      </PanelMessage>
+      <PanelMessage>マイページを利用するにはログインが必要です。</PanelMessage>
     );
   }
 

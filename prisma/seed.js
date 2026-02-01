@@ -15,7 +15,7 @@ const sampleUsers = [
     name: 'テストユーザー',
     email: 'test@seren.jp',
     password: 'test123',
-    plan: 'guest',
+    plan: 'reviewer',
     reviewsSubmitted: 17,
   },
   {

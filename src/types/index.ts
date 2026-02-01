@@ -55,6 +55,6 @@ export type UserProfile = {
   name: string;
   email: string;
   password: string;
-  plan: 'guest' | 'premium' | 'admin';
+  plan: 'reviewer' | 'premium' | 'admin';
   reviewsSubmitted: number;
 };

@@ -10,22 +10,13 @@ const toEmailFromUserName = (userName: string) =>
 
 const defaultUsers: UserProfile[] = [
   {
-    id: 'guest',
-    userName: 'guest',
-    name: 'ゲストレビュアー',
-    email: 'guest@seren.jp',
-    password: 'seren123',
-    plan: 'guest',
-    reviewsSubmitted: 0,
-  },
-  {
-    id: 'fresh',
-    userName: 'member',
-    name: '未投稿ユーザー',
-    email: 'member@seren.jp',
-    password: 'member123',
-    plan: 'guest',
-    reviewsSubmitted: 0,
+    id: 'testUser',
+    userName: 'testUser',
+    name: 'テストユーザー',
+    email: 'test@seren.jp',
+    password: 'test123',
+    plan: 'reviewer',
+    reviewsSubmitted: 17,
   },
   {
     id: 'admin',
@@ -200,7 +191,7 @@ export const register = async (
     name,
     email: normalizedEmail,
     password,
-    plan: 'guest',
+    plan: 'reviewer',
     reviewsSubmitted: 0,
   };
   const updatedUsers = [...users, newUser];

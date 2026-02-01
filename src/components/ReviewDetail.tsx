@@ -130,8 +130,7 @@ export default function ReviewDetail({ id }: Props) {
   const canDelete =
     !!user &&
     (isAdmin || (review ? user.userName === review.author.userName : false));
-  const canLike =
-    !!user && user.email !== 'guest@seren.jp' && user.id !== 'guest';
+  const canLike = !!user;
 
   if (!review.isPublished && !isTopRated && !canViewUnpublished) {
     return <PanelMessage>このレビューは非公開です。</PanelMessage>;

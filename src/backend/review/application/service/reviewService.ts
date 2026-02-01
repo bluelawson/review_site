@@ -32,10 +32,7 @@ export class ReviewService {
       return { ...review, likedByMe: false };
     }
     const user = await this.userRepository.upsertByEmail(viewerEmail);
-    const likedByMe = await this.reviewRepository.hasUserLiked(
-      id,
-      user.id,
-    );
+    const likedByMe = await this.reviewRepository.hasUserLiked(id, user.id);
     return { ...review, likedByMe };
   }
 
@@ -52,21 +49,13 @@ export class ReviewService {
     return true;
   }
 
-  async setReviewVisibility(
-    input: UpdateReviewVisibilityDto,
-  ): Promise<Review> {
+  async setReviewVisibility(input: UpdateReviewVisibilityDto): Promise<Review> {
     return this.reviewRepository.setVisibility(input.id, input.isPublished);
   }
 
   async likeReview(input: LikeReviewDto): Promise<Review> {
-    if (input.userEmail === 'guest@seren.jp') {
-      throw new Error('ゲストユーザーはいいねできません。');
-    }
     const user = await this.userRepository.upsertByEmail(input.userEmail);
-    const review = await this.reviewRepository.toggleLike(
-      input.id,
-      user.id,
-    );
+    const review = await this.reviewRepository.toggleLike(input.id, user.id);
     const likedByMe = await this.reviewRepository.hasUserLiked(
       input.id,
       user.id,
