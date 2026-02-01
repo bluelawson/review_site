@@ -4,16 +4,15 @@ import { useEffect, useMemo, useState } from 'react';
 
 import PanelMessage from '@/components/ui/PanelMessage';
 import PillButton from '@/components/ui/PillButton';
+import {
+  reviewStatusBadgeClass,
+  reviewStatusLabels,
+} from '@/constants/reviewStatus';
 import { useAuthState } from '@/hooks/useAuthState';
 import { fetchReviewRequests } from '@/lib/reviewApi';
 import type { Review } from '@/types';
 
 type StatusFilter = 'PENDING' | 'REJECTED';
-
-const statusLabels: Record<StatusFilter, string> = {
-  PENDING: '審査中',
-  REJECTED: '差し戻し',
-};
 
 export default function ReviewRequestsList() {
   const { user } = useAuthState();
@@ -82,7 +81,7 @@ export default function ReviewRequestsList() {
               active={filter === status}
               onClick={() => setFilter(status)}
             >
-              {statusLabels[status]} ({status === 'PENDING'
+              {reviewStatusLabels[status]} ({status === 'PENDING'
                 ? grouped.pending.length
                 : grouped.rejected.length}
               )
@@ -114,13 +113,9 @@ export default function ReviewRequestsList() {
                   {new Date(review.createdAt).toLocaleDateString('ja-JP')}
                 </span>
                 <span
-                  className={`rounded-full px-2 py-0.5 text-[10px] ${
-                    review.status === 'PENDING'
-                      ? 'bg-sky-400/10 text-sky-200'
-                      : 'bg-rose-400/10 text-rose-200'
-                  }`}
+                  className={`rounded-full px-2 py-0.5 text-[10px] ${reviewStatusBadgeClass[review.status]}`}
                 >
-                  {statusLabels[review.status as StatusFilter]}
+                  {reviewStatusLabels[review.status as StatusFilter]}
                 </span>
               </div>
               <h3 className="mt-3 text-lg font-semibold text-white">

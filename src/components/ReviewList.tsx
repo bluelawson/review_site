@@ -95,8 +95,6 @@ export default function ReviewList() {
   const [sortKey, setSortKey] = useState<'likes' | 'createdAt'>('likes');
   const [page, setPage] = useState(1);
   const pageSize = 8;
-  const canViewAll =
-    !!user && (user.plan === 'premium' || user.reviewsSubmitted > 0);
   const isAdmin = user?.plan === 'admin';
   const canManage = isAdmin;
 

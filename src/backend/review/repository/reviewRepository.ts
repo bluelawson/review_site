@@ -20,11 +20,11 @@ export type ReviewRepository = {
   setVisibility(id: string, isPublished: boolean): Promise<Review>;
   setStatus(
     id: string,
-    status: Prisma.ReviewStatus,
+    status: 'PENDING' | 'APPROVED' | 'REJECTED',
     remandReason?: string | null,
   ): Promise<Review>;
   findByStatuses(
-    statuses: Prisma.ReviewStatus[],
+    statuses: Array<'PENDING' | 'APPROVED' | 'REJECTED'>,
     authorId?: string,
   ): Promise<Review[]>;
   toggleLike(reviewId: string, userId: string): Promise<Review>;
@@ -142,7 +142,7 @@ export const reviewRepository: ReviewRepository = {
   },
   async setStatus(
     id: string,
-    status: Prisma.ReviewStatus,
+    status: 'PENDING' | 'APPROVED' | 'REJECTED',
     remandReason?: string | null,
   ) {
     const review = await prisma.review.update({
@@ -156,7 +156,10 @@ export const reviewRepository: ReviewRepository = {
     });
     return mapReview(review);
   },
-  async findByStatuses(statuses: Prisma.ReviewStatus[], authorId?: string) {
+  async findByStatuses(
+    statuses: Array<'PENDING' | 'APPROVED' | 'REJECTED'>,
+    authorId?: string,
+  ) {
     const reviews = await prisma.review.findMany({
       where: {
         status: { in: statuses },

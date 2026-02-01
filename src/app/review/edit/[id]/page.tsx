@@ -1,10 +1,14 @@
 import ReviewEditForm from '@/components/forms/ReviewEditForm';
 
-type Params = {
-  id: string;
-};
+type Params = Promise<{ id: string }>;
 
-export default function ReviewEditPage({ params }: { params: Params }) {
+export default async function ReviewEditPage({
+  params,
+}: {
+  params: Params;
+}) {
+  const { id } = await params;
+
   return (
     <div className="mx-auto max-w-5xl space-y-6">
       <header>
@@ -16,7 +20,7 @@ export default function ReviewEditPage({ params }: { params: Params }) {
           差し戻しされたレビューを修正して再申請できます。
         </p>
       </header>
-      <ReviewEditForm id={params.id} />
+      <ReviewEditForm id={id} />
     </div>
   );
 }

@@ -26,6 +26,21 @@ type Props = {
   id: string;
 };
 
+type ReviewEditFormState = {
+  shopName: string;
+  castName: string;
+  estimatedAge: string;
+  bodyType: string;
+  bustSize: string;
+  heightCm: string;
+  personality: string;
+  headline: string;
+  detail: string;
+  serviceHighlights: string;
+  castRating: number;
+  damage: string;
+};
+
 export default function ReviewEditForm({ id }: Props) {
   const { user } = useAuthState();
   const [review, setReview] = useState<Review | null>(null);
@@ -34,7 +49,7 @@ export default function ReviewEditForm({ id }: Props) {
   const [message, setMessage] = useState('');
   const [saving, setSaving] = useState(false);
 
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<ReviewEditFormState>({
     shopName: shopOptions[0],
     castName: '',
     estimatedAge: '',
@@ -62,11 +77,10 @@ export default function ReviewEditForm({ id }: Props) {
           shopName: data.shopName,
           castName: data.castName,
           estimatedAge: data.estimatedAge ?? '',
-          bodyType: (data.bodyType ?? bodyTypes[0]) as typeof bodyTypes[number],
+          bodyType: data.bodyType ?? bodyTypes[0],
           bustSize: data.bustSize ?? '',
           heightCm: data.heightCm ? String(data.heightCm) : '',
-          personality:
-            (data.personality ?? personalityTones[0]) as typeof personalityTones[number],
+          personality: data.personality ?? personalityTones[0],
           headline: data.headline,
           detail: data.detail,
           serviceHighlights: data.serviceHighlights.join(', '),
@@ -100,7 +114,10 @@ export default function ReviewEditForm({ id }: Props) {
     [form.serviceHighlights],
   );
 
-  const handleChange = (key: keyof typeof form, value: string | number) => {
+  const handleChange = (
+    key: keyof ReviewEditFormState,
+    value: string | number,
+  ) => {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 

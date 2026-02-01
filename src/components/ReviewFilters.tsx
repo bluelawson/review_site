@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import { FieldWrapper, SelectField, TextField } from '@/components/ui/Input';
+import { FieldWrapper, TextField } from '@/components/ui/Input';
 import PillButton from '@/components/ui/PillButton';
 import { bodyTypes, personalityTones } from '@/types';
 import type { Review, ReviewFilter } from '@/types';

@@ -1,10 +1,15 @@
 'use client';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+import RemandReasonModal from '@/components/modals/RemandReasonModal';
 import Button from '@/components/ui/Button';
 import PanelMessage from '@/components/ui/PanelMessage';
+import { TOP_RATED_REVIEW_COUNT } from '@/constants/review';
+import {
+  reviewStatusBadgeClass,
+  reviewStatusLabels,
+} from '@/constants/reviewStatus';
 import { useAuthState } from '@/hooks/useAuthState';
 import {
   fetchReviewByIdWithViewer,
@@ -14,7 +19,6 @@ import {
   setReviewStatus,
   setReviewVisibility,
 } from '@/lib/reviewApi';
-import { TOP_RATED_REVIEW_COUNT } from '@/constants/review';
 import type { Review } from '@/types';
 
 type Props = {
@@ -31,8 +35,6 @@ export default function ReviewDetail({ id }: Props) {
   const [updatingVisibility, setUpdatingVisibility] = useState(false);
   const [updatingStatus, setUpdatingStatus] = useState(false);
   const [remandOpen, setRemandOpen] = useState(false);
-  const [remandReason, setRemandReason] = useState('');
-  const [remandError, setRemandError] = useState('');
   const [liking, setLiking] = useState(false);
   const [hasLiked, setHasLiked] = useState(false);
   const [isTopRated, setIsTopRated] = useState(false);
@@ -41,6 +43,7 @@ export default function ReviewDetail({ id }: Props) {
     let active = true;
     setLoading(true);
     setError(null);
+
     fetchReviewByIdWithViewer(id, user?.email)
       .then((data) => {
         if (!active) return;
@@ -66,6 +69,7 @@ export default function ReviewDetail({ id }: Props) {
 
   useEffect(() => {
     let active = true;
+
     const loadTopRated = async () => {
       try {
         const data = await fetchReviews();
@@ -73,9 +77,7 @@ export default function ReviewDetail({ id }: Props) {
         const sorted = [...data].sort((a, b) => {
           const likesDiff = b.likesCount - a.likesCount;
           if (likesDiff !== 0) return likesDiff;
-          return (
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-          );
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
         });
         const topRatedIds = new Set(
           sorted.slice(0, TOP_RATED_REVIEW_COUNT).map((item) => item.id),
@@ -85,65 +87,28 @@ export default function ReviewDetail({ id }: Props) {
         console.error(err);
       }
     };
+
     loadTopRated();
     return () => {
       active = false;
     };
   }, [id]);
 
-  if (!review && loading) {
-    return <PanelMessage>読み込み中...</PanelMessage>;
-  }
-
-  if (error) {
-    return <PanelMessage tone="error">{error}</PanelMessage>;
-  }
-
-  if (!review && !loading) {
-    return (
-      <PanelMessage>該当するレビューが見つかりませんでした。</PanelMessage>
-    );
-  }
-  if (!review) {
-    return null;
-  }
-
   const handleDelete = async () => {
     if (!review || deleting) return;
-    const confirmed = window.confirm('このレビューを削除しますか？');
-    if (!confirmed) return;
+    if (!window.confirm('このレビューを削除しますか？')) return;
+
     try {
       setDeleting(true);
       await removeReview(review.id);
       router.push('/review/search');
     } catch (err) {
       console.error(err);
-      setError(
-        err instanceof Error ? err.message : 'レビューの削除に失敗しました。',
-      );
+      setError(err instanceof Error ? err.message : 'レビューの削除に失敗しました。');
     } finally {
       setDeleting(false);
     }
   };
-
-  const isAdmin = user?.plan === 'admin';
-  const canViewAll =
-    !!user && (user.reviewsSubmitted > 0 || user.plan === 'premium');
-  const canViewUnpublished = isAdmin || canViewAll;
-  const isPending = review.status === 'PENDING';
-  const isRejected = review.status === 'REJECTED';
-  const isApproved = review.status === 'APPROVED';
-  const unlocked =
-    !isApproved || review.isPublished || isTopRated || canViewUnpublished;
-  const canManage = isAdmin;
-  const canDelete =
-    !!user &&
-    (isAdmin || (review ? user.userName === review.author.userName : false));
-  const canLike = !!user && isApproved;
-
-  if (isApproved && !review.isPublished && !isTopRated && !canViewUnpublished) {
-    return <PanelMessage>このレビューは非公開です。</PanelMessage>;
-  }
 
   const handleTogglePublish = async () => {
     if (!review || updatingVisibility) return;
@@ -153,17 +118,16 @@ export default function ReviewDetail({ id }: Props) {
       setReview(updated);
     } catch (err) {
       console.error(err);
-      setError(
-        err instanceof Error ? err.message : '公開状態の更新に失敗しました。',
-      );
+      setError(err instanceof Error ? err.message : '公開状態の更新に失敗しました。');
     } finally {
       setUpdatingVisibility(false);
     }
   };
 
   const handleLike = async () => {
-    if (!review || liking || !canLike) return;
+    if (!review || liking || !user) return;
     const nextLiked = !hasLiked;
+
     try {
       setLiking(true);
       setHasLiked(nextLiked);
@@ -175,7 +139,8 @@ export default function ReviewDetail({ id }: Props) {
             }
           : prev,
       );
-      const updated = await likeReview(review.id, user!.email);
+
+      const updated = await likeReview(review.id, user.email);
       setReview((prev) =>
         prev ? { ...prev, likesCount: updated.likesCount } : prev,
       );
@@ -199,245 +164,229 @@ export default function ReviewDetail({ id }: Props) {
 
   const handleSetStatus = async (
     nextStatus: 'APPROVED' | 'REJECTED',
-    reason?: string,
+    remandReason?: string,
   ) => {
     if (!review || updatingStatus || !user) return;
     const actionLabel = nextStatus === 'APPROVED' ? '承認' : '差し戻し';
-    if (!confirm(`このレビューを${actionLabel}しますか？`)) return;
+    if (!window.confirm(`このレビューを${actionLabel}しますか？`)) return;
+
     try {
       setUpdatingStatus(true);
       const updated = await setReviewStatus(
         review.id,
         nextStatus,
         user.email,
-        reason,
+        remandReason,
       );
       setReview((prev) => (prev ? { ...prev, ...updated } : prev));
     } catch (err) {
       console.error(err);
-      setError(
-        err instanceof Error ? err.message : '審査結果の更新に失敗しました。',
-      );
+      setError(err instanceof Error ? err.message : '審査結果の更新に失敗しました。');
     } finally {
       setUpdatingStatus(false);
     }
   };
 
+  if (!review && loading) {
+    return <PanelMessage>読み込み中...</PanelMessage>;
+  }
+
+  if (error) {
+    return <PanelMessage tone="error">{error}</PanelMessage>;
+  }
+
+  if (!review && !loading) {
+    return <PanelMessage>該当するレビューが見つかりませんでした。</PanelMessage>;
+  }
+
+  if (!review) {
+    return null;
+  }
+
+  const isAdmin = user?.plan === 'admin';
+  const canViewAll = !!user && (user.reviewsSubmitted > 0 || user.plan === 'premium');
+  const canViewUnpublished = isAdmin || canViewAll;
+  const isPending = review.status === 'PENDING';
+  const isRejected = review.status === 'REJECTED';
+  const isApproved = review.status === 'APPROVED';
+  const canDelete = !!user && (isAdmin || user.userName === review.author.userName);
+  const canLike = !!user && isApproved;
+
+  const unlocked = !isApproved || review.isPublished || isTopRated || canViewUnpublished;
+
+  if (isApproved && !review.isPublished && !isTopRated && !canViewUnpublished) {
+    return <PanelMessage>このレビューは非公開です。</PanelMessage>;
+  }
+
   return (
     <>
       <article className="glass-panel mx-auto max-w-4xl rounded-3xl border border-white/10 px-8 py-10">
-      <div className="flex items-center justify-between text-xs uppercase tracking-[0.4em] text-slate-400">
-        <div className="flex items-center gap-2">
-          <span>
-            {review.shopName} /{' '}
-            {new Date(review.createdAt).toLocaleString('ja-JP')}
-          </span>
-          {isAdmin && (
-            <span
-              className={`rounded-full px-2 py-0.5 text-[10px] uppercase tracking-[0.3em] ${
-                isTopRated || review.isPublished
-                  ? 'bg-emerald-400/10 text-emerald-200'
-                  : 'bg-amber-300/10 text-amber-200'
-              }`}
-            >
-              {isTopRated || review.isPublished ? '公開中' : '非公開'}
+        <div className="flex items-center justify-between text-xs uppercase tracking-[0.4em] text-slate-400">
+          <div className="flex items-center gap-2">
+            <span>
+              {review.shopName} / {new Date(review.createdAt).toLocaleString('ja-JP')}
             </span>
-          )}
-          {isPending && (
-            <span className="rounded-full bg-sky-400/10 px-2 py-0.5 text-[10px] uppercase tracking-[0.3em] text-sky-200">
-              審査中
-            </span>
-          )}
-          {isRejected && (
-            <span className="rounded-full bg-rose-400/10 px-2 py-0.5 text-[10px] uppercase tracking-[0.3em] text-rose-200">
-              差し戻し
-            </span>
-          )}
+            {isAdmin && (
+              <span
+                className={`rounded-full px-2 py-0.5 text-[10px] uppercase tracking-[0.3em] ${
+                  isTopRated || review.isPublished
+                    ? 'bg-emerald-400/10 text-emerald-200'
+                    : 'bg-amber-300/10 text-amber-200'
+                }`}
+              >
+                {isTopRated || review.isPublished ? '公開中' : '非公開'}
+              </span>
+            )}
+            {isPending && (
+              <span
+                className={`rounded-full px-2 py-0.5 text-[10px] uppercase tracking-[0.3em] ${reviewStatusBadgeClass.PENDING}`}
+              >
+                {reviewStatusLabels.PENDING}
+              </span>
+            )}
+            {isRejected && (
+              <span
+                className={`rounded-full px-2 py-0.5 text-[10px] uppercase tracking-[0.3em] ${reviewStatusBadgeClass.REJECTED}`}
+              >
+                {reviewStatusLabels.REJECTED}
+              </span>
+            )}
+          </div>
         </div>
-      </div>
-      <h1 className="mt-4 text-4xl font-semibold text-white">
-        {review.headline}
-      </h1>
-      <p className="mt-2 text-sm text-slate-400">
-        {review.castName}
-        {review.estimatedAge ? ` / 推定 ${review.estimatedAge}` : ''}
-        {review.bodyType ? ` / ${review.bodyType}` : ''}
-        {review.bustSize ? ` / ${review.bustSize} cup` : ''}
-        {review.heightCm ? ` / ${review.heightCm}cm` : ''}
-      </p>
-      <div className="divider my-6"></div>
-      {(isPending || isRejected) && (
-        <PanelMessage tone={isPending ? 'info' : 'error'}>
-          {isPending
-            ? 'このレビューは審査中です。公開までもう少しお待ちください。'
-            : 'このレビューは差し戻されました。内容を見直して再申請してください。'}
-          {isRejected && review.remandReason && (
-            <div className="mt-4 text-left">
-              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-rose-200">
-                差し戻し理由
+
+        <h1 className="mt-4 text-4xl font-semibold text-white">{review.headline}</h1>
+        <p className="mt-2 text-sm text-slate-400">
+          {review.castName}
+          {review.estimatedAge ? ` / 推定 ${review.estimatedAge}` : ''}
+          {review.bodyType ? ` / ${review.bodyType}` : ''}
+          {review.bustSize ? ` / ${review.bustSize} cup` : ''}
+          {review.heightCm ? ` / ${review.heightCm}cm` : ''}
+        </p>
+
+        <div className="divider my-6" />
+
+        {(isPending || isRejected) && (
+          <PanelMessage tone={isPending ? 'info' : 'error'}>
+            {isPending
+              ? 'このレビューは審査中です。公開までもう少しお待ちください。'
+              : 'このレビューは差し戻されました。内容を見直して再申請してください。'}
+            {isRejected && review.remandReason && (
+              <div className="mt-4 text-left">
+                <p className="text-xs font-semibold uppercase tracking-[0.3em] text-rose-200">
+                  差し戻し理由
+                </p>
+                <div className="mt-2 whitespace-pre-line rounded-2xl border border-rose-300/40 bg-black/30 px-4 py-3 text-xs text-rose-100">
+                  {review.remandReason}
+                </div>
+              </div>
+            )}
+          </PanelMessage>
+        )}
+
+        <div className="space-y-4 text-sm leading-relaxed text-slate-300">
+          {unlocked ? (
+            <p className="whitespace-pre-line">{review.detail}</p>
+          ) : (
+            <div className="rounded-3xl border border-amber-300/30 bg-[#050505]/80 px-6 py-6 text-center text-slate-200">
+              <p>全文閲覧はロックされています。</p>
+              <p className="mt-2 text-xs text-slate-400">
+                自分のレビューを投稿するか、プレミアムパスで解錠してください。
               </p>
-              <div className="mt-2 rounded-2xl border border-rose-300/40 bg-black/30 px-4 py-3 text-xs text-rose-100 whitespace-pre-line">
-                {review.remandReason}
+              <div className="mt-4 flex flex-wrap justify-center gap-3">
+                <Button variant="ghost" onClick={() => router.push('/review/register')}>
+                  投稿する
+                </Button>
+                <Button onClick={() => router.push('/auth/login')}>ログイン</Button>
               </div>
             </div>
           )}
-        </PanelMessage>
-      )}
-      <div className="space-y-4 text-sm leading-relaxed text-slate-300">
-        {unlocked ? (
-          <p className="whitespace-pre-line">{review.detail}</p>
-        ) : (
-          <div className="rounded-3xl border border-amber-300/30 bg-[#050505]/80 px-6 py-6 text-center text-slate-200">
-            <p>全文閲覧はロックされています。</p>
-            <p className="mt-2 text-xs text-slate-400">
-              自分のレビューを投稿するか、プレミアムパスで解錠してください。
+
+          <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-xs text-slate-400">
+            <p>料金: {review.damage}</p>
+            <p>サービス: {review.serviceHighlights.join(' / ')}</p>
+            <p>キャスト評価: {review.castRating.toFixed(1)}</p>
+            <p>いいね: {review.likesCount}</p>
+            <p className="text-[10px] uppercase tracking-[0.3em] text-slate-500">
+              Posted by {review.author.name}
             </p>
-            <div className="mt-4 flex flex-wrap justify-center gap-3">
-              <Button
-                variant="ghost"
-                onClick={() => router.push('/review/register')}
-              >
-                投稿する
-              </Button>
-              <Button onClick={() => router.push('/auth/login')}>
-                ログイン
-              </Button>
-            </div>
           </div>
-        )}
-        <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-xs text-slate-400">
-          <p>料金: {review.damage}</p>
-          <p>サービス: {review.serviceHighlights.join(' / ')}</p>
-          <p>キャスト評価: {review.castRating.toFixed(1)}</p>
-          <p>いいね: {review.likesCount}</p>
-          <p className="text-[10px] uppercase tracking-[0.3em] text-slate-500">
-            Posted by {review.author.name}
-          </p>
         </div>
-      </div>
-      <div className="mt-8 flex flex-wrap items-center justify-between gap-4 text-xs uppercase tracking-[0.4em] text-slate-500">
-        <button
-          type="button"
-          onClick={() => router.back()}
-          className="text-left"
-        >
-          ← 戻る
-        </button>
-        <div className="flex items-center gap-2">
-          {canLike && (
-            <Button
-              variant="ghost"
-              onClick={handleLike}
-              disabled={liking}
-              type="button"
-              className={hasLiked ? 'text-rose-300 border-rose-300/60' : ''}
-            >
-              {hasLiked ? '♥' : '♡'}
-            </Button>
-          )}
-          {canManage && !isTopRated && isApproved && (
-            <Button
-              variant={review.isPublished ? 'ghost' : 'outline'}
-              onClick={handleTogglePublish}
-              disabled={updatingVisibility}
-              type="button"
-              className={
-                review.isPublished
-                  ? ''
-                  : 'border-amber-300/50 text-amber-200 hover:border-amber-200/80'
-              }
-            >
-              {review.isPublished ? '非公開にする' : '公開する'}
-            </Button>
-          )}
-          {canManage && !isApproved && (
-            <>
-              <Button
-                variant="outline"
-                onClick={() => handleSetStatus('APPROVED')}
-                disabled={updatingStatus}
-                type="button"
-                className="border-emerald-300/50 text-emerald-200 hover:border-emerald-200/80"
-              >
-                承認する
-              </Button>
+
+        <div className="mt-8 flex flex-wrap items-center justify-between gap-4 text-xs uppercase tracking-[0.4em] text-slate-500">
+          <button type="button" onClick={() => router.back()} className="text-left">
+            ← 戻る
+          </button>
+
+          <div className="flex items-center gap-2">
+            {canLike && (
               <Button
                 variant="ghost"
-                onClick={() => {
-                  setRemandReason('');
-                  setRemandError('');
-                  setRemandOpen(true);
-                }}
-                disabled={updatingStatus}
+                onClick={handleLike}
+                disabled={liking}
                 type="button"
-                className="text-rose-200 hover:text-rose-100"
+                className={hasLiked ? 'text-rose-300 border-rose-300/60' : ''}
               >
-                差し戻す
+                {hasLiked ? '♥' : '♡'}
               </Button>
-            </>
-          )}
-          {canDelete && (
-            <Button
-              variant="ghost"
-              onClick={handleDelete}
-              disabled={deleting}
-              type="button"
-            >
-              {deleting ? '削除中...' : 'DELETE'}
-            </Button>
-          )}
-        </div>
-      </div>
-      </article>
-      {remandOpen && (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
-        <div className="w-full max-w-lg rounded-3xl border border-white/10 bg-[#0b0b0b] p-6 text-white shadow-2xl">
-          <h2 className="text-lg font-semibold">差し戻し理由</h2>
-          <p className="mt-2 text-xs text-slate-400">
-            差し戻し理由を入力してください。内容は投稿者に通知されます。
-          </p>
-          <textarea
-            className="mt-4 w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white focus:border-rose-300/60 focus:outline-none"
-            rows={6}
-            value={remandReason}
-            onChange={(event) => {
-              setRemandReason(event.target.value);
-              if (remandError) setRemandError('');
-            }}
-            placeholder="例) 具体的な体験内容が不足しています。日時やサービス内容を追記してください。"
-          />
-          {remandError && (
-            <p className="mt-2 text-xs text-rose-200">{remandError}</p>
-          )}
-          <div className="mt-5 flex items-center justify-end gap-3">
-            <Button
-              variant="ghost"
-              type="button"
-              onClick={() => setRemandOpen(false)}
-            >
-              キャンセル
-            </Button>
-            <Button
-              variant="outline"
-              type="button"
-              className="border-rose-300/50 text-rose-200 hover:border-rose-200/80"
-              onClick={async () => {
-                const trimmed = remandReason.trim();
-                if (!trimmed) {
-                  setRemandError('差し戻し理由を入力してください。');
-                  return;
+            )}
+
+            {isAdmin && !isTopRated && isApproved && (
+              <Button
+                variant={review.isPublished ? 'ghost' : 'outline'}
+                onClick={handleTogglePublish}
+                disabled={updatingVisibility}
+                type="button"
+                className={
+                  review.isPublished
+                    ? ''
+                    : 'border-amber-300/50 text-amber-200 hover:border-amber-200/80'
                 }
-                setRemandOpen(false);
-                await handleSetStatus('REJECTED', trimmed);
-              }}
-              disabled={updatingStatus}
-            >
-              差し戻す
-            </Button>
+              >
+                {review.isPublished ? '非公開にする' : '公開する'}
+              </Button>
+            )}
+
+            {isAdmin && !isApproved && (
+              <>
+                <Button
+                  variant="outline"
+                  onClick={() => handleSetStatus('APPROVED')}
+                  disabled={updatingStatus}
+                  type="button"
+                  className="border-emerald-300/50 text-emerald-200 hover:border-emerald-200/80"
+                >
+                  承認する
+                </Button>
+                <Button
+                  variant="ghost"
+                  onClick={() => setRemandOpen(true)}
+                  disabled={updatingStatus}
+                  type="button"
+                  className="text-rose-200 hover:text-rose-100"
+                >
+                  差し戻す
+                </Button>
+              </>
+            )}
+
+            {canDelete && (
+              <Button variant="ghost" onClick={handleDelete} disabled={deleting} type="button">
+                {deleting ? '削除中...' : 'DELETE'}
+              </Button>
+            )}
           </div>
         </div>
-      </div>
-      )}
+      </article>
+
+      <RemandReasonModal
+        open={remandOpen}
+        submitting={updatingStatus}
+        onCancel={() => setRemandOpen(false)}
+        onSubmit={async (reason) => {
+          setRemandOpen(false);
+          await handleSetStatus('REJECTED', reason);
+        }}
+      />
     </>
   );
 }

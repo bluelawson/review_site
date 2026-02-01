@@ -4,13 +4,11 @@ import { useEffect, useMemo, useState } from 'react';
 
 import ReviewCard from '@/components/ReviewCard';
 import PanelMessage from '@/components/ui/PanelMessage';
-import { useAuthState } from '@/hooks/useAuthState';
 import { fetchReviews } from '@/lib/reviewApi';
 import { TOP_RATED_REVIEW_COUNT } from '@/constants/review';
 import type { Review } from '@/types';
 
 export default function TopRatedReviewList() {
-  const { user } = useAuthState();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
