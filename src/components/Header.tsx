@@ -11,6 +11,7 @@ const navLinks = [
   { href: '/review/search', label: 'レビュー検索' },
   { href: '/#access', label: '閲覧条件' },
   { href: '/review/register', label: '投稿する' },
+  { href: '/mypage', label: 'マイページ' },
 ];
 
 export default function Header() {

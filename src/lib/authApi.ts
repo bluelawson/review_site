@@ -209,6 +209,69 @@ export const register = async (
   dispatchAuthChange();
 };
 
+export const updateProfile = async (input: {
+  name: string;
+  email: string;
+}) => {
+  ensureAuthStorage();
+  const users = getUsers();
+  const current = getCurrentUser();
+  if (!current) {
+    throw new Error('ログインが必要です');
+  }
+  const normalizedEmail = input.email.trim().toLowerCase();
+  if (!normalizedEmail) {
+    throw new Error('メールアドレスを入力してください');
+  }
+  if (
+    normalizedEmail !== current.email &&
+    users.some((entry) => entry.email === normalizedEmail)
+  ) {
+    throw new Error('既に登録済みのメールアドレスです');
+  }
+  const updatedUser: UserProfile = {
+    ...current,
+    name: input.name.trim() || current.name,
+    email: normalizedEmail,
+  };
+  const updatedUsers = users.map((entry) =>
+    entry.id === updatedUser.id ? updatedUser : entry,
+  );
+  setUsers(updatedUsers);
+  setCurrentUser(updatedUser);
+  dispatchAuthChange();
+  return updatedUser;
+};
+
+export const updatePassword = async (
+  currentPassword: string,
+  nextPassword: string,
+) => {
+  ensureAuthStorage();
+  const users = getUsers();
+  const current = getCurrentUser();
+  if (!current) {
+    throw new Error('ログインが必要です');
+  }
+  if (current.password !== currentPassword) {
+    throw new Error('現在のパスワードが正しくありません');
+  }
+  if (nextPassword.length < 6) {
+    throw new Error('新しいパスワードは6文字以上にしてください');
+  }
+  const updatedUser: UserProfile = {
+    ...current,
+    password: nextPassword,
+  };
+  const updatedUsers = users.map((entry) =>
+    entry.id === updatedUser.id ? updatedUser : entry,
+  );
+  setUsers(updatedUsers);
+  setCurrentUser(updatedUser);
+  dispatchAuthChange();
+  return updatedUser;
+};
+
 export const logout = () => {
   setCurrentUser(null);
   dispatchAuthChange();

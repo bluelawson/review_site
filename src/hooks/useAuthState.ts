@@ -10,6 +10,8 @@ import {
   logout,
   register,
   registerSubmission,
+  updatePassword,
+  updateProfile,
 } from '@/lib/authApi';
 import type { UserProfile } from '@/types';
 
@@ -61,6 +63,22 @@ export const useAuthState = () => {
     refresh();
   }, [refresh]);
 
+  const handleUpdateProfile = useCallback(
+    async (input: { name: string; email: string }) => {
+      await updateProfile(input);
+      refresh();
+    },
+    [refresh],
+  );
+
+  const handleUpdatePassword = useCallback(
+    async (currentPassword: string, nextPassword: string) => {
+      await updatePassword(currentPassword, nextPassword);
+      refresh();
+    },
+    [refresh],
+  );
+
   return {
     user,
     users,
@@ -68,5 +86,7 @@ export const useAuthState = () => {
     register: handleRegister,
     logout: handleLogout,
     registerSubmission: handleRegisterSubmission,
+    updateProfile: handleUpdateProfile,
+    updatePassword: handleUpdatePassword,
   };
 };
